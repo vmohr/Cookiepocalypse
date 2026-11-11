@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cookiepocalypse Planner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f7f1e8; --paper:#fffdf9; --ink:#2b2420; --muted:#7a6d63; --line:#e6dccf; --line2:#d6c8b6;
+  --red:#a8322d; --red-soft:#f6e1dc; --green:#2f5d46; --green-soft:#e1ece4; --gold:#b9852f; --gold-soft:#f6ebd3;
+  --shadow:0 1px 2px rgba(60,40,20,.06),0 4px 14px rgba(60,40,20,.05);
+  --r:10px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 Inter,system-ui,sans-serif}
+h1,h2,h3{font-family:Fraunces,Georgia,serif;font-weight:700;margin:0;letter-spacing:-.01em}
+a{color:var(--red)}
+button,input,select,textarea{font:inherit;color:inherit}
+header.top{display:flex;align-items:center;gap:16px;padding:18px 24px 0;flex-wrap:wrap}
+header.top h1{font-size:24px}
+header.top h1 span{color:var(--red)}
+.status{margin-left:auto;font-size:12px;color:var(--muted);display:flex;gap:8px;align-items:center}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--line2)}
+.dot.ok{background:var(--green)}.dot.busy{background:var(--gold)}.dot.err{background:var(--red)}
+nav.tabs{display:flex;gap:2px;padding:14px 24px 0;border-bottom:1px solid var(--line2);overflow-x:auto;position:sticky;top:0;background:var(--bg);z-index:5}
+nav.tabs a{padding:9px 14px;text-decoration:none;color:var(--muted);font-weight:500;border-radius:8px 8px 0 0;white-space:nowrap;border:1px solid transparent;border-bottom:none;margin-bottom:-1px}
+nav.tabs a:hover{color:var(--ink)}
+nav.tabs a.on{background:var(--paper);color:var(--ink);border-color:var(--line2)}
+nav.tabs .badge{display:inline-block;min-width:18px;padding:0 5px;margin-left:5px;border-radius:9px;background:var(--red);color:#fff;font-size:11px;line-height:18px;text-align:center}
+main{padding:20px 24px 80px;max-width:1280px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:18px;margin-bottom:16px}
+.row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.grow{flex:1}
+.muted{color:var(--muted)}.small{font-size:12px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:16px}
+.stat{background:var(--paper);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px}
+.stat b{display:block;font:700 24px Fraunces,serif}
+.stat span{color:var(--muted);font-size:12px}
+table{width:100%;border-collapse:collapse}
+th,td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}
+th{font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);font-weight:600;background:var(--paper)}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
+tr.done td{opacity:.45}
+tr.done td.nm{text-decoration:line-through}
+.tablewrap{overflow-x:auto}
+input[type=text],input[type=number],input:not([type]),select,textarea{border:1px solid var(--line2);background:#fff;border-radius:7px;padding:6px 8px;min-width:0}
+input:focus,select:focus,textarea:focus{outline:2px solid #e8c9a2;border-color:var(--gold)}
+input.num{width:80px;text-align:right}
+input.w-s{width:90px}
+td input,td select{width:100%}
+textarea{width:100%;min-height:90px;resize:vertical}
+.btn{border:1px solid var(--line2);background:#fff;border-radius:8px;padding:7px 12px;cursor:pointer;font-weight:500;white-space:nowrap}
+.btn:hover{border-color:var(--muted)}
+.btn.primary{background:var(--red);border-color:var(--red);color:#fff}
+.btn.primary:hover{background:#8f2824}
+.btn.green{background:var(--green);border-color:var(--green);color:#fff}
+.btn.ghost{background:transparent;border-color:transparent;color:var(--muted)}
+.btn.ghost:hover{color:var(--red)}
+.btn.sm{padding:3px 8px;font-size:12px}
+.btn:disabled{opacity:.5;cursor:default}
+.pill{display:inline-block;padding:1px 8px;border-radius:10px;font-size:11px;font-weight:600;background:var(--line);color:var(--muted)}
+.pill.red{background:var(--red-soft);color:var(--red)}.pill.green{background:var(--green-soft);color:var(--green)}.pill.gold{background:var(--gold-soft);color:#8a611c}
+.warn{background:var(--gold-soft);border:1px solid #ecd6a8;border-radius:8px;padding:8px 12px;color:#6b4c14;font-size:13px}
+.recipes-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}
+.rcard{background:var(--paper);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px;cursor:pointer;text-align:left;width:100%}
+.rcard:hover{border-color:var(--gold)}
+.rcard h3{font-size:16px;margin-bottom:4px}
+.rcard.inplan{border-left:4px solid var(--green)}
+.phase-row td{background:#faf5ee;font-weight:600;font-size:12px;color:var(--green);text-transform:uppercase;letter-spacing:.04em}
+.sheet-head{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap;margin-bottom:8px}
+.sheet-head h2{font-size:20px}
+.facts{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.derived{color:var(--muted);font-style:italic}
+.issue{display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--line)}
+.issue:last-child{border-bottom:none}
+.sev{width:8px;align-self:stretch;border-radius:4px;flex:none}
+.sev.high{background:var(--red)}.sev.med{background:var(--gold)}.sev.low{background:var(--line2)}
+.issue .t{font-weight:600}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:860px){.split{grid-template-columns:1fr}main{padding:16px 12px 80px}header.top,nav.tabs{padding-left:12px;padding-right:12px}}
+.modal-bg{position:fixed;inset:0;background:rgba(40,25,15,.35);display:flex;align-items:center;justify-content:center;z-index:50;padding:16px}
+.modal{background:var(--paper);border-radius:12px;max-width:560px;width:100%;padding:20px;box-shadow:0 20px 60px rgba(0,0,0,.25);max-height:90vh;overflow:auto}
+.modal h3{font-size:19px;margin-bottom:8px}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:9px 16px;border-radius:8px;z-index:60;font-size:13px;box-shadow:var(--shadow)}
+.seg{display:inline-flex;border:1px solid var(--line2);border-radius:8px;overflow:hidden}
+.seg button{border:none;background:#fff;padding:6px 10px;cursor:pointer}
+.seg button.on{background:var(--ink);color:#fff}
+.empty{text-align:center;padding:40px 20px;color:var(--muted)}
+.drop{border:2px dashed var(--line2);border-radius:var(--r);padding:20px;text-align:center;color:var(--muted)}
+.drop.over{border-color:var(--gold);background:var(--gold-soft)}
+.kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+.kv label{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--muted);font-weight:500}
+.kv input{color:var(--ink);font-size:14px}
+.handle{cursor:pointer;color:var(--muted);user-select:none}
+</style>
+</head>
+<body>
+<header class="top">
+  <h1>🍪 <span>Cookie</span>pocalypse</h1>
+  <div class="status"><span class="dot" id="dot"></span><span id="statusText">Loading…</span></div>
+</header>
+<nav class="tabs" id="tabs"></nav>
+<main id="view"><div class="empty">Loading your plan…</div></main>
+<div id="modalRoot"></div>
+<script>
+/*CALC*/
+</script>
+<script>
+// ======================= state & persistence =======================
+let S = null;                 // app state
+let ui = { recipe: null, recipeSearch: '', planOnly: false, hidePurchased: false, cheat: 'both', conv: { name: '', amount: 1, unit: 'Cups' }, showLow: false };
+let store = { mode: 'none', db: null, uid: null, writing: false, pending: false, timer: null };
+const LS_KEY = 'cookiepocalypse.v1';
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const $ = s => document.querySelector(s);
+
+function setStatus(kind, text) { $('#dot').className = 'dot ' + kind; $('#statusText').textContent = text; }
+function emptyState() { return normalizeState({ title: 'Cookie Plan', recipes: [], plan: [], gramConversions: [], bulkConversions: [], people: [], purchased: {} }); }
+
+async function boot() {
+  let db = null, user = null;
+  try { [db, user] = await Promise.all([window.claude?.use?.('db'), window.claude?.use?.('user')]); } catch (e) {}
+  let uid = null;
+  try { uid = user ? await user.id() : null; } catch (e) {}
+  if (db && uid) {
+    store.mode = 'db'; store.db = db; store.uid = uid;
+    const timer = setTimeout(() => setStatus('busy', 'Still connecting…'), 10000);
+    try {
+      const snap = await db.doc('data/users/' + uid + '/state').get();
+      clearTimeout(timer);
+      if (snap.exists && snap.data()?.json) {
+        S = normalizeState(JSON.parse(snap.data().json));
+        setStatus('ok', 'Saved to your account');
+      } else {
+        const seed = await fetchSeed();
+        if (seed) { S = seed; setStatus('ok', 'Loaded starter data from your sheet'); scheduleSave(); }
+        else { S = emptyState(); setStatus('ok', 'Saved to your account'); }
+      }
+    } catch (e) { clearTimeout(timer); S = loadLocal() || emptyState(); store.mode = 'local'; setStatus('err', 'Account storage unavailable. Saving in this browser only'); }
+  } else {
+    store.mode = 'local';
+    S = loadLocal() || await fetchSeed() || emptyState();
+    setStatus('busy', 'Saving in this browser only. Export a backup to keep it safe');
+  }
+  window.addEventListener('hashchange', render);
+  render();
+}
+async function fetchSeed() { try { const r = await fetch('seed.json', { cache: 'no-store' }); if (!r.ok) return null; return normalizeState(await r.json()); } catch (e) { return null; } }
+function loadLocal() { try { const t = localStorage.getItem(LS_KEY); return t ? normalizeState(JSON.parse(t)) : null; } catch (e) { return null; } }
+
+function commit(opts = {}) { scheduleSave(); if (opts.render !== false) render(); }
+function scheduleSave() {
+  clearTimeout(store.timer);
+  store.timer = setTimeout(flush, 700);
+  if (store.mode === 'db') setStatus('busy', 'Saving…');
+}
+async function flush() {
+  const json = JSON.stringify(S);
+  try { localStorage.setItem(LS_KEY, json); } catch (e) {}
+  if (store.mode !== 'db') return;
+  if (store.writing) { store.pending = true; return; }
+  store.writing = true;
+  try {
+    if (json.length > 250000) throw { code: 'too_big' };
+    await store.db.doc('data/users/' + store.uid + '/state').set({ json, savedAt: new Date().toISOString() });
+    setStatus('ok', 'Saved to your account');
+  } catch (e) {
+    if (e && e.code === 'unavailable') { setTimeout(flush, 1500 + Math.random() * 1500); }
+    else if (e && (e.code === 'too_big' || e.code === 'invalid_argument' || e.code === 'quota_exceeded')) setStatus('err', 'Not saved: plan is too large for account storage. Export a backup');
+    else setStatus('err', 'Couldn’t save (' + (e?.code || 'error') + '). Export a backup');
+  } finally {
+    store.writing = false;
+    if (store.pending) { store.pending = false; flush(); }
+  }
+}
+
+// ======================= helpers =======================
+function toast(msg) { const t = document.createElement('div'); t.className = 'toast'; t.textContent = msg; document.body.appendChild(t); setTimeout(() => t.remove(), 2600); }
+function modal(html, onMount) {
+  const root = $('#modalRoot');
+  root.innerHTML = `<div class="modal-bg"><div class="modal">${html}</div></div>`;
+  const close = () => root.innerHTML = '';
+  root.querySelector('.modal-bg').addEventListener('mousedown', e => { if (e.target.classList.contains('modal-bg')) close(); });
+  onMount && onMount(root.querySelector('.modal'), close);
+  return close;
+}
+function confirmBox(title, body, okLabel, onOk, danger = true) {
+  modal(`<h3>${esc(title)}</h3><p>${body}</p><div class="row" style="justify-content:flex-end;margin-top:16px"><button class="btn" data-x>Cancel</button><button class="btn ${danger ? 'primary' : 'green'}" data-ok>${esc(okLabel)}</button></div>`,
+    (m, close) => { m.querySelector('[data-x]').onclick = close; m.querySelector('[data-ok]').onclick = () => { close(); onOk(); }; });
+}
+async function offerDownload(filename, data) {
+  let dl = null; try { dl = await window.claude?.use?.('downloads'); } catch (e) {}
+  if (dl) {
+    try { await dl.save({ filename, data }); toast('Saved ' + filename); return; }
+    catch (e) { if (e && e.code === 'declined') return; }
+  }
+  // fallback: show text to copy
+  modal(`<h3>Copy ${esc(filename)}</h3><p class="muted small">Downloads aren’t available here. Copy this text and save it as <b>${esc(filename)}</b>.</p><textarea readonly style="min-height:240px;font:12px ui-monospace,monospace">${esc(data)}</textarea><div class="row" style="justify-content:flex-end;margin-top:12px"><button class="btn" data-x>Close</button><button class="btn primary" data-c>Copy</button></div>`,
+    (m, close) => { m.querySelector('[data-x]').onclick = close; m.querySelector('[data-c]').onclick = async () => { try { await navigator.clipboard.writeText(data); toast('Copied'); } catch (e) { m.querySelector('textarea').select(); toast('Press Ctrl/Cmd+C to copy'); } }; });
+}
+async function copyText(t) { try { await navigator.clipboard.writeText(t); toast('Copied to clipboard'); } catch (e) { offerDownload('copy.txt', t); } }
+const slug = s => String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'recipe';
+const today = () => new Date().toISOString().slice(0, 10);
+const allUnits = () => [...new Set([...S.recipes.flatMap(r => r.ingredients.map(i => i.unit)), ...S.gramConversions.map(c => c.unit), 'Teaspoons', 'Tablespoons', 'Cups', 'Ounces', 'Grams', 'Pounds', 'Whole'].filter(Boolean))].sort();
+const allIngredients = () => [...new Set([...S.recipes.flatMap(r => r.ingredients.map(i => i.name)), ...S.gramConversions.map(c => c.ingredient)].filter(Boolean))].sort((a, b) => a.localeCompare(b));
+const allPhases = () => [...new Set(['Wet Phase 1', 'Wet Phase 2', 'Dry Phase 1', 'Dry Phase 2', 'Mix In', 'Topping 1', 'Topping 2', 'Filling', 'Other', ...S.recipes.flatMap(r => r.ingredients.map(i => i.phase))].filter(Boolean))];
+function datalists() {
+  return `<datalist id="dl-units">${allUnits().map(u => `<option value="${esc(u)}">`).join('')}</datalist>
+  <datalist id="dl-ings">${allIngredients().map(u => `<option value="${esc(u)}">`).join('')}</datalist>
+  <datalist id="dl-phases">${allPhases().map(u => `<option value="${esc(u)}">`).join('')}</datalist>
+  <datalist id="dl-recipes">${S.recipes.map(r => `<option value="${esc(r.name)}">`).join('')}</datalist>`;
+}
+function amt(n) { return n == null ? '' : fmt(n, Math.abs(n) >= 100 ? 0 : Math.abs(n) >= 10 ? 1 : 2); }
+function visibleIssues() { return conversionChecks(S).issues.filter(i => !S.ignoredChecks[i.id]); }
+
+// ======================= routing =======================
+const TABS = [['plan', 'Plan'], ['recipes', 'Recipes'], ['cheatsheet', 'Baking Cheat Sheet'], ['shopping', 'Shopping List'], ['recipients', 'Recipients'], ['conversions', 'Conversions'], ['data', 'Import / Export']];
+function route() { const h = location.hash.replace('#', ''); return TABS.some(t => t[0] === h) ? h : 'plan'; }
+function render() {
+  if (!S) return;
+  const r = route();
+  const nIssues = visibleIssues().filter(i => i.severity !== 'low').length;
+  $('#tabs').innerHTML = TABS.map(([k, l]) => `<a href="#${k}" class="${k === r ? 'on' : ''}">${l}${k === 'conversions' && nIssues ? `<span class="badge">${nIssues}</span>` : ''}</a>`).join('');
+  const v = { plan: vPlan, recipes: vRecipes, cheatsheet: vCheat, shopping: vShopping, recipients: vRecipients, conversions: vConversions, data: vData }[r];
+  $('#view').innerHTML = datalists() + v();
+  if (r === 'data') mountData();
+}
+
+// ======================= PLAN =======================
+function vPlan() {
+  const units = totalUnits(S), rows = planRows(S);
+  const totalCookies = rows.reduce((a, r) => a + (r.cookies || 0), 0);
+  const totalBake = rows.reduce((a, r) => a + (r.bakeHours || 0), 0);
+  const totalBatches = rows.reduce((a, r) => a + (r.batches || 0), 0);
+  const notIn = S.recipes.filter(r => !S.plan.some(p => key(p.recipe) === key(r.name)));
+  const sorted = rows.map((r, i) => ({ ...r, i }));
+  return `
+  <div class="stats">
+    <div class="stat"><b>${fmt(units)}</b><span>cookie units (from <a href="#recipients">recipients</a>)</span></div>
+    <div class="stat"><b>${rows.length}</b><span>recipes in the plan</span></div>
+    <div class="stat"><b>${totalBatches}</b><span>batches to bake</span></div>
+    <div class="stat"><b>${fmt(totalCookies, 0)}</b><span>cookies made</span></div>
+    <div class="stat"><b>${fmt(totalBake, 1)} h</b><span>total oven time</span></div>
+  </div>
+  <div class="card">
+    <div class="row" style="margin-bottom:12px"><h2 class="grow" style="font-size:20px">Recipe list</h2>
+      <select id="addPlan"><option value="">+ Add a recipe to the plan…</option>${notIn.map(r => `<option>${esc(r.name)}</option>`).join('')}</select>
+    </div>
+    ${rows.length ? `<div class="tablewrap"><table>
+      <thead><tr><th>Recipe</th><th class="n" title="Cookies of this kind in each gift unit">Cookies / unit</th><th class="n">Batches</th><th class="n">Cookies / batch</th><th class="n">Cookies made</th><th>Source</th><th>Refrigerate?</th><th class="n">Oven °F</th><th class="n">Bake time</th><th class="n">When to bake?</th><th></th></tr></thead>
+      <tbody>${sorted.map(r => {
+        const rec = r.recipe;
+        const need = (r.item.cookiesPerUnit || 0) * units;
+        return `<tr>
+          <td><a href="#recipes" data-open="${esc(r.item.recipe)}"><b>${esc(r.item.recipe)}</b></a>${!rec ? ' <span class="pill red">not in recipes</span>' : rec.cookiesPerBatch == null ? ' <span class="pill gold">needs cookies/batch</span>' : ''}</td>
+          <td class="n"><input class="num" type="number" step="any" min="0" data-plan="${r.i}" data-f="cookiesPerUnit" value="${esc(r.item.cookiesPerUnit ?? '')}"></td>
+          <td class="n"><b>${r.batches ?? '—'}</b></td>
+          <td class="n">${esc(rec?.cookiesPerBatch ?? '')}</td>
+          <td class="n" title="${fmt(need)} needed">${r.cookies != null ? fmt(r.cookies, 0) : ''}${r.cookies != null && r.cookies - need >= 1 ? ` <span class="muted small">(+${fmt(r.cookies - need, 0)})</span>` : ''}</td>
+          <td class="small">${rec ? srcHtml(rec) : ''}</td>
+          <td class="small">${esc(rec?.refrigerate ?? '')}</td>
+          <td class="n">${esc(rec?.ovenTemp ?? '')}</td>
+          <td class="n">${r.bakeHours != null ? fmt(r.bakeHours, 1) + ' h' : '<span class="muted small">—</span>'}</td>
+          <td class="n"><input class="num" style="width:64px" data-plan="${r.i}" data-f="bakeDay" value="${esc(r.item.bakeDay ?? '')}"></td>
+          <td><button class="btn ghost sm" data-unplan="${r.i}" title="Remove from plan">✕</button></td></tr>`;
+      }).join('')}</tbody></table></div>
+      <p class="muted small" style="margin-top:10px">Batches = ⌈cookies per unit × ${fmt(units)} units ÷ cookies per batch⌉, rounded up the same way as your sheet. Bake time = minutes per batch × batches.</p>`
+      : `<div class="empty">No recipes in the plan yet. Pick one above.</div>`}
+  </div>`;
+}
+function srcHtml(r) {
+  const b = r.bookUrl ? `<a href="${esc(r.bookUrl)}" target="_blank" rel="noopener">${esc(r.book || 'link')}</a>` : esc(r.book);
+  return b + (r.page && r.page !== 'N/A' ? ` <span class="muted">p.${esc(r.page)}</span>` : '');
+}
+
+// ======================= RECIPES =======================
+function vRecipes() {
+  if (ui.recipe != null) {
+    const r = S.recipes.find(x => key(x.name) === key(ui.recipe));
+    if (r) return vRecipeEdit(r);
+    ui.recipe = null;
+  }
+  const q = key(ui.recipeSearch);
+  const inPlan = new Set(S.plan.map(p => key(p.recipe)));
+  const list = S.recipes.filter(r => (!q || key(r.name).includes(q) || key(r.book).includes(q) || r.ingredients.some(i => key(i.name).includes(q))) && (!ui.planOnly || inPlan.has(key(r.name))))
+    .sort((a, b) => a.name.localeCompare(b.name));
+  return `<div class="row" style="margin-bottom:14px">
+      <input id="rsearch" placeholder="Search recipes or ingredients…" value="${esc(ui.recipeSearch)}" style="width:280px">
+      <label class="small"><input type="checkbox" id="planOnly" ${ui.planOnly ? 'checked' : ''}> In the plan only</label>
+      <span class="grow"></span>
+      <a class="btn" href="#data">Import recipes</a>
+      <button class="btn primary" data-act="newRecipe">+ New recipe</button>
+    </div>
+    ${list.length ? `<div class="recipes-grid">${list.map(r => {
+      const missing = [];
+      if (!r.ingredients.length) missing.push('no ingredients');
+      if (r.cookiesPerBatch == null) missing.push('cookies/batch');
+      if (r.bakeMinutes == null) missing.push('bake time');
+      return `<button class="rcard ${inPlan.has(key(r.name)) ? 'inplan' : ''}" data-open="${esc(r.name)}">
+        <h3>${esc(r.name)}</h3>
+        <div class="small muted">${esc(r.book || 'No source')}${r.page && r.page !== 'N/A' ? ' · p.' + esc(r.page) : ''}</div>
+        <div class="facts" style="margin:8px 0 0">
+          <span class="pill">${r.ingredients.length} ingredients</span>
+          ${r.cookiesPerBatch != null ? `<span class="pill">${esc(r.cookiesPerBatch)}/batch</span>` : ''}
+          ${inPlan.has(key(r.name)) ? '<span class="pill green">in plan</span>' : ''}
+          ${missing.length ? `<span class="pill gold">missing ${esc(missing.join(', '))}</span>` : ''}
+        </div></button>`;
+    }).join('')}</div>` : `<div class="empty">No recipes match.</div>`}`;
+}
+function vRecipeEdit(r) {
+  const ri = S.recipes.indexOf(r);
+  const pr = planRows(S).find(p => p.recipe === r);
+  const totalG = r.ingredients.reduce((a, i) => a + (gramFor(S, i).grams || 0), 0);
+  const inPlan = !!pr;
+  return `<div class="row" style="margin-bottom:12px">
+      <button class="btn ghost" data-act="backRecipes">← All recipes</button><span class="grow"></span>
+      ${inPlan ? '<span class="pill green">In the plan · ' + (pr.batches ?? '?') + ' batches</span>' : `<button class="btn green" data-act="planAdd" data-name="${esc(r.name)}">+ Add to plan</button>`}
+      <button class="btn" data-act="exportOne" data-fmt="csv">Export CSV</button>
+      <button class="btn" data-act="exportOne" data-fmt="json">Export JSON</button>
+      <button class="btn" data-act="dupRecipe">Duplicate</button>
+      <button class="btn ghost" data-act="delRecipe">Delete</button>
+    </div>
+    <div class="card">
+      <div class="kv">
+        <label style="grid-column:1/-1">Recipe name<input data-r="${ri}" data-f="name" value="${esc(r.name)}" style="font:700 20px Fraunces,serif"></label>
+        <label>Book / source<input data-r="${ri}" data-f="book" value="${esc(r.book)}"></label>
+        <label>Source link<input data-r="${ri}" data-f="bookUrl" value="${esc(r.bookUrl)}" placeholder="https://…"></label>
+        <label>Page<input data-r="${ri}" data-f="page" value="${esc(r.page)}"></label>
+        <label># of cookies per batch<input type="number" step="any" data-r="${ri}" data-f="cookiesPerBatch" data-num value="${esc(r.cookiesPerBatch ?? '')}"></label>
+        <label>Refrigerate?<input data-r="${ri}" data-f="refrigerate" value="${esc(r.refrigerate)}"></label>
+        <label>Oven temp (°F)<input data-r="${ri}" data-f="ovenTemp" value="${esc(r.ovenTemp)}"></label>
+        <label>Bake time per batch (min)<input type="number" step="any" data-r="${ri}" data-f="bakeMinutes" data-num value="${esc(r.bakeMinutes ?? '')}"></label>
+      </div>
+    </div>
+    <div class="card">
+      <div class="row" style="margin-bottom:8px"><h2 class="grow" style="font-size:18px">Ingredients <span class="muted small" style="font-family:Inter">per batch · ${fmt(totalG, 0)} g total</span></h2>
+        <button class="btn sm" data-act="fillGrams" title="Fill blank grams from the Gram Conversions table">Fill blank grams from conversions</button></div>
+      <div class="tablewrap"><table>
+        <thead><tr><th style="width:28px"></th><th>Ingredient</th><th class="n" style="width:100px">Amount</th><th style="width:140px">Unit</th><th class="n" style="width:110px">Grams</th><th style="width:150px">Phase</th>${inPlan ? '<th class="n">× ' + pr.batches + ' batches</th>' : ''}<th style="width:40px"></th></tr></thead>
+        <tbody>${r.ingredients.map((i, n) => {
+          const g = gramFor(S, i);
+          const chk = num(i.grams) != null && num(i.amount) ? gramsPerUnit(S, i.name, i.unit) : null;
+          const off = chk && Math.abs(i.grams - i.amount * chk.g) > 0.05 * Math.max(i.grams, i.amount * chk.g);
+          return `<tr>
+          <td class="handle small"><span data-mv="${n}" data-d="-1" title="Move up">▲</span><br><span data-mv="${n}" data-d="1" title="Move down">▼</span></td>
+          <td><input list="dl-ings" data-ing="${n}" data-f="name" value="${esc(i.name)}"></td>
+          <td><input type="number" step="any" class="num" style="width:100%" data-ing="${n}" data-f="amount" data-num value="${esc(i.amount ?? '')}"></td>
+          <td><input list="dl-units" data-ing="${n}" data-f="unit" value="${esc(i.unit)}"></td>
+          <td><input type="number" step="any" class="num" style="width:100%" data-ing="${n}" data-f="grams" data-num value="${esc(i.grams ?? '')}" placeholder="${g.derived ? fmt(g.grams) : ''}" ${g.derived ? 'title="From the conversion table"' : ''} ${off ? `title="Conversion table says ${fmt(i.amount * chk.g)} g" style="width:100%;border-color:var(--gold)"` : ''}></td>
+          <td><input list="dl-phases" data-ing="${n}" data-f="phase" value="${esc(i.phase ?? '')}"></td>
+          ${inPlan ? `<td class="n small">${amt((num(i.amount) || 0) * pr.batches)} ${esc(i.unit)}${g.grams != null ? `<br><span class="muted">${fmt(g.grams * pr.batches, 0)} g</span>` : ''}</td>` : ''}
+          <td><button class="btn ghost sm" data-delIng="${n}" title="Remove">✕</button></td></tr>`;
+        }).join('')}</tbody></table></div>
+      <div class="row" style="margin-top:10px"><button class="btn sm" data-act="addIng">+ Add ingredient</button><button class="btn sm" data-act="pasteIngs">Paste a list…</button>
+      <span class="muted small">Pick names and units from the suggestions so they match your conversions and merge on the shopping list. Grams in grey italics come from the conversion table.</span></div>
+    </div>
+    <div class="card"><label class="small muted" style="font-weight:500">Notes / method<textarea data-r="${ri}" data-f="notes" placeholder="Steps, tips, changes from the original…">${esc(r.notes)}</textarea></label></div>`;
+}
+
+// ======================= CHEAT SHEET =======================
+function vCheat() {
+  const rows = planRows(S).filter(r => r.recipe).sort((a, b) => (num(a.item.bakeDay) ?? 999) - (num(b.item.bakeDay) ?? 999));
+  if (!rows.length) return `<div class="empty">Add recipes to the <a href="#plan">plan</a> to build the cheat sheet.</div>`;
+  const show = ui.cheat;
+  return `<div class="row" style="margin-bottom:14px"><span class="muted">Ordered by “When to bake?”</span><span class="grow"></span>
+    <div class="seg">${[['both', 'Per batch + total'], ['batch', 'Per batch'], ['total', 'Total']].map(([k, l]) => `<button data-cheat="${k}" class="${show === k ? 'on' : ''}">${l}</button>`).join('')}</div>
+    <button class="btn" data-act="exportCheat">Export CSV</button></div>
+  ${rows.map(r => {
+    const rec = r.recipe, b = r.batches;
+    const phases = []; let last = null;
+    rec.ingredients.forEach(i => { const p = i.phase || ''; if (p !== last) { phases.push({ p, items: [] }); last = p; } phases[phases.length - 1].items.push(i); });
+    const hasPhases = rec.ingredients.some(i => i.phase);
+    return `<div class="card">
+      <div class="sheet-head"><h2>${esc(rec.name)}</h2><span class="muted">${srcHtml(rec)}</span><span class="grow"></span>${r.item.bakeDay !== '' && r.item.bakeDay != null ? `<span class="pill gold">Bake: ${esc(r.item.bakeDay)}</span>` : ''}</div>
+      <div class="facts">
+        <span class="pill red">${b ?? '?'} batches</span>
+        ${rec.ovenTemp ? `<span class="pill">${esc(rec.ovenTemp)}°F</span>` : ''}
+        ${rec.bakeMinutes != null ? `<span class="pill">${esc(rec.bakeMinutes)} min / batch</span>` : ''}
+        ${r.bakeHours != null ? `<span class="pill">${fmt(r.bakeHours, 1)} h total</span>` : ''}
+        ${rec.refrigerate ? `<span class="pill green">Chill: ${esc(rec.refrigerate)}</span>` : ''}
+        ${r.cookies != null ? `<span class="pill">${fmt(r.cookies, 0)} cookies</span>` : ''}
+      </div>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Ingredient</th>${show !== 'total' ? '<th class="n">Per batch</th><th class="n">g</th>' : ''}${show !== 'batch' ? `<th class="n">Total (×${b ?? '?'})</th><th class="n">g</th>` : ''}</tr></thead>
+        <tbody>${phases.map(ph => (hasPhases ? `<tr class="phase-row"><td colspan="5">${esc(ph.p || 'Other')}</td></tr>` : '') + ph.items.map(i => {
+          const g = gramFor(S, i);
+          const gcell = v => v == null ? '' : `<span class="${g.derived ? 'derived' : ''}">${fmt(v, v >= 10 ? 0 : 1)}</span>`;
+          return `<tr><td>${esc(i.name)}</td>
+            ${show !== 'total' ? `<td class="n">${amt(num(i.amount))} ${esc(i.unit)}</td><td class="n">${gcell(g.grams)}</td>` : ''}
+            ${show !== 'batch' ? `<td class="n"><b>${b != null ? amt((num(i.amount) || 0) * b) : ''}</b> ${esc(i.unit)}</td><td class="n">${g.grams != null && b != null ? gcell(g.grams * b) : ''}</td>` : ''}</tr>`;
+        }).join('')).join('')}</tbody></table></div>
+      ${rec.notes ? `<p class="small" style="white-space:pre-wrap;margin-top:10px">${esc(rec.notes)}</p>` : ''}
+    </div>`;
+  }).join('')}`;
+}
+
+// ======================= SHOPPING =======================
+function vShopping() {
+  const list = shoppingList(S);
+  const shown = ui.hidePurchased ? list.filter(e => !e.purchased) : list;
+  const done = list.filter(e => e.purchased).length;
+  if (!list.length) return `<div class="empty">Nothing to buy yet. Add recipes to the <a href="#plan">plan</a>.</div>`;
+  return `<div class="row" style="margin-bottom:14px">
+      <span><b>${list.length - done}</b> to buy · <span class="muted">${done} purchased</span></span>
+      <label class="small"><input type="checkbox" id="hidePurch" ${ui.hidePurchased ? 'checked' : ''}> Hide purchased</label>
+      <span class="grow"></span>
+      <button class="btn" data-act="copyShop">Copy as text</button>
+      <button class="btn" data-act="exportShop">Export CSV</button>
+      <button class="btn ghost" data-act="clearPurch">Uncheck all</button>
+    </div>
+    <div class="card" style="padding:6px 12px"><div class="tablewrap"><table>
+      <thead><tr><th style="width:34px">✓</th><th>Ingredient</th><th class="n">Amount</th><th>Unit</th><th class="n">Buy</th><th>Bulk unit</th><th class="n">≈ Grams</th><th>Used in</th></tr></thead>
+      <tbody>${shown.map(e => `<tr class="${e.purchased ? 'done' : ''}">
+        <td><input type="checkbox" data-purch="${esc(e.key)}" ${e.purchased ? 'checked' : ''}></td>
+        <td class="nm"><b>${esc(e.name)}</b></td>
+        <td class="n">${amt(e.amount)}</td><td>${esc(e.unit)}</td>
+        <td class="n">${e.bulkAmount != null ? '<b>' + amt(e.bulkAmount) + '</b>' : '<span class="muted small">—</span>'}</td><td>${esc(e.bulkUnit ?? '')}</td>
+        <td class="n">${e.grams ? fmt(e.grams, 0) + (e.gramsMissing ? '<span class="muted" title="Some recipes have no gram value for this">+</span>' : '') : ''}</td>
+        <td class="small muted">${esc(e.recipes.join(', '))}</td></tr>`).join('')}</tbody></table></div></div>
+    <p class="muted small">Amount = sum over planned recipes of per-batch amount × batches, grouped by ingredient + unit. Buy = amount ÷ the Bulk Conversions factor. Missing bulk units or odd numbers? Check the <a href="#conversions">Conversions</a> tab.</p>`;
+}
+function shopCSV() {
+  return ['Ingredient,Amount,Unit,Bulk Amount,Bulk Unit,Grams,Purchased,Used In'].concat(shoppingList(S).map(e =>
+    [e.name, +e.amount.toFixed(3), e.unit, e.bulkAmount != null ? +e.bulkAmount.toFixed(3) : '', e.bulkUnit ?? '', e.grams ? Math.round(e.grams) : '', e.purchased ? 'yes' : '', e.recipes.join('; ')].map(csvEsc).join(','))).join('\n');
+}
+
+// ======================= RECIPIENTS =======================
+function vRecipients() {
+  return `<div class="card">
+    <div class="row" style="margin-bottom:8px"><h2 class="grow" style="font-size:20px">Recipients</h2><span class="pill red">${fmt(totalUnits(S))} cookie units</span></div>
+    <p class="muted small" style="margin-top:0">Each recipient gets a number of cookie units (a unit = one box’s worth of each cookie in the plan). The total drives the batch counts on the Plan tab.</p>
+    <div class="tablewrap"><table><thead><tr><th>Name</th><th style="width:120px">Box size</th><th class="n" style="width:120px">Cookie units</th><th style="width:40px"></th></tr></thead>
+    <tbody>${S.people.map((p, i) => `<tr>
+      <td><input data-p="${i}" data-f="name" value="${esc(p.name)}"></td>
+      <td><input data-p="${i}" data-f="boxSize" value="${esc(p.boxSize)}"></td>
+      <td><input type="number" step="any" min="0" class="num" style="width:100%" data-p="${i}" data-f="units" data-num value="${esc(p.units)}"></td>
+      <td><button class="btn ghost sm" data-delP="${i}">✕</button></td></tr>`).join('')}</tbody></table></div>
+    <div class="row" style="margin-top:10px"><button class="btn sm" data-act="addP">+ Add recipient</button></div>
+  </div>`;
+}
+
+// ======================= CONVERSIONS =======================
+function vConversions() {
+  const { issues, coverage } = conversionChecks(S);
+  const vis = issues.filter(i => !S.ignoredChecks[i.id]);
+  const nIgnored = issues.length - vis.length;
+  const main = vis.filter(i => i.severity !== 'low'), low = vis.filter(i => i.severity === 'low');
+  const issueHtml = i => `<div class="issue"><div class="sev ${i.severity}"></div><div class="grow"><div class="t">${esc(i.title)} ${i.planned ? '<span class="pill green">in plan</span>' : ''}</div><div class="small muted">${esc(i.detail)}</div></div>
+     <div class="row" style="gap:6px;flex-wrap:nowrap">${i.fix ? `<button class="btn sm" data-fix="${esc(i.id)}">${fixLabel(i.fix)}</button>` : ''}${(i.choices || []).map((c, n) => `<button class="btn sm" data-fix="${esc(i.id)}" data-choice="${n}">${esc(c.label)}</button>`).join('')}<button class="btn ghost sm" data-ignore="${esc(i.id)}" title="Mark as OK">Looks right</button></div></div>`;
+  const c = ui.conv;
+  const gp = c.name ? gramsPerUnit(S, c.name, c.unit) : null;
+  const grams = gp ? (num(c.amount) || 0) * gp.g : null;
+  const per = n => { const g = c.name ? gramsPerUnit(S, c.name, n) : null; return g ? grams / g.g : null; };
+  const used = coverage.filter(x => x.planned);
+  return `<div class="split">
+    <div>
+      <div class="card">
+        <div class="row" style="margin-bottom:6px"><h2 class="grow" style="font-size:20px">Conversion check</h2>${nIgnored ? `<button class="btn ghost sm" data-act="unignore">Show ${nIgnored} marked OK</button>` : ''}</div>
+        <p class="muted small" style="margin-top:0">Compares grams typed into recipes against the Gram Conversions table, checks the table against itself (cups vs tablespoons, duplicates), and checks bulk factors against weights.</p>
+        ${main.length ? main.map(issueHtml).join('') : '<div class="muted" style="padding:10px 0">✓ No conflicts found.</div>'}
+        ${low.length ? `<div style="margin-top:10px"><button class="btn ghost sm" data-act="toggleLow">${ui.showLow ? 'Hide' : 'Show'} ${low.length} gaps &amp; spelling notes</button></div>${ui.showLow ? low.map(issueHtml).join('') : ''}` : ''}
+      </div>
+      <div class="card">
+        <h2 style="font-size:18px;margin-bottom:8px">Quick converter</h2>
+        <div class="row">
+          <input type="number" step="any" id="cvAmt" value="${esc(c.amount)}" class="num">
+          <input list="dl-units" id="cvUnit" value="${esc(c.unit)}" class="w-s" style="width:120px">
+          <input list="dl-ings" id="cvName" value="${esc(c.name)}" placeholder="Ingredient…" class="grow">
+        </div>
+        ${c.name ? (gp ? `<table style="margin-top:10px"><tbody>
+          <tr><td>Grams</td><td class="n"><b>${fmt(grams)}</b> g</td><td class="small muted">${esc(gp.how)}</td></tr>
+          ${['Teaspoons', 'Tablespoons', 'Cups', 'Ounces', 'Pounds'].filter(u => key(u) !== key(c.unit)).map(u => { const v = per(u); return v != null ? `<tr><td>${u}</td><td class="n">${amt(v)}</td><td></td></tr>` : ''; }).join('')}
+          ${S.bulkConversions.filter(b => key(b.ingredient) === key(c.name) && key(b.unit) === key(c.unit)).map(b => `<tr><td>${esc(b.bulkUnit)} <span class="muted small">(bulk)</span></td><td class="n">${amt((num(c.amount) || 0) / num(b.perBulk))}</td><td class="small muted">${fmt(b.perBulk)} ${esc(b.unit)} each</td></tr>`).join('')}
+        </tbody></table>` : `<p class="warn" style="margin-top:10px">No gram conversion for ${esc(c.name)} in ${esc(c.unit)}. Add one below.</p>`) : ''}
+      </div>
+      <div class="card">
+        <h2 style="font-size:18px;margin-bottom:8px">Planned ingredients</h2>
+        <div class="tablewrap"><table><thead><tr><th>Ingredient</th><th>Unit</th><th class="n">g / unit</th><th>Bulk</th></tr></thead><tbody>
+        ${used.map(u => `<tr><td>${esc(u.name)}</td><td>${esc(u.unit)}</td><td class="n">${u.grams ? fmt(u.grams.g) + (u.grams.how !== 'table' ? ' <span class="muted small">*</span>' : '') : '<span class="pill gold">none</span>'}</td><td>${u.bulk ? esc(u.bulk.bulkUnit) + ` <span class="muted small">(${fmt(u.bulk.perBulk)})</span>` : '<span class="muted small">—</span>'}</td></tr>`).join('')}
+        </tbody></table></div><p class="muted small">* worked out from another unit or a weight unit.</p>
+      </div>
+    </div>
+    <div>
+      ${convTable('Gram conversions', 'gram', ['Ingredient', 'Base unit', 'Grams'], ['ingredient', 'unit', 'grams'])}
+      ${convTable('Bulk conversions', 'bulk', ['Ingredient', 'Recipe unit (A)', 'Bulk unit (B)', 'A per B'], ['ingredient', 'unit', 'bulkUnit', 'perBulk'])}
+    </div></div>`;
+}
+function fixLabel(f) {
+  if (f.kind === 'setGrams') return `Set to ${fmt(f.grams)} g`;
+  if (f.kind === 'setBulk') return `Use ${fmt(f.perBulk)}`;
+  if (f.kind === 'rename') return `Change to “${f.to}”`;
+  return 'Fix';
+}
+function convTable(title, kind, heads, fields) {
+  const arr = kind === 'gram' ? S.gramConversions : S.bulkConversions;
+  return `<div class="card"><div class="row" style="margin-bottom:8px"><h2 class="grow" style="font-size:18px">${title} <span class="muted small" style="font-family:Inter">${arr.length}</span></h2><button class="btn sm" data-act="addConv" data-k="${kind}">+ Add</button></div>
+    <div class="tablewrap" style="max-height:520px;overflow:auto"><table><thead><tr>${heads.map((h, n) => `<th class="${n === heads.length - 1 ? 'n' : ''}" style="top:0">${h}</th>`).join('')}<th style="top:0"></th></tr></thead><tbody>
+    ${arr.map((c, i) => `<tr>${fields.map((f, n) => `<td><input ${n === 0 ? 'list="dl-ings"' : n < fields.length - 1 ? 'list="dl-units"' : 'type="number" step="any" class="num" style="width:100%"'} data-conv="${kind}" data-i="${i}" data-f="${f}" ${n === fields.length - 1 ? 'data-num' : ''} value="${esc(c[f] ?? '')}"></td>`).join('')}<td><button class="btn ghost sm" data-delConv="${kind}" data-i="${i}">✕</button></td></tr>`).join('')}
+    </tbody></table></div></div>`;
+}
+function applyFix(f) {
+  if (f.kind === 'setGrams') {
+    const r = S.recipes.find(x => key(x.name) === key(f.recipe));
+    r?.ingredients.filter(i => key(i.name) === key(f.ingredient) && key(i.unit) === key(f.unit) && num(i.amount) === f.amount).forEach(i => i.grams = f.grams);
+  } else if (f.kind === 'setBulk') {
+    S.bulkConversions.filter(b => key(b.ingredient) === key(f.ingredient) && key(b.unit) === key(f.unit) && key(b.bulkUnit) === key(f.bulkUnit)).forEach(b => b.perBulk = f.perBulk);
+  } else if (f.kind === 'dropGram') {
+    const i = S.gramConversions.findIndex(c => key(c.ingredient) === key(f.ingredient) && key(c.unit) === key(f.unit) && num(c.grams) === f.grams);
+    if (i >= 0) S.gramConversions.splice(i, 1);
+  } else if (f.kind === 'rename') {
+    const from = new Set(f.from);
+    const field = f.field;
+    S.recipes.forEach(r => r.ingredients.forEach(i => { if (from.has(String(i[field] || '').trim())) i[field] = f.to; }));
+    const cf = field === 'name' ? 'ingredient' : 'unit';
+    [...S.gramConversions, ...S.bulkConversions].forEach(c => { if (from.has(String(c[cf] || '').trim())) c[cf] = f.to; });
+    if (field === 'name') S.plan.forEach(p => { if (from.has(p.recipe)) p.recipe = f.to; });
+  }
+  commit(); toast('Updated');
+}
+
+// ======================= DATA =======================
+function vData() {
+  return `<div class="split">
+    <div class="card">
+      <h2 style="font-size:20px;margin-bottom:6px">Import</h2>
+      <p class="muted small" style="margin-top:0">Add new recipes from a <b>CSV</b> (one row per ingredient) or <b>JSON</b> exported from this app. You can also restore a full backup.</p>
+      <div class="drop" id="drop">Drop a .csv or .json file here, or <label style="color:var(--red);cursor:pointer;text-decoration:underline">choose a file<input type="file" id="file" accept=".csv,.json,.txt,.tsv" hidden></label></div>
+      <p class="small muted" style="margin:12px 0 4px">…or paste CSV / JSON (copying cells straight from Google Sheets works too):</p>
+      <textarea id="paste" placeholder="Recipe,Ingredient,Amount,Unit,Grams,Phase&#10;Ginger Snaps,Flour,2.25,Cups,270,Dry Phase 1&#10;Ginger Snaps,Butter,12,Tablespoons,170,Wet Phase 1"></textarea>
+      <div class="row" style="margin-top:8px"><button class="btn primary" data-act="importPaste">Import pasted text</button><button class="btn sm" data-act="template">Download CSV template</button></div>
+      <details style="margin-top:12px"><summary class="small" style="cursor:pointer">CSV columns</summary>
+        <p class="small muted">Required: <b>Recipe</b>, <b>Ingredient</b>. Optional: Amount, Unit, Grams, Phase, Book, Book URL, Page, Cookies Per Batch, Refrigerate, Oven Temp, Bake Minutes Per Batch, Notes. The recipe details only need to be on the first row of each recipe. Rows with the same Recipe name become one recipe.</p></details>
+    </div>
+    <div>
+      <div class="card">
+        <h2 style="font-size:20px;margin-bottom:6px">Export</h2>
+        <div class="row"><button class="btn primary" data-act="exportAll">Full backup (.json)</button><button class="btn" data-act="exportRecipesCSV">All recipes (.csv)</button><button class="btn" data-act="exportRecipesJSON">All recipes (.json)</button><button class="btn" data-act="exportShop">Shopping list (.csv)</button></div>
+        <p class="muted small">A full backup includes recipes, the plan, recipients, both conversion tables and shopping checkmarks. Import it here to restore everything.</p>
+      </div>
+      <div class="card">
+        <h2 style="font-size:18px;margin-bottom:6px">Start over</h2>
+        <div class="row"><button class="btn" data-act="reloadSeed">Reload data from the original sheet</button><button class="btn ghost" data-act="newSeason">New season (clear plan &amp; checkmarks)</button></div>
+        <p class="muted small">Recipes and conversions are kept when you start a new season.</p>
+      </div>
+    </div></div>`;
+}
+function mountData() {
+  const d = $('#drop'), f = $('#file');
+  f.onchange = () => f.files[0] && readFile(f.files[0]);
+  d.ondragover = e => { e.preventDefault(); d.classList.add('over'); };
+  d.ondragleave = () => d.classList.remove('over');
+  d.ondrop = e => { e.preventDefault(); d.classList.remove('over'); e.dataTransfer.files[0] && readFile(e.dataTransfer.files[0]); };
+}
+function readFile(file) { const r = new FileReader(); r.onload = () => importText(String(r.result), file.name); r.readAsText(file); }
+function importText(text, name = '') {
+  text = text.trim();
+  if (!text) return toast('Nothing to import');
+  try {
+    if (text[0] === '{' || text[0] === '[') {
+      const data = JSON.parse(text);
+      if (!Array.isArray(data) && Array.isArray(data.recipes) && (data.plan || data.gramConversions)) {
+        const st = normalizeState(data);
+        return modal(`<h3>Import full backup?</h3><p>${st.recipes.length} recipes, ${st.plan.length} planned, ${st.people.length} recipients, ${st.gramConversions.length + st.bulkConversions.length} conversions.</p>
+          <div class="row" style="justify-content:flex-end;margin-top:16px"><button class="btn" data-x>Cancel</button><button class="btn" data-m>Only add its recipes</button><button class="btn primary" data-r>Replace everything</button></div>`, (m, close) => {
+            m.querySelector('[data-x]').onclick = close;
+            m.querySelector('[data-m]').onclick = () => { close(); mergeRecipes(st.recipes, st); };
+            m.querySelector('[data-r]').onclick = () => { close(); S = st; commit(); toast('Backup restored'); };
+          });
+      }
+      const recs = (Array.isArray(data) ? data : data.recipes ? data.recipes : [data]).map(normalizeRecipe);
+      return mergeRecipes(recs);
+    }
+    return mergeRecipes(recipesFromCSV(text));
+  } catch (e) { modal(`<h3>Couldn’t import${name ? ' ' + esc(name) : ''}</h3><p>${esc(e.message || e)}</p><div class="row" style="justify-content:flex-end"><button class="btn" data-x>OK</button></div>`, (m, c) => m.querySelector('[data-x]').onclick = c); }
+}
+function mergeRecipes(recs, from) {
+  if (!recs.length) return toast('No recipes found');
+  const dup = recs.filter(r => S.recipes.some(x => key(x.name) === key(r.name)));
+  const go = mode => {
+    let added = 0, replaced = 0;
+    for (const r of recs) {
+      const i = S.recipes.findIndex(x => key(x.name) === key(r.name));
+      if (i < 0) { S.recipes.push(r); added++; }
+      else if (mode === 'replace') { S.recipes[i] = r; replaced++; }
+      else if (mode === 'copy') { let n = 2; while (S.recipes.some(x => key(x.name) === key(r.name + ' (' + n + ')'))) n++; S.recipes.push({ ...r, name: r.name + ' (' + n + ')' }); added++; }
+    }
+    // bring along missing conversions from a backup
+    if (from) {
+      for (const c of from.gramConversions) if (!S.gramConversions.some(x => key(x.ingredient) === key(c.ingredient) && key(x.unit) === key(c.unit))) S.gramConversions.push(c);
+      for (const c of from.bulkConversions) if (!S.bulkConversions.some(x => key(x.ingredient) === key(c.ingredient) && key(x.unit) === key(c.unit))) S.bulkConversions.push(c);
+    }
+    commit(); toast(`${added} added${replaced ? ', ' + replaced + ' replaced' : ''}`);
+    if (recs.length === 1) { ui.recipe = (S.recipes.find(x => key(x.name) === key(recs[0].name)) || recs[0]).name; location.hash = 'recipes'; render(); }
+  };
+  if (!dup.length) return go('skip');
+  modal(`<h3>${dup.length} recipe${dup.length > 1 ? 's' : ''} already exist${dup.length > 1 ? '' : 's'}</h3><p class="small">${dup.map(d => esc(d.name)).join(', ')}</p><p>${recs.length - dup.length} new recipe(s) will be added either way.</p>
+    <div class="row" style="justify-content:flex-end;margin-top:16px"><button class="btn" data-a="skip">Keep mine</button><button class="btn" data-a="copy">Add as copies</button><button class="btn primary" data-a="replace">Replace mine</button></div>`,
+    (m, close) => m.querySelectorAll('[data-a]').forEach(b => b.onclick = () => { close(); go(b.dataset.a); }));
+}
+
+// ======================= events =======================
+document.addEventListener('click', e => {
+  const t = e.target.closest('[data-act],[data-open],[data-unplan],[data-delIng],[data-delP],[data-delConv],[data-mv],[data-fix],[data-ignore],[data-cheat]');
+  if (!t) return;
+  const d = t.dataset;
+  if (d.open != null) { e.preventDefault(); ui.recipe = d.open; if (route() !== 'recipes') location.hash = 'recipes'; render(); window.scrollTo(0, 0); return; }
+  if (d.unplan != null) { S.plan.splice(+d.unplan, 1); return commit(); }
+  if (d.cheat) { ui.cheat = d.cheat; return render(); }
+  const rec = () => S.recipes.find(x => key(x.name) === key(ui.recipe));
+  if (d.delIng != null) { rec().ingredients.splice(+d.delIng, 1); return commit(); }
+  if (d.mv != null) { const r = rec(), i = +d.mv, j = i + +d.d; if (j < 0 || j >= r.ingredients.length) return; [r.ingredients[i], r.ingredients[j]] = [r.ingredients[j], r.ingredients[i]]; return commit(); }
+  if (d.delP != null) { S.people.splice(+d.delP, 1); return commit(); }
+  if (d.delConv != null) { (d.delConv === 'gram' ? S.gramConversions : S.bulkConversions).splice(+d.i, 1); return commit(); }
+  if (d.ignore) { S.ignoredChecks[d.ignore] = true; return commit(); }
+  if (d.fix) { const is = conversionChecks(S).issues.find(i => i.id === d.fix); if (!is) return; return applyFix(d.choice != null ? is.choices[+d.choice].fix : is.fix); }
+  const a = d.act;
+  if (a === 'newRecipe') {
+    let n = 'New recipe', k = 2; while (S.recipes.some(r => key(r.name) === key(n))) n = 'New recipe ' + k++;
+    S.recipes.push(normalizeRecipe({ name: n, ingredients: [] })); S.recipes[S.recipes.length - 1].ingredients.push({ name: '', amount: 0, unit: '' });
+    ui.recipe = n; commit(); setTimeout(() => $('[data-f=name]')?.select(), 30);
+  }
+  if (a === 'backRecipes') { ui.recipe = null; render(); }
+  if (a === 'addIng') { rec().ingredients.push({ name: '', amount: 0, unit: '' }); commit(); setTimeout(() => { const all = document.querySelectorAll('[data-ing][data-f=name]'); all[all.length - 1]?.focus(); }, 30); }
+  if (a === 'pasteIngs') pasteIngredients();
+  if (a === 'fillGrams') { let n = 0; rec().ingredients.forEach(i => { if (num(i.grams) == null) { const g = gramFor(S, i); if (g.grams != null) { i.grams = Math.round(g.grams * 10) / 10; n++; } } }); commit(); toast(n ? `Filled ${n} gram value${n > 1 ? 's' : ''}` : 'No matching conversions for the blanks'); }
+  if (a === 'planAdd') { if (!S.plan.some(p => key(p.recipe) === key(d.name))) S.plan.push({ recipe: d.name, cookiesPerUnit: 6, bakeDay: '' }); commit(); toast('Added to plan with 6 cookies per unit'); }
+  if (a === 'dupRecipe') { const r = rec(); let n = r.name + ' (copy)'; let k = 2; while (S.recipes.some(x => key(x.name) === key(n))) n = r.name + ' (copy ' + k++ + ')'; S.recipes.push(JSON.parse(JSON.stringify({ ...r, name: n }))); ui.recipe = n; commit(); }
+  if (a === 'delRecipe') { const r = rec(); confirmBox('Delete recipe?', `“${esc(r.name)}” will be removed${S.plan.some(p => key(p.recipe) === key(r.name)) ? ' and taken out of the plan' : ''}. Export it first if you might want it back.`, 'Delete', () => { S.recipes.splice(S.recipes.indexOf(r), 1); S.plan = S.plan.filter(p => key(p.recipe) !== key(r.name)); ui.recipe = null; commit(); }); }
+  if (a === 'exportOne') { const r = rec(); d.fmt === 'csv' ? offerDownload(slug(r.name) + '.csv', recipesToCSV([r])) : offerDownload(slug(r.name) + '.json', JSON.stringify(r, null, 2)); }
+  if (a === 'exportAll') offerDownload(`cookiepocalypse-backup-${today()}.json`, JSON.stringify(S, null, 1));
+  if (a === 'exportRecipesCSV') offerDownload(`recipes-${today()}.csv`, recipesToCSV(S.recipes));
+  if (a === 'exportRecipesJSON') offerDownload(`recipes-${today()}.json`, JSON.stringify({ recipes: S.recipes }, null, 1));
+  if (a === 'exportShop') offerDownload(`shopping-list-${today()}.csv`, shopCSV());
+  if (a === 'copyShop') copyText(shoppingList(S).filter(e => !e.purchased).map(e => `☐ ${e.name}: ${e.bulkAmount != null ? amt(e.bulkAmount) + ' ' + e.bulkUnit + ' (' + amt(e.amount) + ' ' + e.unit + ')' : amt(e.amount) + ' ' + e.unit}`).join('\n'));
+  if (a === 'clearPurch') { S.purchased = {}; commit(); }
+  if (a === 'exportCheat') {
+    const rows = ['Recipe,Phase,Ingredient,Per Batch,Unit,Grams Per Batch,Batches,Total,Total Grams'];
+    planRows(S).filter(r => r.recipe).forEach(r => r.recipe.ingredients.forEach(i => { const g = gramFor(S, i).grams; rows.push([r.recipe.name, i.phase || '', i.name, i.amount, i.unit, g != null ? +g.toFixed(1) : '', r.batches ?? '', r.batches != null ? +((i.amount || 0) * r.batches).toFixed(3) : '', g != null && r.batches != null ? +(g * r.batches).toFixed(1) : ''].map(csvEsc).join(',')); }));
+    offerDownload(`baking-cheat-sheet-${today()}.csv`, rows.join('\n'));
+  }
+  if (a === 'addP') { S.people.push({ name: '', boxSize: '', units: 1 }); commit(); }
+  if (a === 'addConv') { if (d.k === 'gram') S.gramConversions.unshift({ ingredient: '', unit: 'Cups', grams: null }); else S.bulkConversions.unshift({ ingredient: '', unit: 'Cups', bulkUnit: '', perBulk: null }); commit(); }
+  if (a === 'unignore') { S.ignoredChecks = {}; commit(); }
+  if (a === 'toggleLow') { ui.showLow = !ui.showLow; render(); }
+  if (a === 'importPaste') importText($('#paste').value);
+  if (a === 'template') offerDownload('recipe-template.csv', CSV_COLS.join(',') + '\nGinger Snaps,Flour,2.25,Cups,270,Dry Phase 1,Cookies,,123,36,30 minutes,350,12,\nGinger Snaps,Butter,12,Tablespoons,170.2,Wet Phase 1,,,,,,,,\n');
+  if (a === 'reloadSeed') confirmBox('Reload from the original sheet?', 'This replaces everything here with the data imported from your Cookiepocalypse 2024 sheet. Export a backup first if you’ve made changes.', 'Reload', async () => {
+    const seed = await fetchSeed(); if (seed) { S = seed; commit(); toast('Reloaded'); } else toast('Couldn’t reach the starter data');
+  });
+  if (a === 'newSeason') confirmBox('Start a new season?', 'Clears the recipe plan and shopping checkmarks. Recipes, recipients and conversions stay.', 'Clear plan', () => { S.plan = []; S.purchased = {}; commit(); });
+});
+document.addEventListener('change', e => {
+  const t = e.target, d = t.dataset;
+  const val = d.num != null ? num(t.value === '' ? null : +t.value) : t.value;
+  if (t.id === 'addPlan' && t.value) { S.plan.push({ recipe: t.value, cookiesPerUnit: 6, bakeDay: '' }); return commit(); }
+  if (d.plan != null) { const f = d.f; S.plan[+d.plan][f] = f === 'cookiesPerUnit' ? num(t.value === '' ? null : +t.value) : (t.value !== '' && isFinite(+t.value) ? +t.value : t.value); return commit(); }
+  if (d.r != null) {
+    const r = S.recipes[+d.r];
+    if (d.f === 'name') {
+      const nv = t.value.trim();
+      if (!nv) { t.value = r.name; return toast('A recipe needs a name'); }
+      if (S.recipes.some(x => x !== r && key(x.name) === key(nv))) { t.value = r.name; return toast('Another recipe already has that name'); }
+      S.plan.forEach(p => { if (key(p.recipe) === key(r.name)) p.recipe = nv; });
+      r.name = nv; ui.recipe = nv;
+    } else r[d.f] = d.num != null ? val : t.value;
+    return commit();
+  }
+  if (d.ing != null) { const r = S.recipes.find(x => key(x.name) === key(ui.recipe)); const i = r.ingredients[+d.ing]; if (d.f === 'grams' && val == null) delete i.grams; else if (d.f === 'phase' && !t.value) delete i.phase; else i[d.f] = d.num != null ? (val ?? 0) : t.value.trim(); return commit(); }
+  if (d.p != null) { S.people[+d.p][d.f] = d.num != null ? (val ?? 0) : t.value; return commit(); }
+  if (d.conv) { (d.conv === 'gram' ? S.gramConversions : S.bulkConversions)[+d.i][d.f] = d.num != null ? val : t.value.trim(); return commit(); }
+  if (d.purch) { if (t.checked) S.purchased[d.purch] = true; else delete S.purchased[d.purch]; return commit(); }
+  if (t.id === 'planOnly') { ui.planOnly = t.checked; return render(); }
+  if (t.id === 'hidePurch') { ui.hidePurchased = t.checked; return render(); }
+  if (['cvAmt', 'cvUnit', 'cvName'].includes(t.id)) { ui.conv = { amount: $('#cvAmt').value, unit: $('#cvUnit').value, name: $('#cvName').value }; return render(); }
+});
+document.addEventListener('input', e => {
+  if (e.target.id === 'rsearch') { ui.recipeSearch = e.target.value; const pos = e.target.selectionStart; render(); const el = $('#rsearch'); el.focus(); el.setSelectionRange(pos, pos); }
+});
+function pasteIngredients() {
+  modal(`<h3>Paste ingredients</h3><p class="muted small">One per line: <code>amount unit ingredient</code> (e.g. <code>2.25 Cups Flour</code>), or tab/comma-separated <code>Ingredient, Amount, Unit, Grams, Phase</code> copied from a sheet.</p><textarea id="pi" style="min-height:180px"></textarea><div class="row" style="justify-content:flex-end;margin-top:12px"><button class="btn" data-x>Cancel</button><button class="btn primary" data-ok>Add</button></div>`, (m, close) => {
+    m.querySelector('[data-x]').onclick = close;
+    m.querySelector('[data-ok]').onclick = () => {
+      const r = S.recipes.find(x => key(x.name) === key(ui.recipe));
+      const units = allUnits().map(key);
+      let n = 0;
+      for (const line of m.querySelector('#pi').value.split(/\r?\n/)) {
+        if (!line.trim()) continue;
+        let ing;
+        if (/[\t,]/.test(line)) {
+          const c = parseCSV(line)[0].map(x => x.trim());
+          if (key(c[0]) === 'name' || key(c[0]) === 'ingredient') continue;
+          ing = { name: c[0], amount: num(+c[1]) ?? 0, unit: c[2] || '' };
+          if (c[3] && isFinite(+c[3])) ing.grams = +c[3];
+          if (c[4]) ing.phase = c[4];
+        } else {
+          const mm = line.trim().match(/^([\d.\/\s]+)\s+(\S+)\s+(.+)$/);
+          if (mm) {
+            const q = mm[1].trim().split(/\s+/).reduce((a, p) => a + (p.includes('/') ? (+p.split('/')[0] / +p.split('/')[1]) : +p), 0);
+            ing = units.includes(key(mm[2])) ? { name: mm[3].trim(), amount: q, unit: mm[2] } : { name: (mm[2] + ' ' + mm[3]).trim(), amount: q, unit: 'Whole' };
+          } else ing = { name: line.trim(), amount: 0, unit: '' };
+        }
+        r.ingredients = r.ingredients.filter(i => i.name);
+        r.ingredients.push(ing); n++;
+      }
+      close(); commit(); toast(`Added ${n} ingredient${n === 1 ? '' : 's'}`);
+    };
+  });
+}
+boot();
+</script>
+</body>
+</html>
