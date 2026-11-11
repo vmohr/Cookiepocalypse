@@ -21,7 +21,7 @@ function batchesFor(state, item, units) {
 function gramFor(state, ing) {
   // Recipe grams column: entered value; if blank, fall back to Gram Conversions (amount × grams per unit)
   const g = num(ing.grams);
-  if (g != null) return { grams: g, derived: false };
+  if (g != null && (g > 0 || !num(ing.amount))) return { grams: g, derived: false };
   const c = state.gramConversions.find(c => key(c.ingredient) === key(ing.name) && key(c.unit) === key(ing.unit));
   if (c && num(c.grams) != null && num(ing.amount) != null) return { grams: num(ing.amount) * num(c.grams), derived: true };
   return { grams: null, derived: false };
@@ -65,13 +65,18 @@ function shoppingList(state, opts = {}) {
         for (const x of subs) { const sg = g.grams * row.batches * num(x.share); add(x.buyAs, 'Grams', sg, sg, row.recipe.name + ' (as ' + ing.name.trim() + ')'); }
         continue;
       }
-      add(ing.name, ing.unit, amount, g.grams == null ? null : g.grams * row.batches, row.recipe.name);
+      const ui = unitInfo(ing.unit);
+      if (opts.byWeight !== false && g.grams != null && ui && ui.kind !== 'butterstick' && !(ui.kind === 'vol' && key(ing.unit).startsWith('m'))) {
+        add(ing.name, 'Grams', g.grams * row.batches, g.grams * row.batches, row.recipe.name);   // weights are the source of truth
+      } else add(ing.name, ing.unit, amount, g.grams == null ? null : g.grams * row.batches, row.recipe.name);
     }
   }
   let out = [...map.values()].filter(e => e.amount > 0);
   for (const e of out) {
     const b = state.bulkConversions.find(b => key(b.ingredient) === key(e.name) && key(b.unit) === key(e.unit));
     if (b && num(b.perBulk)) { e.bulkUnit = b.bulkUnit; e.bulkAmount = e.amount / num(b.perBulk); }
+    else if (opts.defaultBulk !== false && key(e.unit) === 'grams') { const lb = e.amount >= 453.592; e.bulkUnit = lb ? 'Pounds' : 'Ounces'; e.bulkAmount = e.amount / (lb ? 453.592 : 28.3495); }
+    else if (opts.defaultBulk !== false && key(e.unit) === 'milliliters') { e.bulkUnit = 'Fluid Ounces'; e.bulkAmount = e.amount / 29.5735; }
     e.parts = [{ amount: e.amount, unit: e.unit }];
   }
   if (mergeOn) {
@@ -92,6 +97,26 @@ function shoppingList(state, opts = {}) {
   for (const e of out) e.purchased = !!(state.purchased || {})[e.key];
   out.sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }) || String(a.unit).localeCompare(String(b.unit)));
   return out;
+}
+
+// Weights are the source of truth; the volume/count measure is derived from grams where a conversion exists.
+function measureFor(state, ing, mult = 1) {
+  const g = gramFor(state, ing).grams;
+  const ui = unitInfo(ing.unit);
+  if (g != null && ui && ui.kind !== 'butterstick') {
+    const gp = gramsPerUnit(state, ing.name, ing.unit);
+    if (gp && gp.g) return { amount: g * mult / gp.g, unit: ing.unit };
+  }
+  return { amount: (num(ing.amount) || 0) * mult, unit: ing.unit };
+}
+// Keep amount and grams in step after an edit. which = 'grams' (weight edited) or 'measure' (amount/unit edited).
+function syncIngredient(state, ing, which) {
+  const ui = unitInfo(ing.unit);
+  if (ui && ui.kind === 'wt') { if (which === 'grams' && num(ing.grams) != null) ing.amount = ing.grams / ui.f; else ing.grams = (num(ing.amount) || 0) * ui.f; return; }
+  const gp = gramsPerUnit(state, ing.name, ing.unit);
+  if (!gp || !gp.g) return;
+  if (which === 'grams' && num(ing.grams) != null) { if (!ui || ui.kind === 'vol') ing.amount = ing.grams / gp.g; }
+  else ing.grams = Math.round((num(ing.amount) || 0) * gp.g * 100) / 100;
 }
 
 // Salt: recipes assume table salt by volume; show the kosher-salt equivalent for the baker's salt.
@@ -132,6 +157,51 @@ function applyPatch(state, p) {
   };
   for (const g of p.gram || []) upsert(state.gramConversions, g);
   for (const b of p.bulk || []) upsert(state.bulkConversions, b);
+  if (p.recalcBulk) {
+    for (const b of state.bulkConversions) {
+      const ua = unitInfo(b.unit), ub = unitInfo(b.bulkUnit);
+      if (!ua || !ub || ub.kind !== 'wt') continue;
+      if (ua.kind === 'wt') b.perBulk = Math.round(ub.f / ua.f * 10000) / 10000;
+      else if (ua.kind === 'vol') { const gp = gramsPerUnit(state, b.ingredient, b.unit); if (gp && gp.g) b.perBulk = Math.round(ub.f / gp.g * 10000) / 10000; }
+    }
+  }
+  if (p.syncWeights) {
+    for (const r of state.recipes) for (const i of r.ingredients) {
+      const ui = unitInfo(i.unit);
+      const typed = num(i.grams) != null && (num(i.grams) > 0 || !num(i.amount));
+      if (ui && ui.kind === 'wt') { if (typed) i.amount = i.grams / ui.f; else i.grams = (num(i.amount) || 0) * ui.f; continue; }
+      const gp = gramsPerUnit(state, i.name, i.unit);
+      if (!gp || !gp.g) { if (!typed) delete i.grams; continue; }
+      if (typed) { if (ui && ui.kind === 'vol') i.amount = Math.round(i.grams / gp.g * 10000) / 10000; }
+      else i.grams = Math.round((num(i.amount) || 0) * gp.g * 100) / 100;
+    }
+  }
+  for (const sp of p.splits || []) {
+    for (const r of state.recipes) {
+      const out = [];
+      for (const i of r.ingredients) {
+        if (key(i.name) !== key(sp.name) || num(i.grams) == null) { out.push(i); continue; }
+        for (const part of sp.into) {
+          const g = Math.round(i.grams * part.share * 100) / 100;
+          const ex = out.find(o => key(o.name) === key(part.name) && key(o.unit) === key(i.unit) && (o.phase || '') === (i.phase || ''));
+          const gp = gramsPerUnit(state, part.name, i.unit), ui = unitInfo(i.unit);
+          const toAmt = grams => ui && ui.kind === 'wt' ? grams / ui.f : gp ? Math.round(grams / gp.g * 10000) / 10000 : grams;
+          if (ex && num(ex.grams) != null) { ex.grams = Math.round((ex.grams + g) * 100) / 100; ex.amount = toAmt(ex.grams); }
+          else { const n = { name: part.name, amount: toAmt(g), unit: i.unit, grams: g }; if (i.phase) n.phase = i.phase; out.push(n); }
+        }
+      }
+      // merge same ingredient + unit + phase rows created by the split
+      const merged = [];
+      for (const i of out) {
+        const ex = merged.find(o => key(o.name) === key(i.name) && key(o.unit) === key(i.unit) && (o.phase || '') === (i.phase || '') && num(o.grams) != null && num(i.grams) != null);
+        if (ex && sp.into.some(x => key(x.name) === key(i.name))) { ex.grams = Math.round((ex.grams + i.grams) * 100) / 100; ex.amount = (num(ex.amount) || 0) + (num(i.amount) || 0); }
+        else merged.push(i);
+      }
+      r.ingredients = merged;
+    }
+  }
+  for (const rs of p.removeSubstitutions || []) state.substitutions = (state.substitutions || []).filter(x => key(x.ingredient) !== key(rs));
+  for (const nt of p.notes || []) { const r = state.recipes.find(x => key(x.name) === key(nt.recipe)); if (r) r.notes = nt.notes; }
   for (const x of p.substitutions || []) {
     state.substitutions = state.substitutions || [];
     if (!state.substitutions.some(y => key(y.ingredient) === key(x.ingredient) && key(y.buyAs) === key(x.buyAs))) state.substitutions.push({ ...x });
@@ -224,7 +294,7 @@ function normalizeState(s) {
     purchased: (s.purchased && typeof s.purchased === 'object') ? Object.fromEntries(Object.entries(s.purchased).map(([k, v]) => [key(k.split('|')[0]) + '|' + key(k.split('|')[1]), !!v])) : {},
   };
 }
-if (typeof module !== 'undefined') module.exports = { totalUnits, planRows, shoppingList, kosherTsp, applyPatch, gramFor, recipesToCSV, recipesFromCSV, normalizeState, normalizeRecipe, key };
+if (typeof module !== 'undefined') module.exports = { totalUnits, planRows, shoppingList, kosherTsp, applyPatch, measureFor, syncIngredient, gramFor, recipesToCSV, recipesFromCSV, normalizeState, normalizeRecipe, key };
 
 // ---- Conversion checks ----
 const UNIT = (() => {
@@ -278,17 +348,7 @@ function conversionChecks(state, tol = 0.05) {
     return { ...e, recipes: [...e.recipes], grams: gp, bulk: bulk || null };
   }).sort((a, b) => (b.planned - a.planned) || a.name.localeCompare(b.name));
 
-  // 2. Grams typed into a recipe vs. what the conversion table says
-  for (const r of state.recipes) for (const i of r.ingredients) {
-    const g = num(i.grams), a = num(i.amount);
-    if (g == null || !a) continue;
-    const gp = gramsPerUnit(state, i.name, i.unit);
-    if (!gp) continue;
-    const expect = a * gp.g;
-    if (!near(g, expect, tol)) issues.push({ type: 'recipe-grams', severity: Math.abs(g - expect) / Math.max(g, expect) > 0.25 ? 'high' : 'med', planned: planned.has(key(r.name)),
-      title: `${i.name} in “${r.name}”`, detail: `${fmt(a)} ${i.unit} is entered as ${fmt(g)} g, but the conversion (${gp.how}) gives ${fmt(expect)} g.`,
-      fix: { kind: 'setGrams', recipe: r.name, ingredient: i.name, unit: i.unit, amount: a, grams: Math.round(expect * 10) / 10 } });
-  }
+  // 2. (Weights typed into recipes are the source of truth, so they are not compared against the table.)
 
   // 3. Gram Conversions table: duplicates & inconsistent units for one ingredient
   const byIng = new Map();
@@ -304,7 +364,8 @@ function conversionChecks(state, tol = 0.05) {
         continue;
       }
       const ua = unitInfo(A.unit), ub = unitInfo(B.unit);
-      if (ua && ub && ua.kind === 'vol' && ub.kind === 'vol') {
+      const metric = u => key(u).startsWith('m');   // metric ml use true density; cup weights follow King Arthur's convention
+      if (ua && ub && ua.kind === 'vol' && ub.kind === 'vol' && metric(A.unit) === metric(B.unit)) {
         const ga = num(A.grams) / ua.f, gb = num(B.grams) / ub.f;
         if (!near(ga, gb, tol)) issues.push({ type: 'gram-units', severity: 'med', title: `${A.ingredient}: ${A.unit} and ${B.unit} disagree`,
           detail: `${fmt(A.grams)} g per ${A.unit} implies ${fmt(ga * ub.f)} g per ${B.unit}, but the table says ${fmt(B.grams)} g.` });
@@ -350,10 +411,12 @@ function conversionChecks(state, tol = 0.05) {
   variant('unit'); variant('name');
 
   // 6. Coverage gaps for planned recipes
+  const typedAll = (c) => state.recipes.filter(r => planned.has(key(r.name))).every(r => r.ingredients.filter(i => key(i.name) === key(c.name) && key(i.unit) === key(c.unit)).every(i => num(i.grams) != null));
   for (const c of coverage) if (c.planned) {
-    if (!c.grams && !unitInfo(c.unit)) issues.push({ type: 'missing', severity: 'low', title: `${c.name} (${c.unit || 'no unit'}): no gram conversion`, detail: `Used in ${c.recipes.join(', ')}. Grams won't total on the shopping list.` });
+    if (!c.grams && typedAll(c)) { /* every planned use already has a typed weight */ }
+    else if (!c.grams && !unitInfo(c.unit)) issues.push({ type: 'missing', severity: 'low', title: `${c.name} (${c.unit || 'no unit'}): no gram conversion`, detail: `Used in ${c.recipes.join(', ')}. Grams won't total on the shopping list.` });
     else if (!c.grams) issues.push({ type: 'missing', severity: 'low', title: `${c.name} (${c.unit}): no gram conversion`, detail: `Used in ${c.recipes.join(', ')}.` });
-    if (!c.bulk) issues.push({ type: 'missing-bulk', severity: 'low', title: `${c.name} (${c.unit || 'no unit'}): no bulk conversion`, detail: `Shopping list will show the recipe unit only.` });
+    if (!c.bulk && !(unitInfo(c.unit) && unitInfo(c.unit).kind !== 'butterstick')) issues.push({ type: 'missing-bulk', severity: 'low', title: `${c.name} (${c.unit || 'no unit'}): no bulk conversion`, detail: `Shopping list will show the recipe unit only.` });
   }
   issues.forEach(i => i.id = i.type + ':' + i.title);
   const order = { high: 0, med: 1, low: 2 };

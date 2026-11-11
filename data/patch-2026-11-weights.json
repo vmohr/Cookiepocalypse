@@ -1,0 +1,626 @@
+{
+ "id": "2026-11-weights",
+ "ingredientEdits": [
+  {
+   "recipe": "Cherry Phosphate Shortbread Thumbprints",
+   "find": {
+    "name": "Wild Cherry Bark Maceration"
+   },
+   "replaceWith": [
+    {
+     "name": "Wild Cherry Bark",
+     "amount": 2.36,
+     "unit": "Grams",
+     "grams": 2.36,
+     "phase": "Wild Cherry Syrup (make all at once)"
+    },
+    {
+     "name": "Vegetable Glycerin",
+     "amount": 0.5,
+     "unit": "Teaspoons",
+     "grams": 3.15,
+     "phase": "Wild Cherry Syrup (make all at once)"
+    },
+    {
+     "name": "Water",
+     "amount": 20,
+     "unit": "Grams",
+     "grams": 20,
+     "phase": "Wild Cherry Syrup (make all at once)"
+    },
+    {
+     "name": "Tart Cherry Juice",
+     "amount": 2,
+     "unit": "Teaspoons",
+     "grams": 10.4,
+     "phase": "Wild Cherry Syrup (make all at once)"
+    },
+    {
+     "name": "Granulated Sugar",
+     "amount": 23.6,
+     "unit": "Grams",
+     "grams": 23.6,
+     "phase": "Wild Cherry Syrup (make all at once)"
+    }
+   ]
+  },
+  {
+   "recipe": "Cherry Phosphate Shortbread Thumbprints",
+   "find": {
+    "name": "Acid Phosphate Solution"
+   },
+   "replaceWith": [
+    {
+     "name": "Acid Phosphate Solution",
+     "amount": 0.67,
+     "unit": "Teaspoons",
+     "grams": 3.6,
+     "phase": "Cherry Phosphate Filling"
+    }
+   ]
+  },
+  {
+   "recipe": "Cherry Phosphate Shortbread Thumbprints",
+   "find": {
+    "name": "Egg Yolks"
+   },
+   "replaceWith": [
+    {
+     "name": "Egg Yolks",
+     "amount": 1,
+     "unit": "Whole",
+     "grams": 14,
+     "phase": "Dough"
+    }
+   ]
+  },
+  {
+   "recipe": "Coca-Cola Molasses Crinkle Cookies",
+   "find": {
+    "name": "Reduced Coca-Cola Syrup"
+   },
+   "replaceWith": [
+    {
+     "name": "Reduced Coca-Cola Syrup",
+     "amount": 0.25,
+     "unit": "Cups",
+     "grams": 85,
+     "phase": "Cola Reduction"
+    }
+   ]
+  }
+ ],
+ "gram": [
+  {
+   "ingredient": "Flour",
+   "unit": "Cups",
+   "grams": 120
+  },
+  {
+   "ingredient": "Flour",
+   "unit": "Tablespoons",
+   "grams": 7.5
+  },
+  {
+   "ingredient": "Granulated Sugar",
+   "unit": "Cups",
+   "grams": 198
+  },
+  {
+   "ingredient": "Granulated Sugar",
+   "unit": "Tablespoons",
+   "grams": 12.375
+  },
+  {
+   "ingredient": "Light Brown Sugar",
+   "unit": "Cups",
+   "grams": 213
+  },
+  {
+   "ingredient": "Dark Brown Sugar",
+   "unit": "Cups",
+   "grams": 213
+  },
+  {
+   "ingredient": "Brown Sugar",
+   "unit": "Cups",
+   "grams": 213
+  },
+  {
+   "ingredient": "Powdered Sugar",
+   "unit": "Cups",
+   "grams": 113
+  },
+  {
+   "ingredient": "Turbinado Sugar",
+   "unit": "Cups",
+   "grams": 180
+  },
+  {
+   "ingredient": "Demerara Sugar",
+   "unit": "Cups",
+   "grams": 220
+  },
+  {
+   "ingredient": "Coconut Palm Sugar",
+   "unit": "Cups",
+   "grams": 198
+  },
+  {
+   "ingredient": "Maple Sugar",
+   "unit": "Cups",
+   "grams": 198
+  },
+  {
+   "ingredient": "Butter",
+   "unit": "Tablespoons",
+   "grams": 14.125
+  },
+  {
+   "ingredient": "Vegetable Shortening",
+   "unit": "Cups",
+   "grams": 184
+  },
+  {
+   "ingredient": "Vegetable Oil",
+   "unit": "Cups",
+   "grams": 198
+  },
+  {
+   "ingredient": "Baking Powder",
+   "unit": "Teaspoons",
+   "grams": 4
+  },
+  {
+   "ingredient": "Baking Soda",
+   "unit": "Teaspoons",
+   "grams": 6
+  },
+  {
+   "ingredient": "Salt",
+   "unit": "Teaspoons",
+   "grams": 6
+  },
+  {
+   "ingredient": "Salt",
+   "unit": "Tablespoons",
+   "grams": 18
+  },
+  {
+   "ingredient": "Cocoa Powder",
+   "unit": "Cups",
+   "grams": 84
+  },
+  {
+   "ingredient": "Dutch-Process Cocoa Powder",
+   "unit": "Cups",
+   "grams": 84
+  },
+  {
+   "ingredient": "Cornstarch",
+   "unit": "Cups",
+   "grams": 112
+  },
+  {
+   "ingredient": "Cornstarch",
+   "unit": "Teaspoons",
+   "grams": 2.3333
+  },
+  {
+   "ingredient": "Milk Powder",
+   "unit": "Cups",
+   "grams": 112
+  },
+  {
+   "ingredient": "Nonfat Milk Powder",
+   "unit": "Cups",
+   "grams": 112
+  },
+  {
+   "ingredient": "Malted Milk Powder",
+   "unit": "Cups",
+   "grams": 140
+  },
+  {
+   "ingredient": "Molasses",
+   "unit": "Cups",
+   "grams": 340
+  },
+  {
+   "ingredient": "Molasses",
+   "unit": "Tablespoons",
+   "grams": 21.25
+  },
+  {
+   "ingredient": "Honey",
+   "unit": "Tablespoons",
+   "grams": 21
+  },
+  {
+   "ingredient": "Corn Syrup",
+   "unit": "Cups",
+   "grams": 312
+  },
+  {
+   "ingredient": "Maple Syrup",
+   "unit": "Cups",
+   "grams": 312
+  },
+  {
+   "ingredient": "Heavy Cream",
+   "unit": "Cups",
+   "grams": 227
+  },
+  {
+   "ingredient": "Milk",
+   "unit": "Cups",
+   "grams": 227
+  },
+  {
+   "ingredient": "Milk",
+   "unit": "Tablespoons",
+   "grams": 14.1875
+  },
+  {
+   "ingredient": "Whole Milk",
+   "unit": "Cups",
+   "grams": 227
+  },
+  {
+   "ingredient": "Sour Cream",
+   "unit": "Cups",
+   "grams": 227
+  },
+  {
+   "ingredient": "Sweetened Condensed Milk",
+   "unit": "Cups",
+   "grams": 312
+  },
+  {
+   "ingredient": "Eggs",
+   "unit": "Whole",
+   "grams": 50
+  },
+  {
+   "ingredient": "Egg Whites",
+   "unit": "Whole",
+   "grams": 35
+  },
+  {
+   "ingredient": "Egg Yolks",
+   "unit": "Whole",
+   "grams": 14
+  },
+  {
+   "ingredient": "Vanilla Extract",
+   "unit": "Tablespoons",
+   "grams": 14
+  },
+  {
+   "ingredient": "Vanilla Extract",
+   "unit": "Teaspoons",
+   "grams": 4.6667
+  },
+  {
+   "ingredient": "Espresso Powder",
+   "unit": "Teaspoons",
+   "grams": 2.3333
+  },
+  {
+   "ingredient": "Old Fashioned Rolled Oats",
+   "unit": "Cups",
+   "grams": 89
+  },
+  {
+   "ingredient": "Pecans",
+   "unit": "Cups",
+   "grams": 105
+  },
+  {
+   "ingredient": "Toasted Walnuts",
+   "unit": "Cups",
+   "grams": 113
+  },
+  {
+   "ingredient": "Almonds",
+   "unit": "Cups",
+   "grams": 142
+  },
+  {
+   "ingredient": "Peanuts",
+   "unit": "Cups",
+   "grams": 142
+  },
+  {
+   "ingredient": "Peanut Butter",
+   "unit": "Cups",
+   "grams": 270
+  },
+  {
+   "ingredient": "Mini Chocolate Chips",
+   "unit": "Cups",
+   "grams": 177
+  },
+  {
+   "ingredient": "Shredded Coconut",
+   "unit": "Cups",
+   "grams": 85
+  },
+  {
+   "ingredient": "Dried Cherries",
+   "unit": "Cups",
+   "grams": 142
+  },
+  {
+   "ingredient": "Dried Cranberries",
+   "unit": "Cups",
+   "grams": 114
+  },
+  {
+   "ingredient": "Mini Marshmallows",
+   "unit": "Cups",
+   "grams": 43
+  },
+  {
+   "ingredient": "Sour Cherry Preserves",
+   "unit": "Cups",
+   "grams": 340
+  },
+  {
+   "ingredient": "Jam",
+   "unit": "Cups",
+   "grams": 340
+  },
+  {
+   "ingredient": "Lemon Juice",
+   "unit": "Tablespoons",
+   "grams": 14
+  },
+  {
+   "ingredient": "Lime Juice",
+   "unit": "Tablespoons",
+   "grams": 14
+  },
+  {
+   "ingredient": "Cornmeal",
+   "unit": "Cups",
+   "grams": 138
+  },
+  {
+   "ingredient": "Masa Harina",
+   "unit": "Cups",
+   "grams": 93
+  },
+  {
+   "ingredient": "Semolina Flour",
+   "unit": "Cups",
+   "grams": 163
+  },
+  {
+   "ingredient": "Almond Flour",
+   "unit": "Cups",
+   "grams": 96
+  },
+  {
+   "ingredient": "Whole Wheat Flour",
+   "unit": "Cups",
+   "grams": 113
+  },
+  {
+   "ingredient": "Water",
+   "unit": "Cups",
+   "grams": 227
+  },
+  {
+   "ingredient": "Water",
+   "unit": "Milliliters",
+   "grams": 1.0
+  },
+  {
+   "ingredient": "Heavy Cream",
+   "unit": "Milliliters",
+   "grams": 0.99
+  },
+  {
+   "ingredient": "Reduced Coca-Cola Syrup",
+   "unit": "Cups",
+   "grams": 340
+  },
+  {
+   "ingredient": "Reduced Coca-Cola Syrup",
+   "unit": "Milliliters",
+   "grams": 1.4
+  },
+  {
+   "ingredient": "Vegetable Glycerin",
+   "unit": "Teaspoons",
+   "grams": 6.3
+  },
+  {
+   "ingredient": "Eggs",
+   "unit": "Yolk",
+   "grams": 14
+  },
+  {
+   "ingredient": "Eggs",
+   "unit": "Whites",
+   "grams": 35
+  },
+  {
+   "ingredient": "Sugar",
+   "unit": "Cups",
+   "grams": 198
+  },
+  {
+   "ingredient": "Ground Cloves",
+   "unit": "Teaspoons",
+   "grams": 2.1
+  },
+  {
+   "ingredient": "Cloves",
+   "unit": "Teaspoons",
+   "grams": 2.1
+  },
+  {
+   "ingredient": "Ground Nutmeg",
+   "unit": "Teaspoons",
+   "grams": 2.2
+  },
+  {
+   "ingredient": "Nutmeg",
+   "unit": "Teaspoons",
+   "grams": 2.2
+  },
+  {
+   "ingredient": "Ground Allspice",
+   "unit": "Teaspoons",
+   "grams": 1.9
+  },
+  {
+   "ingredient": "Ground Cardamom",
+   "unit": "Teaspoons",
+   "grams": 2.0
+  },
+  {
+   "ingredient": "Ground Coriander",
+   "unit": "Teaspoons",
+   "grams": 1.8
+  },
+  {
+   "ingredient": "Black Pepper",
+   "unit": "Teaspoons",
+   "grams": 2.3
+  },
+  {
+   "ingredient": "Anise Seed",
+   "unit": "Teaspoons",
+   "grams": 2.1
+  },
+  {
+   "ingredient": "Ginger",
+   "unit": "Tablespoons",
+   "grams": 5.4
+  },
+  {
+   "ingredient": "Ground Cinnamon",
+   "unit": "Teaspoons",
+   "grams": 2.6
+  },
+  {
+   "ingredient": "Peppermint Extract",
+   "unit": "Teaspoons",
+   "grams": 4.6667
+  },
+  {
+   "ingredient": "Anise Extract",
+   "unit": "Teaspoons",
+   "grams": 4.6667
+  },
+  {
+   "ingredient": "Vanilla",
+   "unit": "Teaspoons",
+   "grams": 4.6667
+  },
+  {
+   "ingredient": "Dark Rum",
+   "unit": "Teaspoons",
+   "grams": 4.6
+  },
+  {
+   "ingredient": "Kirschwasser",
+   "unit": "Teaspoons",
+   "grams": 4.6
+  },
+  {
+   "ingredient": "Rum",
+   "unit": "Cups",
+   "grams": 223
+  },
+  {
+   "ingredient": "Club Soda / Seltzer",
+   "unit": "Milliliters",
+   "grams": 1.0
+  },
+  {
+   "ingredient": "Tart Cherry Juice",
+   "unit": "Teaspoons",
+   "grams": 5.2
+  },
+  {
+   "ingredient": "Acid Phosphate Solution",
+   "unit": "Teaspoons",
+   "grams": 5.4
+  }
+ ],
+ "bulk": [
+  {
+   "ingredient": "Reduced Coca-Cola Syrup",
+   "unit": "Grams",
+   "bulkUnit": "Liters of Coca-Cola",
+   "perBulk": 140.6107
+  },
+  {
+   "ingredient": "Reduced Coca-Cola Syrup",
+   "unit": "Milliliters",
+   "bulkUnit": "Liters of Coca-Cola",
+   "perBulk": 100.4362
+  },
+  {
+   "ingredient": "Wild Cherry Bark",
+   "unit": "Grams",
+   "bulkUnit": "Ounces",
+   "perBulk": 28.3495
+  },
+  {
+   "ingredient": "Vegetable Glycerin",
+   "unit": "Grams",
+   "bulkUnit": "Fluid Ounces",
+   "perBulk": 37.3
+  },
+  {
+   "ingredient": "Tart Cherry Juice",
+   "unit": "Grams",
+   "bulkUnit": "Fluid Ounces",
+   "perBulk": 30.8
+  },
+  {
+   "ingredient": "Acid Phosphate Solution",
+   "unit": "Teaspoons",
+   "bulkUnit": "Fluid Ounces",
+   "perBulk": 6
+  }
+ ],
+ "recalcBulk": true,
+ "syncWeights": true,
+ "splits": [
+  {
+   "name": "Light Brown Sugar",
+   "into": [
+    {
+     "name": "Dark Brown Sugar",
+     "share": 0.5
+    },
+    {
+     "name": "Granulated Sugar",
+     "share": 0.5
+    }
+   ]
+  }
+ ],
+ "removeSubstitutions": [
+  "Light Brown Sugar"
+ ],
+ "notes": [
+  {
+   "recipe": "Cherry Phosphate Shortbread Thumbprints",
+   "notes": "Built on your proven Jam Thumbprint proportions (egg yolk only, no added liquid, no baking soda) so the wells hold. Cream butter, sugar and honey; beat in yolk and extracts; mix in flour, cherry powder, baking powder and salt. Roll 1 in. balls, press wells, chill shaped cookies while the oven preheats. WILD CHERRY SYRUP (Art of Drink, https://www.artofdrink.com/soda/cherry-phosphate): make it in one batch. The full recipe uses 1 oz bark, 1 fl oz glycerin, 4 fl oz water, a second 4 fl oz warm water, 4 fl oz cherry juice and 10 oz sugar, and makes 12 fl oz. Mix glycerin with the first 4 oz water, pour over the bark, macerate 24 h, then strain. Add the warm water to the bark for 1 h, strain, and combine. Add cherry juice, top up with water to 12 fl oz, and dissolve the sugar without heat. Each batch of cookies uses 2 Tbsp (1 fl oz) of syrup; 1/3 of the recipe covers 4 batches. FILLING per batch: simmer the preserves with 2 Tbsp syrup back to a thick jam, then cool. Off heat stir in 2/3 tsp acid phosphate, the drink ratio of 1 tsp per 1 1/2 oz syrup; add more to taste for extra tang. Fill about 1/2 tsp per cookie. Bake at 350\u00b0F for 12-13 min until edges just set. Dust with powdered sugar once cool. (Retro Soda Fountain 2026; base batch = 36.)"
+  },
+  {
+   "recipe": "Coca-Cola Molasses Crinkle Cookies",
+   "notes": "MOLASSES-STRENGTH COLA SYRUP: reduce Coca-Cola (Mexican, cane sugar) until it has about the same water content as molasses (~22%). Coke has 39 g sugar per 355 ml (~110 g per liter), so each liter reduces to about 141 g of syrup (~100 ml, a scant 1/2 cup). Method: weigh your empty pot, simmer flat Coke, and keep reducing until the contents weigh 141 g per liter you started with (2 L -> ~282 g). Near the end it will be bubbling around 225\u00b0F; trust the scale over the thermometer. Coke's phosphoric acid inverts some of the sugar as it cooks, which helps keep the syrup from crystallizing, like molasses. Swap it 1:1 by weight for molasses: 85 g (1/4 cup) per batch. Then whisk oil and sugars, add syrup, egg and vanilla, mix in dry, roll 1.5 in. balls in sugar, and bake at 350\u00b0F for 8-10 min. (Retro Soda Fountain 2026; base batch = 24.)"
+  }
+ ],
+ "settings": {
+  "kosherSaltGPerTsp": 5.333333333333333
+ }
+}

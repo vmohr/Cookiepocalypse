@@ -239,6 +239,11 @@ function datalists() {
   <datalist id="dl-phases">${allPhases().map(u => `<option value="${esc(u)}">`).join('')}</datalist>
   <datalist id="dl-recipes">${S.recipes.map(r => `<option value="${esc(r.name)}">`).join('')}</datalist>`;
 }
+function measureTxt(i, mult) {
+  if (key(i.unit) === 'grams') return '';
+  const m = measureFor(S, i, mult);
+  return `${amt(m.amount)} ${esc(i.unit)}`;
+}
 function saltNote(i, mult = 1) {
   const k = kosherTsp(S, i, mult);
   return k == null ? '' : `<div class="small" style="color:var(--green)">≈ ${amt(k)} tsp kosher</div>`;
@@ -367,25 +372,24 @@ function vRecipeEdit(r) {
     </div>
     <div class="card">
       <div class="row" style="margin-bottom:8px"><h2 class="grow" style="font-size:18px">Ingredients <span class="muted small" style="font-family:Inter;text-transform:none">per batch · ${fmt(totalG, 0)} g total</span></h2>
-        <button class="btn sm" data-act="fillGrams" title="Fill blank grams from the Gram Conversions table">Fill blank grams from conversions</button></div>
+        <button class="btn sm" data-act="fillGrams" title="Fill blank grams from the Gram Conversions table">Fill missing weights</button></div>
       <div class="tablewrap"><table>
-        <thead><tr><th style="width:28px"></th><th>Ingredient</th><th class="n" style="width:100px">Amount</th><th style="width:140px">Unit</th><th class="n" style="width:110px">Grams</th><th style="width:150px">Phase</th>${inPlan ? '<th class="n">× ' + pr.batches + ' batches</th>' : ''}<th style="width:40px"></th></tr></thead>
+        <thead><tr><th style="width:28px"></th><th>Ingredient</th><th class="n" style="width:110px">Weight (g)</th><th class="n" style="width:100px">Measure</th><th style="width:140px">Unit</th><th style="width:150px">Phase</th>${inPlan ? '<th class="n">× ' + pr.batches + ' batches</th>' : ''}<th style="width:40px"></th></tr></thead>
         <tbody>${r.ingredients.map((i, n) => {
           const g = gramFor(S, i);
-          const chk = num(i.grams) != null && num(i.amount) ? gramsPerUnit(S, i.name, i.unit) : null;
-          const off = chk && Math.abs(i.grams - i.amount * chk.g) > 0.05 * Math.max(i.grams, i.amount * chk.g);
+          const m = measureFor(S, i);
           return `<tr>
           <td class="handle small"><span data-mv="${n}" data-d="-1" title="Move up">▲</span><br><span data-mv="${n}" data-d="1" title="Move down">▼</span></td>
           <td><input list="dl-ings" data-ing="${n}" data-f="name" value="${esc(i.name)}"></td>
-          <td><input type="number" step="any" class="num" style="width:100%" data-ing="${n}" data-f="amount" data-num value="${esc(i.amount ?? '')}"></td>
+          <td><input type="number" step="any" class="num" style="width:100%;font-weight:600;${g.grams == null ? 'border-color:var(--gold)' : ''}" data-ing="${n}" data-f="grams" data-num value="${esc(num(i.grams) != null ? +(+i.grams).toFixed(2) : '')}" placeholder="${g.derived ? fmt(g.grams) : 'add weight'}" title="${g.derived ? 'From the conversion table' : g.grams == null ? 'No weight yet' : 'Source of truth'}"></td>
+          <td><input type="number" step="any" class="num" style="width:100%" data-ing="${n}" data-f="amount" data-num value="${esc(m.amount != null ? +(+m.amount).toFixed(3) : '')}"></td>
           <td><input list="dl-units" data-ing="${n}" data-f="unit" value="${esc(i.unit)}">${saltNote(i)}</td>
-          <td><input type="number" step="any" class="num" style="width:100%" data-ing="${n}" data-f="grams" data-num value="${esc(i.grams ?? '')}" placeholder="${g.derived ? fmt(g.grams) : ''}" ${g.derived ? 'title="From the conversion table"' : ''} ${off ? `title="Conversion table says ${fmt(i.amount * chk.g)} g" style="width:100%;border-color:var(--gold)"` : ''}></td>
           <td><input list="dl-phases" data-ing="${n}" data-f="phase" value="${esc(i.phase ?? '')}"></td>
-          ${inPlan ? `<td class="n small">${amt((num(i.amount) || 0) * pr.batches)} ${esc(i.unit)}${g.grams != null ? `<br><span class="muted">${fmt(g.grams * pr.batches, 0)} g</span>` : ''}</td>` : ''}
+          ${inPlan ? `<td class="n small">${g.grams != null ? `<b>${fmt(g.grams * pr.batches, 0)} g</b><br>` : ''}<span class="muted">${amt(measureFor(S, i, pr.batches).amount)} ${esc(i.unit)}</span></td>` : ''}
           <td><button class="btn ghost sm" data-del-ing="${n}" title="Remove">✕</button></td></tr>`;
         }).join('')}</tbody></table></div>
       <div class="row" style="margin-top:10px"><button class="btn sm" data-act="addIng">+ Add ingredient</button><button class="btn sm" data-act="pasteIngs">Paste a list…</button>
-      <span class="muted small">Pick names and units from the suggestions so they match your conversions and merge on the shopping list. Grams in grey italics come from the conversion table.</span></div>
+      <span class="muted small">Weight is the source of truth. Edit the weight and the measure follows (via King Arthur's conversions); edit the measure and the weight is recalculated. Pick names from the suggestions so they match your conversions.</span></div>
     </div>
     <div class="card"><label class="small muted" style="font-weight:500">Notes / method<textarea data-r="${ri}" data-f="notes" placeholder="Steps, tips, changes from the original…">${esc(r.notes)}</textarea></label></div>`;
 }
@@ -414,13 +418,13 @@ function vCheat() {
         ${r.cookies != null ? `<span class="pill">${fmt(r.cookies, 0)} cookies</span>` : ''}
       </div>
       <div class="tablewrap"><table>
-        <thead><tr><th>Ingredient</th>${show !== 'total' ? '<th class="n">Per batch</th><th class="n">g</th>' : ''}${show !== 'batch' ? `<th class="n">Total (×${b ?? '?'})</th><th class="n">g</th>` : ''}</tr></thead>
+        <thead><tr><th>Ingredient</th>${show !== 'total' ? '<th class="n">Per batch (g)</th><th class="n">≈ measure</th>' : ''}${show !== 'batch' ? `<th class="n">Total ×${b ?? '?'} (g)</th><th class="n">≈ measure</th>` : ''}</tr></thead>
         <tbody>${phases.map(ph => (hasPhases ? `<tr class="phase-row"><td colspan="5">${esc(ph.p || 'Other')}</td></tr>` : '') + ph.items.map(i => {
           const g = gramFor(S, i);
           const gcell = v => v == null ? '' : `<span class="${g.derived ? 'derived' : ''}">${fmt(v, v >= 10 ? 0 : 1)}</span>`;
           return `<tr><td>${esc(i.name)}</td>
-            ${show !== 'total' ? `<td class="n">${amt(num(i.amount))} ${esc(i.unit)}${saltNote(i)}</td><td class="n">${gcell(g.grams)}</td>` : ''}
-            ${show !== 'batch' ? `<td class="n"><b>${b != null ? amt((num(i.amount) || 0) * b) : ''}</b> ${esc(i.unit)}${b != null ? saltNote(i, b) : ''}</td><td class="n">${g.grams != null && b != null ? gcell(g.grams * b) : ''}</td>` : ''}</tr>`;
+            ${show !== 'total' ? `<td class="n"><b>${gcell(g.grams)}</b></td><td class="n muted">${measureTxt(i, 1)}${saltNote(i)}</td>` : ''}
+            ${show !== 'batch' ? `<td class="n"><b>${g.grams != null && b != null ? gcell(g.grams * b) : ''}</b></td><td class="n muted">${b != null ? measureTxt(i, b) + saltNote(i, b) : ''}</td>` : ''}</tr>`;
         }).join('')).join('')}</tbody></table></div>
       ${rec.notes ? `<p class="small" style="white-space:pre-wrap;margin-top:10px">${esc(rec.notes)}</p>` : ''}
     </div>`;
@@ -723,7 +727,15 @@ document.addEventListener('change', e => {
     } else r[d.f] = d.num != null ? val : t.value;
     return commit();
   }
-  if (d.ing != null) { const r = S.recipes.find(x => key(x.name) === key(ui.recipe)); const i = r.ingredients[+d.ing]; if (d.f === 'grams' && val == null) delete i.grams; else if (d.f === 'phase' && !t.value) delete i.phase; else i[d.f] = d.num != null ? (val ?? 0) : t.value.trim(); return commit(); }
+  if (d.ing != null) {
+    const r = S.recipes.find(x => key(x.name) === key(ui.recipe)); const i = r.ingredients[+d.ing];
+    if (d.f === 'grams' && val == null) delete i.grams;
+    else if (d.f === 'phase' && !t.value) delete i.phase;
+    else i[d.f] = d.num != null ? (val ?? 0) : t.value.trim();
+    if (d.f === 'grams' && val != null) syncIngredient(S, i, 'grams');
+    if (d.f === 'amount' || d.f === 'unit' || (d.f === 'name' && num(i.grams) == null)) syncIngredient(S, i, 'measure');
+    return commit();
+  }
   if (d.p != null) { S.people[+d.p][d.f] = d.num != null ? (val ?? 0) : t.value; return commit(); }
   if (d.sub != null) { S.substitutions[+d.sub][d.f] = d.num != null ? val : t.value.trim(); return commit(); }
   if (t.id === 'kosherG') { S.kosherSaltGPerTsp = t.value === '' ? null : num(+t.value); return commit(); }
