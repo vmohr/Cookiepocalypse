@@ -4934,59 +4934,9 @@
  ],
  "people": [
   {
-   "name": "Recipient 1",
-   "boxSize": "L",
-   "units": 1
-  },
-  {
-   "name": "Recipient 2",
-   "boxSize": "N",
-   "units": 2
-  },
-  {
-   "name": "Recipient 3",
-   "boxSize": "M",
-   "units": 1
-  },
-  {
-   "name": "Recipient 4",
-   "boxSize": "L",
-   "units": 1
-  },
-  {
-   "name": "Recipient 5",
-   "boxSize": "N",
-   "units": 1
-  },
-  {
-   "name": "Recipient 6",
-   "boxSize": "L",
-   "units": 1
-  },
-  {
-   "name": "Recipient 7",
-   "boxSize": "L",
-   "units": 1
-  },
-  {
-   "name": "Recipient 8",
-   "boxSize": "N",
-   "units": 1
-  },
-  {
-   "name": "Recipient 9",
-   "boxSize": "M",
-   "units": 0.5
-  },
-  {
-   "name": "Recipient 10",
-   "boxSize": "N",
-   "units": 1
-  },
-  {
-   "name": "Recipient 11",
-   "boxSize": "N",
-   "units": 2
+   "name": "Columbus Crew",
+   "boxSize": "",
+   "units": 25
   }
  ],
  "substitutions": [],
@@ -6794,6 +6744,18 @@
      ]
     }
    ]
+  },
+  {
+   "id": "2026-11-recipients-columbus-crew",
+   "settings": {
+    "people": [
+     {
+      "name": "Columbus Crew",
+      "boxSize": "",
+      "units": 25
+     }
+    ]
+   }
   }
  ]
 }
