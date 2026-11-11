@@ -143,7 +143,7 @@ function applyPatch(state, p) {
     const r = state.recipes.find(x => key(x.name) === key(ed.recipe)); if (!r) continue;
     const out = [];
     for (const i of r.ingredients) {
-      if (key(i.name) === key(ed.find.name) && (!ed.find.unit || key(i.unit) === key(ed.find.unit))) {
+      if (key(i.name) === key(ed.find.name) && (!ed.find.unit || key(i.unit) === key(ed.find.unit)) && (!ed.find.phase || key(i.phase || '').includes(key(ed.find.phase)))) {
         for (const rw of ed.replaceWith) { const n = { ...rw }; if (!n.phase && i.phase) n.phase = i.phase; out.push(n); }
       } else out.push(i);
     }
