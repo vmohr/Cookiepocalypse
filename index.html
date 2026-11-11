@@ -321,6 +321,7 @@ function applyPatch(state, p) {
   }
   for (const rs of p.removeSubstitutions || []) state.substitutions = (state.substitutions || []).filter(x => key(x.ingredient) !== key(rs));
   for (const nt of p.notes || []) { const r = state.recipes.find(x => key(x.name) === key(nt.recipe)); if (r) r.notes = nt.notes; }
+  for (const t of p.times || []) { const r = state.recipes.find(x => key(x.name) === key(t.recipe)); if (r) for (const f of ['prepMinutes', 'restMinutes', 'bakeMinutes']) if (t[f] != null && (r[f] == null || t.overwrite)) r[f] = t[f]; }
   for (const mt of p.methods || []) { const r = state.recipes.find(x => key(x.name) === key(mt.recipe)); if (r) { if (!r.method || mt.overwrite) r.method = mt.method; if (mt.notes != null) r.notes = mt.notes; } }
   if (p.setPlan) {
     const prev = new Map(state.plan.map(x => [key(x.recipe), x]));
@@ -342,6 +343,17 @@ function applyPatch(state, p) {
   if (p.settings) Object.assign(state, p.settings);
   state.appliedPatches = [...(state.appliedPatches || []), p.id];
   return true;
+}
+
+// Times per batch: total = prep + rest + bake (null when none are known)
+function totalMinutes(r) {
+  const parts = [r.prepMinutes, r.restMinutes, r.bakeMinutes].map(num).filter(v => v != null);
+  return parts.length ? parts.reduce((a, b) => a + b, 0) : null;
+}
+function fmtMinutes(m) {
+  m = num(m); if (m == null) return '';
+  const h = Math.floor(m / 60), mm = Math.round(m - h * 60);
+  return h ? (mm ? `${h} h ${mm} min` : `${h} h`) : `${mm} min`;
 }
 
 // ---- Method (Cooking for Engineers table) ----
@@ -406,12 +418,12 @@ function parseMethod(recipe, text) {
 }
 
 // ---- Import / export helpers ----
-const CSV_COLS = ['Recipe', 'Ingredient', 'Amount', 'Unit', 'Grams', 'Phase', 'Book', 'Book URL', 'Page', 'Cookies Per Batch', 'Refrigerate', 'Oven Temp', 'Bake Minutes Per Batch', 'Notes', 'Method'];
+const CSV_COLS = ['Recipe', 'Ingredient', 'Amount', 'Unit', 'Grams', 'Phase', 'Book', 'Book URL', 'Page', 'Cookies Per Batch', 'Refrigerate', 'Oven Temp', 'Bake Minutes Per Batch', 'Notes', 'Method', 'Prep Minutes', 'Rest Minutes'];
 function csvEsc(v) { v = v == null ? '' : String(v); return /[",\n\r]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; }
 function recipesToCSV(recipes) {
   const lines = [CSV_COLS.join(',')];
   for (const r of recipes) {
-    const meta = [r.book, r.bookUrl, r.page, r.cookiesPerBatch, r.refrigerate, r.ovenTemp, r.bakeMinutes, r.notes, r.method];
+    const meta = [r.book, r.bookUrl, r.page, r.cookiesPerBatch, r.refrigerate, r.ovenTemp, r.bakeMinutes, r.notes, r.method, r.prepMinutes, r.restMinutes];
     const ings = r.ingredients.length ? r.ingredients : [{}];
     ings.forEach((i, n) => lines.push([r.name, i.name, i.amount, i.unit, i.grams, i.phase, ...(n === 0 ? meta : meta.map(() => ''))].map(csvEsc).join(',')));
   }
@@ -437,16 +449,16 @@ function recipesFromCSV(text) {
   const hdr = rows[0].map(h => key(h).replace(/[^a-z]/g, ''));
   const idx = n => hdr.indexOf(n);
   const col = { recipe: idx('recipe'), name: idx('ingredient'), amount: idx('amount'), unit: idx('unit'), grams: idx('grams'), phase: idx('phase'),
-    book: idx('book'), bookUrl: idx('bookurl'), page: idx('page'), cookiesPerBatch: idx('cookiesperbatch'), refrigerate: idx('refrigerate'), ovenTemp: idx('oventemp'), bakeMinutes: idx('bakeminutesperbatch'), notes: idx('notes'), method: idx('method') };
+    book: idx('book'), bookUrl: idx('bookurl'), page: idx('page'), cookiesPerBatch: idx('cookiesperbatch'), refrigerate: idx('refrigerate'), ovenTemp: idx('oventemp'), bakeMinutes: idx('bakeminutesperbatch'), notes: idx('notes'), method: idx('method'), prepMinutes: idx('prepminutes'), restMinutes: idx('restminutes') };
   if (col.recipe < 0 || col.name < 0) throw new Error('The CSV needs at least "Recipe" and "Ingredient" columns. Export a recipe as CSV to see the expected layout.');
   const byName = new Map();
   for (const r of rows.slice(1)) {
     const get = k => col[k] >= 0 ? String(r[col[k]] ?? '').trim() : '';
     const rn = get('recipe'); if (!rn) continue;
     let rec = byName.get(key(rn));
-    if (!rec) { rec = { name: rn, book: '', bookUrl: '', page: '', cookiesPerBatch: null, refrigerate: '', ovenTemp: '', bakeMinutes: null, notes: '', method: '', ingredients: [] }; byName.set(key(rn), rec); }
+    if (!rec) { rec = { name: rn, book: '', bookUrl: '', page: '', cookiesPerBatch: null, refrigerate: '', ovenTemp: '', bakeMinutes: null, prepMinutes: null, restMinutes: null, notes: '', method: '', ingredients: [] }; byName.set(key(rn), rec); }
     for (const k of ['book', 'bookUrl', 'page', 'refrigerate', 'ovenTemp', 'notes', 'method']) if (get(k) && !rec[k]) rec[k] = get(k);
-    for (const k of ['cookiesPerBatch', 'bakeMinutes']) if (get(k) && rec[k] == null) rec[k] = num(get(k));
+    for (const k of ['cookiesPerBatch', 'bakeMinutes', 'prepMinutes', 'restMinutes']) if (get(k) && rec[k] == null) rec[k] = num(get(k));
     if (get('name')) {
       const ing = { name: get('name'), amount: num(get('amount')) ?? 0, unit: get('unit') };
       if (num(get('grams')) != null && get('grams') !== '') ing.grams = num(get('grams'));
@@ -461,6 +473,7 @@ function normalizeRecipe(r) {
   return {
     name: String(r.name).trim(), book: String(r.book ?? ''), bookUrl: String(r.bookUrl ?? ''), page: String(r.page ?? ''),
     cookiesPerBatch: num(r.cookiesPerBatch), refrigerate: String(r.refrigerate ?? ''), ovenTemp: String(r.ovenTemp ?? ''), bakeMinutes: num(r.bakeMinutes),
+    prepMinutes: num(r.prepMinutes), restMinutes: num(r.restMinutes),
     notes: String(r.notes ?? ''),
     method: String(r.method ?? ''),
     ingredients: (Array.isArray(r.ingredients) ? r.ingredients : []).filter(i => i && String(i.name || '').trim()).map(i => {
@@ -489,7 +502,7 @@ function normalizeState(s) {
     purchased: (s.purchased && typeof s.purchased === 'object') ? Object.fromEntries(Object.entries(s.purchased).map(([k, v]) => [key(k.split('|')[0]) + '|' + key(k.split('|')[1]), !!v])) : {},
   };
 }
-if (typeof module !== 'undefined') module.exports = { totalUnits, planRows, shoppingList, kosherTsp, applyPatch, measureFor, syncIngredient, parseMethod, gramFor, recipesToCSV, recipesFromCSV, normalizeState, normalizeRecipe, key };
+if (typeof module !== 'undefined') module.exports = { totalMinutes, fmtMinutes, totalUnits, planRows, shoppingList, kosherTsp, applyPatch, measureFor, syncIngredient, parseMethod, gramFor, recipesToCSV, recipesFromCSV, normalizeState, normalizeRecipe, key };
 
 // ---- Conversion checks ----
 const UNIT = (() => {
@@ -838,7 +851,7 @@ function vPlan() {
       <select id="addPlan"><option value="">+ Add a recipe to the plan…</option>${notIn.map(r => `<option>${esc(r.name)}</option>`).join('')}</select>
     </div>
     ${rows.length ? `<div class="tablewrap"><table>
-      <thead><tr><th>Recipe</th><th class="n" title="Cookies of this kind in each gift unit">Cookies / unit</th><th class="n">Batches</th><th class="n">Cookies / batch</th><th class="n">Cookies made</th><th>Source</th><th>Refrigerate?</th><th class="n">Oven °F</th><th class="n">Bake time</th><th class="n">When to bake?</th><th></th></tr></thead>
+      <thead><tr><th>Recipe</th><th class="n" title="Cookies of this kind in each gift unit">Cookies / unit</th><th class="n">Batches</th><th class="n">Cookies / batch</th><th class="n">Cookies made</th><th>Source</th><th>Refrigerate?</th><th class="n">Oven °F</th><th class="n" title="Prep + rest + bake, per batch">Time / batch</th><th class="n">Oven time</th><th class="n">When to bake?</th><th></th></tr></thead>
       <tbody>${sorted.map(r => {
         const rec = r.recipe;
         const need = (r.item.cookiesPerUnit || 0) * units;
@@ -851,11 +864,12 @@ function vPlan() {
           <td class="small">${rec ? srcHtml(rec) : ''}</td>
           <td class="small">${esc(rec?.refrigerate ?? '')}</td>
           <td class="n">${esc(rec?.ovenTemp ?? '')}</td>
+          <td class="n" style="white-space:nowrap" title="${rec ? `Prep ${fmtMinutes(rec.prepMinutes) || '?'} · Rest ${fmtMinutes(rec.restMinutes) || '?'} · Bake ${fmtMinutes(rec.bakeMinutes) || '?'}` : ''}">${rec && totalMinutes(rec) != null ? fmtMinutes(totalMinutes(rec)) + `<div class="muted small">${[rec.prepMinutes, rec.restMinutes, rec.bakeMinutes].map(v => v == null ? '–' : fmt(v, 0)).join(' · ')}</div>` : '<span class="muted small">—</span>'}</td>
           <td class="n">${r.bakeHours != null ? fmt(r.bakeHours, 1) + ' h' : '<span class="muted small">—</span>'}</td>
           <td class="n"><input class="num" style="width:64px" data-plan="${r.i}" data-f="bakeDay" value="${esc(r.item.bakeDay ?? '')}"></td>
           <td><button class="btn ghost sm" data-unplan="${r.i}" title="Remove from plan">✕</button></td></tr>`;
       }).join('')}</tbody></table></div>
-      <p class="muted small" style="margin-top:10px">Batches = ⌈cookies per unit × ${fmt(units)} units ÷ cookies per batch⌉, rounded up the same way as your sheet. Bake time = minutes per batch × batches.</p>`
+      <p class="muted small" style="margin-top:10px">Batches = ⌈cookies per unit × ${fmt(units)} units ÷ cookies per batch⌉, rounded up the same way as your sheet. Oven time = bake minutes per batch × batches. Time / batch shows prep · rest · bake minutes.</p>`
       : `<div class="empty">No recipes in the plan yet. Pick one above.</div>`}
   </div>`;
 }
@@ -920,7 +934,10 @@ function vRecipeEdit(r) {
         <label># of cookies per batch<input type="number" step="any" data-r="${ri}" data-f="cookiesPerBatch" data-num value="${esc(r.cookiesPerBatch ?? '')}"></label>
         <label>Refrigerate?<input data-r="${ri}" data-f="refrigerate" value="${esc(r.refrigerate)}"></label>
         <label>Oven temp (°F)<input data-r="${ri}" data-f="ovenTemp" value="${esc(r.ovenTemp)}"></label>
-        <label>Bake time per batch (min)<input type="number" step="any" data-r="${ri}" data-f="bakeMinutes" data-num value="${esc(r.bakeMinutes ?? '')}"></label>
+        <label>Prep time per batch (min)<input type="number" step="any" data-r="${ri}" data-f="prepMinutes" data-num value="${esc(r.prepMinutes ?? '')}" title="Assembling ingredients and cooking components"></label>
+        <label>Rest time per batch (min)<input type="number" step="any" data-r="${ri}" data-f="restMinutes" data-num value="${esc(r.restMinutes ?? '')}" title="Chilling, cooling, setting"></label>
+        <label>Bake time per batch (min)<input type="number" step="any" data-r="${ri}" data-f="bakeMinutes" data-num value="${esc(r.bakeMinutes ?? '')}" title="Time in the oven"></label>
+        <label>Total time per batch<input disabled value="${esc(fmtMinutes(totalMinutes(r)) || '—')}" style="background:#f6f1ea"></label>
       </div>
     </div>
     <div class="card">
@@ -972,7 +989,10 @@ function vCheat() {
       <div class="facts">
         <span class="pill red">${b ?? '?'} batches</span>
         ${rec.ovenTemp ? `<span class="pill">${esc(rec.ovenTemp)}°F</span>` : ''}
-        ${rec.bakeMinutes != null ? `<span class="pill">${esc(rec.bakeMinutes)} min / batch</span>` : ''}
+        ${totalMinutes(rec) != null ? `<span class="pill gold">Total ${fmtMinutes(totalMinutes(rec))} / batch</span>` : ''}
+        ${rec.prepMinutes != null ? `<span class="pill">Prep ${fmtMinutes(rec.prepMinutes)}</span>` : ''}
+        ${rec.restMinutes != null ? `<span class="pill">Rest ${fmtMinutes(rec.restMinutes)}</span>` : ''}
+        ${rec.bakeMinutes != null ? `<span class="pill">Bake ${fmtMinutes(rec.bakeMinutes)}</span>` : ''}
         ${r.bakeHours != null ? `<span class="pill">${fmt(r.bakeHours, 1)} h total</span>` : ''}
         ${rec.refrigerate ? `<span class="pill green">Chill: ${esc(rec.refrigerate)}</span>` : ''}
         ${r.cookies != null ? `<span class="pill">${fmt(r.cookies, 0)} cookies</span>` : ''}

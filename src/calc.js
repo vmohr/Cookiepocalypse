@@ -202,6 +202,7 @@ function applyPatch(state, p) {
   }
   for (const rs of p.removeSubstitutions || []) state.substitutions = (state.substitutions || []).filter(x => key(x.ingredient) !== key(rs));
   for (const nt of p.notes || []) { const r = state.recipes.find(x => key(x.name) === key(nt.recipe)); if (r) r.notes = nt.notes; }
+  for (const t of p.times || []) { const r = state.recipes.find(x => key(x.name) === key(t.recipe)); if (r) for (const f of ['prepMinutes', 'restMinutes', 'bakeMinutes']) if (t[f] != null && (r[f] == null || t.overwrite)) r[f] = t[f]; }
   for (const mt of p.methods || []) { const r = state.recipes.find(x => key(x.name) === key(mt.recipe)); if (r) { if (!r.method || mt.overwrite) r.method = mt.method; if (mt.notes != null) r.notes = mt.notes; } }
   if (p.setPlan) {
     const prev = new Map(state.plan.map(x => [key(x.recipe), x]));
@@ -223,6 +224,17 @@ function applyPatch(state, p) {
   if (p.settings) Object.assign(state, p.settings);
   state.appliedPatches = [...(state.appliedPatches || []), p.id];
   return true;
+}
+
+// Times per batch: total = prep + rest + bake (null when none are known)
+function totalMinutes(r) {
+  const parts = [r.prepMinutes, r.restMinutes, r.bakeMinutes].map(num).filter(v => v != null);
+  return parts.length ? parts.reduce((a, b) => a + b, 0) : null;
+}
+function fmtMinutes(m) {
+  m = num(m); if (m == null) return '';
+  const h = Math.floor(m / 60), mm = Math.round(m - h * 60);
+  return h ? (mm ? `${h} h ${mm} min` : `${h} h`) : `${mm} min`;
 }
 
 // ---- Method (Cooking for Engineers table) ----
@@ -287,12 +299,12 @@ function parseMethod(recipe, text) {
 }
 
 // ---- Import / export helpers ----
-const CSV_COLS = ['Recipe', 'Ingredient', 'Amount', 'Unit', 'Grams', 'Phase', 'Book', 'Book URL', 'Page', 'Cookies Per Batch', 'Refrigerate', 'Oven Temp', 'Bake Minutes Per Batch', 'Notes', 'Method'];
+const CSV_COLS = ['Recipe', 'Ingredient', 'Amount', 'Unit', 'Grams', 'Phase', 'Book', 'Book URL', 'Page', 'Cookies Per Batch', 'Refrigerate', 'Oven Temp', 'Bake Minutes Per Batch', 'Notes', 'Method', 'Prep Minutes', 'Rest Minutes'];
 function csvEsc(v) { v = v == null ? '' : String(v); return /[",\n\r]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; }
 function recipesToCSV(recipes) {
   const lines = [CSV_COLS.join(',')];
   for (const r of recipes) {
-    const meta = [r.book, r.bookUrl, r.page, r.cookiesPerBatch, r.refrigerate, r.ovenTemp, r.bakeMinutes, r.notes, r.method];
+    const meta = [r.book, r.bookUrl, r.page, r.cookiesPerBatch, r.refrigerate, r.ovenTemp, r.bakeMinutes, r.notes, r.method, r.prepMinutes, r.restMinutes];
     const ings = r.ingredients.length ? r.ingredients : [{}];
     ings.forEach((i, n) => lines.push([r.name, i.name, i.amount, i.unit, i.grams, i.phase, ...(n === 0 ? meta : meta.map(() => ''))].map(csvEsc).join(',')));
   }
@@ -318,16 +330,16 @@ function recipesFromCSV(text) {
   const hdr = rows[0].map(h => key(h).replace(/[^a-z]/g, ''));
   const idx = n => hdr.indexOf(n);
   const col = { recipe: idx('recipe'), name: idx('ingredient'), amount: idx('amount'), unit: idx('unit'), grams: idx('grams'), phase: idx('phase'),
-    book: idx('book'), bookUrl: idx('bookurl'), page: idx('page'), cookiesPerBatch: idx('cookiesperbatch'), refrigerate: idx('refrigerate'), ovenTemp: idx('oventemp'), bakeMinutes: idx('bakeminutesperbatch'), notes: idx('notes'), method: idx('method') };
+    book: idx('book'), bookUrl: idx('bookurl'), page: idx('page'), cookiesPerBatch: idx('cookiesperbatch'), refrigerate: idx('refrigerate'), ovenTemp: idx('oventemp'), bakeMinutes: idx('bakeminutesperbatch'), notes: idx('notes'), method: idx('method'), prepMinutes: idx('prepminutes'), restMinutes: idx('restminutes') };
   if (col.recipe < 0 || col.name < 0) throw new Error('The CSV needs at least "Recipe" and "Ingredient" columns. Export a recipe as CSV to see the expected layout.');
   const byName = new Map();
   for (const r of rows.slice(1)) {
     const get = k => col[k] >= 0 ? String(r[col[k]] ?? '').trim() : '';
     const rn = get('recipe'); if (!rn) continue;
     let rec = byName.get(key(rn));
-    if (!rec) { rec = { name: rn, book: '', bookUrl: '', page: '', cookiesPerBatch: null, refrigerate: '', ovenTemp: '', bakeMinutes: null, notes: '', method: '', ingredients: [] }; byName.set(key(rn), rec); }
+    if (!rec) { rec = { name: rn, book: '', bookUrl: '', page: '', cookiesPerBatch: null, refrigerate: '', ovenTemp: '', bakeMinutes: null, prepMinutes: null, restMinutes: null, notes: '', method: '', ingredients: [] }; byName.set(key(rn), rec); }
     for (const k of ['book', 'bookUrl', 'page', 'refrigerate', 'ovenTemp', 'notes', 'method']) if (get(k) && !rec[k]) rec[k] = get(k);
-    for (const k of ['cookiesPerBatch', 'bakeMinutes']) if (get(k) && rec[k] == null) rec[k] = num(get(k));
+    for (const k of ['cookiesPerBatch', 'bakeMinutes', 'prepMinutes', 'restMinutes']) if (get(k) && rec[k] == null) rec[k] = num(get(k));
     if (get('name')) {
       const ing = { name: get('name'), amount: num(get('amount')) ?? 0, unit: get('unit') };
       if (num(get('grams')) != null && get('grams') !== '') ing.grams = num(get('grams'));
@@ -342,6 +354,7 @@ function normalizeRecipe(r) {
   return {
     name: String(r.name).trim(), book: String(r.book ?? ''), bookUrl: String(r.bookUrl ?? ''), page: String(r.page ?? ''),
     cookiesPerBatch: num(r.cookiesPerBatch), refrigerate: String(r.refrigerate ?? ''), ovenTemp: String(r.ovenTemp ?? ''), bakeMinutes: num(r.bakeMinutes),
+    prepMinutes: num(r.prepMinutes), restMinutes: num(r.restMinutes),
     notes: String(r.notes ?? ''),
     method: String(r.method ?? ''),
     ingredients: (Array.isArray(r.ingredients) ? r.ingredients : []).filter(i => i && String(i.name || '').trim()).map(i => {
@@ -370,7 +383,7 @@ function normalizeState(s) {
     purchased: (s.purchased && typeof s.purchased === 'object') ? Object.fromEntries(Object.entries(s.purchased).map(([k, v]) => [key(k.split('|')[0]) + '|' + key(k.split('|')[1]), !!v])) : {},
   };
 }
-if (typeof module !== 'undefined') module.exports = { totalUnits, planRows, shoppingList, kosherTsp, applyPatch, measureFor, syncIngredient, parseMethod, gramFor, recipesToCSV, recipesFromCSV, normalizeState, normalizeRecipe, key };
+if (typeof module !== 'undefined') module.exports = { totalMinutes, fmtMinutes, totalUnits, planRows, shoppingList, kosherTsp, applyPatch, measureFor, syncIngredient, parseMethod, gramFor, recipesToCSV, recipesFromCSV, normalizeState, normalizeRecipe, key };
 
 // ---- Conversion checks ----
 const UNIT = (() => {

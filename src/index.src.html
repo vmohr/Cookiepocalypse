@@ -331,7 +331,7 @@ function vPlan() {
       <select id="addPlan"><option value="">+ Add a recipe to the plan…</option>${notIn.map(r => `<option>${esc(r.name)}</option>`).join('')}</select>
     </div>
     ${rows.length ? `<div class="tablewrap"><table>
-      <thead><tr><th>Recipe</th><th class="n" title="Cookies of this kind in each gift unit">Cookies / unit</th><th class="n">Batches</th><th class="n">Cookies / batch</th><th class="n">Cookies made</th><th>Source</th><th>Refrigerate?</th><th class="n">Oven °F</th><th class="n">Bake time</th><th class="n">When to bake?</th><th></th></tr></thead>
+      <thead><tr><th>Recipe</th><th class="n" title="Cookies of this kind in each gift unit">Cookies / unit</th><th class="n">Batches</th><th class="n">Cookies / batch</th><th class="n">Cookies made</th><th>Source</th><th>Refrigerate?</th><th class="n">Oven °F</th><th class="n" title="Prep + rest + bake, per batch">Time / batch</th><th class="n">Oven time</th><th class="n">When to bake?</th><th></th></tr></thead>
       <tbody>${sorted.map(r => {
         const rec = r.recipe;
         const need = (r.item.cookiesPerUnit || 0) * units;
@@ -344,11 +344,12 @@ function vPlan() {
           <td class="small">${rec ? srcHtml(rec) : ''}</td>
           <td class="small">${esc(rec?.refrigerate ?? '')}</td>
           <td class="n">${esc(rec?.ovenTemp ?? '')}</td>
+          <td class="n" style="white-space:nowrap" title="${rec ? `Prep ${fmtMinutes(rec.prepMinutes) || '?'} · Rest ${fmtMinutes(rec.restMinutes) || '?'} · Bake ${fmtMinutes(rec.bakeMinutes) || '?'}` : ''}">${rec && totalMinutes(rec) != null ? fmtMinutes(totalMinutes(rec)) + `<div class="muted small">${[rec.prepMinutes, rec.restMinutes, rec.bakeMinutes].map(v => v == null ? '–' : fmt(v, 0)).join(' · ')}</div>` : '<span class="muted small">—</span>'}</td>
           <td class="n">${r.bakeHours != null ? fmt(r.bakeHours, 1) + ' h' : '<span class="muted small">—</span>'}</td>
           <td class="n"><input class="num" style="width:64px" data-plan="${r.i}" data-f="bakeDay" value="${esc(r.item.bakeDay ?? '')}"></td>
           <td><button class="btn ghost sm" data-unplan="${r.i}" title="Remove from plan">✕</button></td></tr>`;
       }).join('')}</tbody></table></div>
-      <p class="muted small" style="margin-top:10px">Batches = ⌈cookies per unit × ${fmt(units)} units ÷ cookies per batch⌉, rounded up the same way as your sheet. Bake time = minutes per batch × batches.</p>`
+      <p class="muted small" style="margin-top:10px">Batches = ⌈cookies per unit × ${fmt(units)} units ÷ cookies per batch⌉, rounded up the same way as your sheet. Oven time = bake minutes per batch × batches. Time / batch shows prep · rest · bake minutes.</p>`
       : `<div class="empty">No recipes in the plan yet. Pick one above.</div>`}
   </div>`;
 }
@@ -413,7 +414,10 @@ function vRecipeEdit(r) {
         <label># of cookies per batch<input type="number" step="any" data-r="${ri}" data-f="cookiesPerBatch" data-num value="${esc(r.cookiesPerBatch ?? '')}"></label>
         <label>Refrigerate?<input data-r="${ri}" data-f="refrigerate" value="${esc(r.refrigerate)}"></label>
         <label>Oven temp (°F)<input data-r="${ri}" data-f="ovenTemp" value="${esc(r.ovenTemp)}"></label>
-        <label>Bake time per batch (min)<input type="number" step="any" data-r="${ri}" data-f="bakeMinutes" data-num value="${esc(r.bakeMinutes ?? '')}"></label>
+        <label>Prep time per batch (min)<input type="number" step="any" data-r="${ri}" data-f="prepMinutes" data-num value="${esc(r.prepMinutes ?? '')}" title="Assembling ingredients and cooking components"></label>
+        <label>Rest time per batch (min)<input type="number" step="any" data-r="${ri}" data-f="restMinutes" data-num value="${esc(r.restMinutes ?? '')}" title="Chilling, cooling, setting"></label>
+        <label>Bake time per batch (min)<input type="number" step="any" data-r="${ri}" data-f="bakeMinutes" data-num value="${esc(r.bakeMinutes ?? '')}" title="Time in the oven"></label>
+        <label>Total time per batch<input disabled value="${esc(fmtMinutes(totalMinutes(r)) || '—')}" style="background:#f6f1ea"></label>
       </div>
     </div>
     <div class="card">
@@ -465,7 +469,10 @@ function vCheat() {
       <div class="facts">
         <span class="pill red">${b ?? '?'} batches</span>
         ${rec.ovenTemp ? `<span class="pill">${esc(rec.ovenTemp)}°F</span>` : ''}
-        ${rec.bakeMinutes != null ? `<span class="pill">${esc(rec.bakeMinutes)} min / batch</span>` : ''}
+        ${totalMinutes(rec) != null ? `<span class="pill gold">Total ${fmtMinutes(totalMinutes(rec))} / batch</span>` : ''}
+        ${rec.prepMinutes != null ? `<span class="pill">Prep ${fmtMinutes(rec.prepMinutes)}</span>` : ''}
+        ${rec.restMinutes != null ? `<span class="pill">Rest ${fmtMinutes(rec.restMinutes)}</span>` : ''}
+        ${rec.bakeMinutes != null ? `<span class="pill">Bake ${fmtMinutes(rec.bakeMinutes)}</span>` : ''}
         ${r.bakeHours != null ? `<span class="pill">${fmt(r.bakeHours, 1)} h total</span>` : ''}
         ${rec.refrigerate ? `<span class="pill green">Chill: ${esc(rec.refrigerate)}</span>` : ''}
         ${r.cookies != null ? `<span class="pill">${fmt(r.cookies, 0)} cookies</span>` : ''}
