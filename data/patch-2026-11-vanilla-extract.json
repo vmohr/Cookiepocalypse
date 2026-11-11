@@ -1,0 +1,1 @@
+{"id":"2026-11-vanilla-extract","renames":[{"field":"name","from":["Vanilla Bean Paste","Vanilla"],"to":"Vanilla Extract"}],"methodReplace":[{"from":"Vanilla Bean Paste","to":"Vanilla Extract"}],"syncWeights":true,"pruneConversions":true}
