@@ -19,8 +19,12 @@ A single-page web app for planning a big holiday cookie bake, ported from the
 - `scripts/test.js`: checks the calculations against the sheet's computed shopping list (`node scripts/test.js data/seed_full_2024.json data/sheet_shopping_2024.json`).
 
 ## Saving progress
-In the hosted version, progress saves to your Claude account automatically. Use **Import / Export → Full backup**
-to save a `.json` snapshot, which you can commit to `backups/` to keep history here.
+- **On your computer:** run `python3 serve.py` (in PyCharm: right-click `serve.py` → Run) and use the page it opens,
+  http://localhost:8000/index.html. The app loads your plan from `saves/state.json` and saves it there about a second
+  after each change, with one backup per day in `saves/backups/` (the last 30 days). `saves/` is in `.gitignore`, so it
+  never goes to GitHub. The status in the top right reads "Saved to saves/state.json" when this is on.
+- **Hosted version:** progress saves to your Claude account automatically.
+- Opening `index.html` any other way saves only in that browser. Use **Import / Export → Full backup** to move a plan between them.
 
 ## Holiday 2026 update
 - Christmas red & green restyle with a vector version of the Cookiepocalypse logo (`brand/`).

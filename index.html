@@ -676,7 +676,30 @@ const $ = s => document.querySelector(s);
 function setStatus(kind, text) { $('#dot').className = 'dot ' + kind; $('#statusText').textContent = text; }
 function emptyState() { return normalizeState({ title: 'Cookie Plan', recipes: [], plan: [], gramConversions: [], bulkConversions: [], people: [], purchased: {} }); }
 
+// Running through serve.py on this computer: load from and autosave to saves/state.json
+async function probeLocalServer() {
+  if (!/^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname)) return null;
+  try {
+    const r = await fetch('/api/state', { cache: 'no-store' });
+    if (!r.ok) return null;
+    const j = await r.json();
+    return j && j.app === 'cookiepocalypse' ? j : null;
+  } catch (e) { return null; }
+}
 async function boot() {
+  const local = await probeLocalServer();
+  if (local) {
+    store.mode = 'file';
+    if (local.exists) { S = normalizeState(JSON.parse(local.json)); await mergeNewSeed(); setStatus('ok', 'Saved to saves/state.json'); }
+    else {
+      const prev = loadLocal();
+      if (prev) { S = prev; await mergeNewSeed(); }
+      else { const seed = await fetchSeed(); S = seed ? withPatches(seed) : emptyState(); }
+      scheduleSave();
+    }
+    window.addEventListener('hashchange', render);
+    return render();
+  }
   let db = null, user = null;
   try { [db, user] = await Promise.all([window.claude?.use?.('db'), window.claude?.use?.('user')]); } catch (e) {}
   let uid = null;
@@ -743,6 +766,7 @@ function scheduleSave() {
 async function flush() {
   const json = JSON.stringify(S);
   try { localStorage.setItem(LS_KEY, json); } catch (e) {}
+  if (store.mode === 'file') return flushFile(json);
   if (store.mode !== 'db') return;
   if (store.writing) { store.pending = true; return; }
   store.writing = true;
@@ -758,6 +782,17 @@ async function flush() {
     store.writing = false;
     if (store.pending) { store.pending = false; flush(); }
   }
+}
+
+async function flushFile(json) {
+  if (store.writing) { store.pending = true; return; }
+  store.writing = true; setStatus('busy', 'Saving…');
+  try {
+    const r = await fetch('/api/state', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: json });
+    if (!r.ok) throw new Error(r.status);
+    setStatus('ok', 'Saved to saves/state.json');
+  } catch (e) { setStatus('err', 'Couldn’t save to saves/. Is serve.py still running?'); }
+  finally { store.writing = false; if (store.pending) { store.pending = false; flush(); } }
 }
 
 // ======================= helpers =======================
