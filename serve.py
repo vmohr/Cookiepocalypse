@@ -52,6 +52,8 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             return self._json(200, {"app": "cookiepocalypse", "exists": True, **saved})
         if self.path.split("?")[0].startswith("/saves"):
             return self._json(404, {"error": "not found"})
+        if self.path.split("?")[0] == "/seed.json":  # the app's starter data lives in data/
+            self.path = "/data/seed.json"
         return super().do_GET()
 
     def do_PUT(self):
@@ -82,8 +84,12 @@ class Handler(http.server.SimpleHTTPRequestHandler):
     do_POST = do_PUT
 
     def log_message(self, fmt, *args):
-        if "/api/state" not in (args[0] if args else ""):
-            super().log_message(fmt, *args)
+        try:
+            msg = fmt % args
+        except (TypeError, ValueError):
+            msg = str(fmt)
+        if "/api/state" not in msg:  # autosaves would flood the console
+            super().log_message("%s", msg)
 
 
 def main():
