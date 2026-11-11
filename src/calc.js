@@ -203,6 +203,19 @@ function applyPatch(state, p) {
   for (const rs of p.removeSubstitutions || []) state.substitutions = (state.substitutions || []).filter(x => key(x.ingredient) !== key(rs));
   for (const nt of p.notes || []) { const r = state.recipes.find(x => key(x.name) === key(nt.recipe)); if (r) r.notes = nt.notes; }
   for (const mt of p.methods || []) { const r = state.recipes.find(x => key(x.name) === key(mt.recipe)); if (r) { if (!r.method || mt.overwrite) r.method = mt.method; if (mt.notes != null) r.notes = mt.notes; } }
+  if (p.setPlan) {
+    const prev = new Map(state.plan.map(x => [key(x.recipe), x]));
+    state.plan = p.setPlan.filter(n => state.recipes.some(r => key(r.name) === key(n))).map(n => prev.get(key(n)) || { recipe: n, cookiesPerUnit: 6, bakeDay: '' });
+  }
+  if (p.removeEmptyRecipes) {
+    const inPlan = new Set(state.plan.map(x => key(x.recipe)));
+    state.recipes = state.recipes.filter(r => r.ingredients.length || inPlan.has(key(r.name)));
+  }
+  if (p.pruneConversions) {
+    const used = new Set(state.recipes.flatMap(r => r.ingredients.map(i => key(i.name))));
+    state.gramConversions = state.gramConversions.filter(c => used.has(key(c.ingredient)));
+    state.bulkConversions = state.bulkConversions.filter(c => used.has(key(c.ingredient)));
+  }
   for (const x of p.substitutions || []) {
     state.substitutions = state.substitutions || [];
     if (!state.substitutions.some(y => key(y.ingredient) === key(x.ingredient) && key(y.buyAs) === key(x.buyAs))) state.substitutions.push({ ...x });
