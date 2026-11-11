@@ -1,0 +1,611 @@
+{
+ "recipes": [
+  {
+   "name": "Egg Cream Pop Rock Wafer Sandwiches",
+   "book": "Custom (wafer after King Arthur-style chocolate wafers)",
+   "bookUrl": "",
+   "page": "N/A",
+   "cookiesPerBatch": 24,
+   "refrigerate": "Chill rolled dough 30 min",
+   "ovenTemp": "325",
+   "bakeMinutes": 14,
+   "notes": "Crisp chocolate wafers sandwiching a milky \"egg cream\" creme with popping candy. WAFERS: cream butter + sugar, beat in milk + vanilla, mix in dry. Roll 1/16 in. thin between parchment, chill 30 min, cut 2 in. rounds (48 wafers). Bake at 325\u00b0F about 14 min until dry and fully crisp; they crisp more as they cool. CREME: beat shortening, powdered sugar, milk powder, vanilla and salt until fluffy. It is water-free on purpose so the popping candy keeps its pop. Fold in popping candy last, pipe about 13 g per sandwich and sandwich gently without squishing. Assemble 1-2 days before packing and store airtight. (Retro Soda Fountain 2026; base batch = 24.)",
+   "ingredients": [
+    {
+     "name": "Flour",
+     "amount": 150,
+     "unit": "Grams",
+     "phase": "Wafer Dough",
+     "grams": 150
+    },
+    {
+     "name": "Dutch-Process Cocoa Powder",
+     "amount": 45,
+     "unit": "Grams",
+     "phase": "Wafer Dough",
+     "grams": 45
+    },
+    {
+     "name": "Baking Soda",
+     "amount": 1.2,
+     "unit": "Grams",
+     "phase": "Wafer Dough",
+     "grams": 1.2
+    },
+    {
+     "name": "Salt",
+     "amount": 2,
+     "unit": "Grams",
+     "phase": "Wafer Dough",
+     "grams": 2
+    },
+    {
+     "name": "Butter",
+     "amount": 115,
+     "unit": "Grams",
+     "phase": "Wafer Dough",
+     "grams": 115
+    },
+    {
+     "name": "Granulated Sugar",
+     "amount": 170,
+     "unit": "Grams",
+     "phase": "Wafer Dough",
+     "grams": 170
+    },
+    {
+     "name": "Whole Milk",
+     "amount": 45,
+     "unit": "Milliliters",
+     "phase": "Wafer Dough"
+    },
+    {
+     "name": "Vanilla Extract",
+     "amount": 5,
+     "unit": "Milliliters",
+     "phase": "Wafer Dough"
+    },
+    {
+     "name": "Vegetable Shortening",
+     "amount": 85,
+     "unit": "Grams",
+     "phase": "Egg Cream Creme",
+     "grams": 85
+    },
+    {
+     "name": "Powdered Sugar",
+     "amount": 200,
+     "unit": "Grams",
+     "phase": "Egg Cream Creme",
+     "grams": 200
+    },
+    {
+     "name": "Nonfat Milk Powder",
+     "amount": 30,
+     "unit": "Grams",
+     "phase": "Egg Cream Creme",
+     "grams": 30
+    },
+    {
+     "name": "Vanilla Bean Paste",
+     "amount": 5,
+     "unit": "Milliliters",
+     "phase": "Egg Cream Creme"
+    },
+    {
+     "name": "Salt",
+     "amount": 1,
+     "unit": "Grams",
+     "phase": "Egg Cream Creme",
+     "grams": 1
+    },
+    {
+     "name": "Popping Candy (unflavored)",
+     "amount": 60,
+     "unit": "Grams",
+     "phase": "Egg Cream Creme",
+     "grams": 60
+    }
+   ]
+  },
+  {
+   "name": "Black & White Malted Brownie Cookies",
+   "book": "Sally's Baking Addiction",
+   "bookUrl": "https://sallysbakingaddiction.com/brownie-cookies/",
+   "page": "N/A",
+   "cookiesPerBatch": 24,
+   "refrigerate": "20 minutes",
+   "ovenTemp": "350",
+   "bakeMinutes": 12,
+   "notes": "Vanilla + chocolate (no white chocolate). CHOCOLATE half: melt chocolate with butter; whip eggs and sugars on high about 5 min to a pale ribbon for the crackly top; fold in chocolate, then dry. VANILLA half: melt the butter; whip egg, both sugars and vanilla bean paste to a pale ribbon; fold in butter, then flour, malted milk powder, baking powder and salt. The extra butter, sugar and malt stand in for the white chocolate that used to give this half its body. Chill both doughs 20 min; scoop half of each into one ball for a marbled black-and-white drop. Bake at 350\u00b0F for 12-13 min until edges set; centers firm up as they cool. Test one sheet first: the vanilla half may spread a little more. (Retro Soda Fountain 2026; base batch = 24.)",
+   "ingredients": [
+    {
+     "name": "Chocolate, Bittersweet",
+     "amount": 113,
+     "unit": "Grams",
+     "phase": "Malted Dark Chocolate Dough",
+     "grams": 113
+    },
+    {
+     "name": "Butter",
+     "amount": 35,
+     "unit": "Grams",
+     "phase": "Malted Dark Chocolate Dough",
+     "grams": 35
+    },
+    {
+     "name": "Dark Brown Sugar",
+     "amount": 75,
+     "unit": "Grams",
+     "phase": "Malted Dark Chocolate Dough",
+     "grams": 75
+    },
+    {
+     "name": "Granulated Sugar",
+     "amount": 25,
+     "unit": "Grams",
+     "phase": "Malted Dark Chocolate Dough",
+     "grams": 25
+    },
+    {
+     "name": "Eggs",
+     "amount": 1,
+     "unit": "Whole",
+     "phase": "Malted Dark Chocolate Dough"
+    },
+    {
+     "name": "Vanilla Bean Paste",
+     "amount": 2.5,
+     "unit": "Milliliters",
+     "phase": "Malted Dark Chocolate Dough"
+    },
+    {
+     "name": "Flour",
+     "amount": 47,
+     "unit": "Grams",
+     "phase": "Malted Dark Chocolate Dough",
+     "grams": 47
+    },
+    {
+     "name": "Dutch-Process Cocoa Powder",
+     "amount": 10,
+     "unit": "Grams",
+     "phase": "Malted Dark Chocolate Dough",
+     "grams": 10
+    },
+    {
+     "name": "Malted Milk Powder",
+     "amount": 20,
+     "unit": "Grams",
+     "phase": "Malted Dark Chocolate Dough",
+     "grams": 20
+    },
+    {
+     "name": "Espresso Powder",
+     "amount": 0.5,
+     "unit": "Teaspoons",
+     "phase": "Malted Dark Chocolate Dough"
+    },
+    {
+     "name": "Baking Powder & Salt",
+     "amount": 1.5,
+     "unit": "Grams",
+     "phase": "Malted Dark Chocolate Dough",
+     "grams": 1.5
+    },
+    {
+     "name": "Butter",
+     "amount": 60,
+     "unit": "Grams",
+     "phase": "Malted Vanilla Dough",
+     "grams": 60
+    },
+    {
+     "name": "Dark Brown Sugar",
+     "amount": 75,
+     "unit": "Grams",
+     "phase": "Malted Vanilla Dough",
+     "grams": 75
+    },
+    {
+     "name": "Granulated Sugar",
+     "amount": 90,
+     "unit": "Grams",
+     "phase": "Malted Vanilla Dough",
+     "grams": 90
+    },
+    {
+     "name": "Eggs",
+     "amount": 1,
+     "unit": "Whole",
+     "phase": "Malted Vanilla Dough"
+    },
+    {
+     "name": "Vanilla Bean Paste",
+     "amount": 5,
+     "unit": "Milliliters",
+     "phase": "Malted Vanilla Dough"
+    },
+    {
+     "name": "Flour",
+     "amount": 60,
+     "unit": "Grams",
+     "phase": "Malted Vanilla Dough",
+     "grams": 60
+    },
+    {
+     "name": "Malted Milk Powder",
+     "amount": 50,
+     "unit": "Grams",
+     "phase": "Malted Vanilla Dough",
+     "grams": 50
+    },
+    {
+     "name": "Baking Powder & Salt",
+     "amount": 1.5,
+     "unit": "Grams",
+     "phase": "Malted Vanilla Dough",
+     "grams": 1.5
+    }
+   ]
+  },
+  {
+   "name": "Cherry Phosphate Shortbread Thumbprints",
+   "book": "Your Jam Thumbprint Cookies (flavor ideas from Art of Drink)",
+   "bookUrl": "https://www.artofdrink.com/soda/cherry-phosphate",
+   "page": "N/A",
+   "cookiesPerBatch": 36,
+   "refrigerate": "Chill shaped cookies while oven preheats",
+   "ovenTemp": "350",
+   "bakeMinutes": 13,
+   "notes": "Built on your proven Jam Thumbprint proportions (egg yolk only, no added liquid, no baking soda) so the wells hold. Cream butter, sugar and honey; beat in yolk and extracts; mix in flour, cherry powder, baking powder and salt. Roll 1 in. balls, press wells and chill shaped cookies while the oven preheats. FILLING: simmer sour cherry preserves until thick and jammy, then cool. Stir in acid phosphate and bark infusion off-heat. Fill about 1/2 tsp per cookie. Bake at 350\u00b0F for 12-13 min until edges just set. Dust with powdered sugar once cool. (Retro Soda Fountain 2026; base batch = 36.)",
+   "ingredients": [
+    {
+     "name": "Butter",
+     "amount": 12,
+     "unit": "Tablespoons",
+     "phase": "Dough",
+     "grams": 170.2
+    },
+    {
+     "name": "Granulated Sugar",
+     "amount": 0.75,
+     "unit": "Cups",
+     "phase": "Dough",
+     "grams": 150
+    },
+    {
+     "name": "Honey",
+     "amount": 2,
+     "unit": "Tablespoons",
+     "phase": "Dough",
+     "grams": 42
+    },
+    {
+     "name": "Egg Yolks",
+     "amount": 1,
+     "unit": "Whole",
+     "phase": "Dough",
+     "grams": 18
+    },
+    {
+     "name": "Cherry Extract",
+     "amount": 0.75,
+     "unit": "Teaspoons",
+     "phase": "Dough"
+    },
+    {
+     "name": "Almond Extract",
+     "amount": 0.25,
+     "unit": "Teaspoons",
+     "phase": "Dough"
+    },
+    {
+     "name": "Flour",
+     "amount": 2.25,
+     "unit": "Cups",
+     "phase": "Dough",
+     "grams": 270
+    },
+    {
+     "name": "Freeze-Dried Cherry Powder",
+     "amount": 2,
+     "unit": "Tablespoons",
+     "phase": "Dough",
+     "grams": 8
+    },
+    {
+     "name": "Baking Powder",
+     "amount": 1,
+     "unit": "Teaspoons",
+     "phase": "Dough",
+     "grams": 4
+    },
+    {
+     "name": "Salt",
+     "amount": 0.5,
+     "unit": "Teaspoons",
+     "phase": "Dough",
+     "grams": 3
+    },
+    {
+     "name": "Sour Cherry Preserves",
+     "amount": 0.5,
+     "unit": "Cups",
+     "phase": "Cherry Phosphate Filling",
+     "grams": 160
+    },
+    {
+     "name": "Acid Phosphate Solution",
+     "amount": 1,
+     "unit": "Teaspoons",
+     "phase": "Cherry Phosphate Filling"
+    },
+    {
+     "name": "Wild Cherry Bark Maceration",
+     "amount": 1,
+     "unit": "Teaspoons",
+     "phase": "Cherry Phosphate Filling"
+    },
+    {
+     "name": "Powdered Sugar",
+     "amount": 0.25,
+     "unit": "Cups",
+     "phase": "Finish",
+     "grams": 28.4
+    }
+   ]
+  },
+  {
+   "name": "Root Beer Float Millionaire's Bars",
+   "book": "Sugar Spun Run",
+   "bookUrl": "https://sugarspunrun.com/millionaires-shortbread/",
+   "page": "N/A",
+   "cookiesPerBatch": 24,
+   "refrigerate": "",
+   "ovenTemp": "350",
+   "bakeMinutes": 25,
+   "notes": "Root beer float: root beer caramel under a vanilla \"ice cream\" layer, with no dark chocolate. Bake pressed shortbread crust 25 min at 350\u00b0F. Cook caramel to 240\u00b0F (soft ball); off heat stir in vanilla, sarsaparilla/root beer extract and the pinch of star anise (it rounds out the extract). Pour over cooled crust and let set. TOP: melt white chocolate with vanilla bean paste and spread very thin, about 2 mm, so it reads as vanilla rather than candy. Add a few flakes of salt before it sets. Cut with a hot knife. Caramel method: https://cleverpinkpirate.com/root-beer-caramel-recipe/ (Retro Soda Fountain 2026; base batch = 24.)",
+   "ingredients": [
+    {
+     "name": "Unsalted Butter",
+     "amount": 226,
+     "unit": "Grams",
+     "phase": "Shortbread Crust",
+     "grams": 226
+    },
+    {
+     "name": "Granulated Sugar",
+     "amount": 70,
+     "unit": "Grams",
+     "phase": "Shortbread Crust",
+     "grams": 70
+    },
+    {
+     "name": "Dark Brown Sugar",
+     "amount": 70,
+     "unit": "Grams",
+     "phase": "Shortbread Crust",
+     "grams": 70
+    },
+    {
+     "name": "Egg Yolks",
+     "amount": 1,
+     "unit": "Whole",
+     "phase": "Shortbread Crust"
+    },
+    {
+     "name": "Vanilla Bean Paste",
+     "amount": 5,
+     "unit": "Milliliters",
+     "phase": "Shortbread Crust"
+    },
+    {
+     "name": "Flour",
+     "amount": 280,
+     "unit": "Grams",
+     "phase": "Shortbread Crust",
+     "grams": 280
+    },
+    {
+     "name": "Salt",
+     "amount": 3,
+     "unit": "Grams",
+     "phase": "Shortbread Crust",
+     "grams": 3
+    },
+    {
+     "name": "Brown Sugar",
+     "amount": 200,
+     "unit": "Grams",
+     "phase": "Sarsaparilla Caramel",
+     "grams": 200
+    },
+    {
+     "name": "Granulated Sugar",
+     "amount": 200,
+     "unit": "Grams",
+     "phase": "Sarsaparilla Caramel",
+     "grams": 200
+    },
+    {
+     "name": "Butter",
+     "amount": 226,
+     "unit": "Grams",
+     "phase": "Sarsaparilla Caramel",
+     "grams": 226
+    },
+    {
+     "name": "Sweetened Condensed Milk",
+     "amount": 396,
+     "unit": "Grams",
+     "phase": "Sarsaparilla Caramel",
+     "grams": 396
+    },
+    {
+     "name": "Corn Syrup",
+     "amount": 250,
+     "unit": "Milliliters",
+     "phase": "Sarsaparilla Caramel"
+    },
+    {
+     "name": "Heavy Cream",
+     "amount": 30,
+     "unit": "Milliliters",
+     "phase": "Sarsaparilla Caramel"
+    },
+    {
+     "name": "Vanilla Extract",
+     "amount": 7.5,
+     "unit": "Milliliters",
+     "phase": "Sarsaparilla Caramel"
+    },
+    {
+     "name": "Sarsaparilla / Root Beer Extract",
+     "amount": 7.5,
+     "unit": "Milliliters",
+     "phase": "Sarsaparilla Caramel"
+    },
+    {
+     "name": "Ground Star Anise",
+     "amount": 0.5,
+     "unit": "Grams",
+     "phase": "Sarsaparilla Caramel",
+     "grams": 0.5
+    },
+    {
+     "name": "Chocolate, White",
+     "amount": 100,
+     "unit": "Grams",
+     "phase": "Vanilla \"Ice Cream\" Top",
+     "grams": 100
+    },
+    {
+     "name": "Vanilla Bean Paste",
+     "amount": 2.5,
+     "unit": "Milliliters",
+     "phase": "Vanilla \"Ice Cream\" Top"
+    },
+    {
+     "name": "Flaky Sea Salt",
+     "amount": 1,
+     "unit": "Grams",
+     "phase": "Vanilla \"Ice Cream\" Top",
+     "grams": 1
+    }
+   ]
+  },
+  {
+   "name": "Lime Rickey Drops",
+   "book": "Custom (soft sour-cream sugar cookie base)",
+   "bookUrl": "",
+   "page": "N/A",
+   "cookiesPerBatch": 24,
+   "refrigerate": "Chill dough 30 min",
+   "ovenTemp": "350",
+   "bakeMinutes": 10,
+   "notes": "Soft, cakey, tart lime cookie with a sharp sour glaze, the bright counterpoint in the box. Rub zest into sugar; cream with butter; beat in egg, sour cream, lime juice and vanilla; mix in dry. Chill 30 min. Scoop 2 Tbsp balls. Bake at 350\u00b0F for 9-11 min until just set and not browned, so they stay soft. GLAZE: whisk powdered sugar, lime juice and citric acid. Dip tops once cool and finish with fresh zest. Mixing the citric acid into the glaze keeps it from weeping and getting sticky when mailed. Optional: a tiny drop of green gel color in the glaze for Christmas green. (Retro Soda Fountain 2026; base batch = 24.)",
+   "ingredients": [
+    {
+     "name": "Butter",
+     "amount": 113,
+     "unit": "Grams",
+     "phase": "Dough",
+     "grams": 113
+    },
+    {
+     "name": "Granulated Sugar",
+     "amount": 150,
+     "unit": "Grams",
+     "phase": "Dough",
+     "grams": 150
+    },
+    {
+     "name": "Lime Zest",
+     "amount": 3,
+     "unit": "Whole",
+     "phase": "Dough"
+    },
+    {
+     "name": "Eggs",
+     "amount": 1,
+     "unit": "Whole",
+     "phase": "Dough"
+    },
+    {
+     "name": "Sour Cream",
+     "amount": 120,
+     "unit": "Grams",
+     "phase": "Dough",
+     "grams": 120
+    },
+    {
+     "name": "Lime Juice",
+     "amount": 15,
+     "unit": "Milliliters",
+     "phase": "Dough"
+    },
+    {
+     "name": "Vanilla Extract",
+     "amount": 5,
+     "unit": "Milliliters",
+     "phase": "Dough"
+    },
+    {
+     "name": "Flour",
+     "amount": 250,
+     "unit": "Grams",
+     "phase": "Dough",
+     "grams": 250
+    },
+    {
+     "name": "Baking Powder",
+     "amount": 6,
+     "unit": "Grams",
+     "phase": "Dough",
+     "grams": 6
+    },
+    {
+     "name": "Baking Soda",
+     "amount": 2.4,
+     "unit": "Grams",
+     "phase": "Dough",
+     "grams": 2.4
+    },
+    {
+     "name": "Salt",
+     "amount": 3,
+     "unit": "Grams",
+     "phase": "Dough",
+     "grams": 3
+    },
+    {
+     "name": "Powdered Sugar",
+     "amount": 120,
+     "unit": "Grams",
+     "phase": "Sour Lime Glaze",
+     "grams": 120
+    },
+    {
+     "name": "Lime Juice",
+     "amount": 30,
+     "unit": "Milliliters",
+     "phase": "Sour Lime Glaze"
+    },
+    {
+     "name": "Citric Acid",
+     "amount": 2,
+     "unit": "Grams",
+     "phase": "Sour Lime Glaze",
+     "grams": 2
+    },
+    {
+     "name": "Lime Zest",
+     "amount": 1,
+     "unit": "Whole",
+     "phase": "Sour Lime Glaze"
+    }
+   ]
+  }
+ ]
+}
