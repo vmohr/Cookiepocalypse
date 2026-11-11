@@ -435,7 +435,8 @@ async function boot() {
     } catch (e) { clearTimeout(timer); S = loadLocal() || emptyState(); store.mode = 'local'; setStatus('err', 'Account storage unavailable. Saving in this browser only'); }
   } else {
     store.mode = 'local';
-    S = loadLocal() || await fetchSeed() || emptyState();
+    S = loadLocal();
+    if (S) await mergeNewSeed(); else S = await fetchSeed() || emptyState();
     setStatus('busy', 'Saving in this browser only. Export a backup to keep it safe');
   }
   window.addEventListener('hashchange', render);
@@ -452,7 +453,12 @@ async function mergeNewSeed() {
   S.seedVersion = seed.seedVersion; scheduleSave();
   if (n) setTimeout(() => toast(`Added ${n} new recipe${n > 1 ? 's' : ''} from your other sheets`), 600);
 }
-async function fetchSeed() { try { const r = await fetch('seed.json', { cache: 'no-store' }); if (!r.ok) return null; return normalizeState(await r.json()); } catch (e) { return null; } }
+async function fetchSeed() {
+  for (const url of ['seed.json', 'data/seed.json']) {
+    try { const r = await fetch(url, { cache: 'no-store' }); if (r.ok) return normalizeState(await r.json()); } catch (e) {}
+  }
+  return null;
+}
 function loadLocal() { try { const t = localStorage.getItem(LS_KEY); return t ? normalizeState(JSON.parse(t)) : null; } catch (e) { return null; } }
 
 function commit(opts = {}) { scheduleSave(); if (opts.render !== false) render(); }
