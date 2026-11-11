@@ -384,6 +384,12 @@ function normalizeState(s) {
     people: arr(s.people).filter(p => p && p.name != null).map(p => ({ name: String(p.name), boxSize: String(p.boxSize ?? ''), units: num(p.units) ?? 0 })),
     substitutions: arr(s.substitutions).filter(x => x && x.ingredient).map(x => ({ ingredient: String(x.ingredient), buyAs: String(x.buyAs ?? ''), share: num(x.share) })),
     kosherSaltGPerTsp: num(s.kosherSaltGPerTsp),
+    // Baking plan: dated sessions with checkable tasks. n = session number (matches a plan row's bake day); null for order/shop/buffer days
+    sessions: arr(s.sessions).filter(x => x && (x.title || x.date)).map(x => ({
+      n: num(x.n), label: String(x.label ?? ''), date: String(x.date ?? ''), end: String(x.end ?? ''), hours: String(x.hours ?? ''),
+      title: String(x.title ?? ''), buy: String(x.buy ?? ''),
+      tasks: arr(x.tasks).map(t => typeof t === 'string' ? { text: t, done: false } : { text: String(t?.text ?? ''), done: !!t?.done }).filter(t => t.text),
+    })),
     appliedPatches: arr(s.appliedPatches).map(String),
     ignoredChecks: (s.ignoredChecks && typeof s.ignoredChecks === 'object') ? { ...s.ignoredChecks } : {},
     purchased: (s.purchased && typeof s.purchased === 'object') ? Object.fromEntries(Object.entries(s.purchased).map(([k, v]) => [key(k.split('|')[0]) + '|' + key(k.split('|')[1]), !!v])) : {},

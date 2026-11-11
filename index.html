@@ -75,6 +75,19 @@ textarea{width:100%;min-height:90px;resize:vertical}
 .sheet-head h2{font-size:20px}
 .facts{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
 .derived{color:var(--muted);font-style:italic}
+.sess{border-top:1px solid var(--line);padding:10px 0 8px}
+.sess:first-child{border-top:none}
+.sess-head{display:flex;gap:12px;align-items:baseline}
+.sess-n{flex:none;min-width:30px;height:24px;padding:0 7px;border-radius:12px;background:var(--line);color:var(--muted);font:600 13px Oswald,sans-serif;display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box}
+.sess.next{box-shadow:inset 3px 0 0 var(--green);padding-left:10px}
+.sess.next .sess-n{background:var(--green);color:#fff}
+.sess.done{opacity:.55}
+.sess-buy{margin:4px 0 0 42px;color:#8a611c}
+.tasks{list-style:none;margin:6px 0 0 42px;padding:0}
+.tasks li{padding:2px 0}
+.tasks label{display:flex;gap:8px;align-items:flex-start;cursor:pointer}
+.tasks input{margin-top:3px;flex:none}
+.tasks input:checked+span{text-decoration:line-through;color:var(--muted)}
 .issue{display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--line)}
 .issue:last-child{border-bottom:none}
 .sev{width:8px;align-self:stretch;border-radius:4px;flex:none}
@@ -503,6 +516,12 @@ function normalizeState(s) {
     people: arr(s.people).filter(p => p && p.name != null).map(p => ({ name: String(p.name), boxSize: String(p.boxSize ?? ''), units: num(p.units) ?? 0 })),
     substitutions: arr(s.substitutions).filter(x => x && x.ingredient).map(x => ({ ingredient: String(x.ingredient), buyAs: String(x.buyAs ?? ''), share: num(x.share) })),
     kosherSaltGPerTsp: num(s.kosherSaltGPerTsp),
+    // Baking plan: dated sessions with checkable tasks. n = session number (matches a plan row's bake day); null for order/shop/buffer days
+    sessions: arr(s.sessions).filter(x => x && (x.title || x.date)).map(x => ({
+      n: num(x.n), label: String(x.label ?? ''), date: String(x.date ?? ''), end: String(x.end ?? ''), hours: String(x.hours ?? ''),
+      title: String(x.title ?? ''), buy: String(x.buy ?? ''),
+      tasks: arr(x.tasks).map(t => typeof t === 'string' ? { text: t, done: false } : { text: String(t?.text ?? ''), done: !!t?.done }).filter(t => t.text),
+    })),
     appliedPatches: arr(s.appliedPatches).map(String),
     ignoredChecks: (s.ignoredChecks && typeof s.ignoredChecks === 'object') ? { ...s.ignoredChecks } : {},
     purchased: (s.purchased && typeof s.purchased === 'object') ? Object.fromEntries(Object.entries(s.purchased).map(([k, v]) => [key(k.split('|')[0]) + '|' + key(k.split('|')[1]), !!v])) : {},
@@ -674,19 +693,21 @@ async function boot() {
         await mergeNewSeed();
       } else {
         const seed = await fetchSeed();
-        if (seed) { delete seed.patches; S = seed; setStatus('ok', 'Loaded starter data from your sheet'); scheduleSave(); }
+        if (seed) { S = withPatches(seed); setStatus('ok', 'Loaded starter data from your sheet'); scheduleSave(); }
         else { S = emptyState(); setStatus('ok', 'Saved to your account'); }
       }
     } catch (e) { clearTimeout(timer); S = loadLocal() || emptyState(); store.mode = 'local'; setStatus('err', 'Account storage unavailable. Saving in this browser only'); }
   } else {
     store.mode = 'local';
     S = loadLocal();
-    if (S) await mergeNewSeed(); else { S = await fetchSeed() || emptyState(); delete S.patches; }
+    if (S) await mergeNewSeed(); else { const seed = await fetchSeed(); S = seed ? withPatches(seed) : emptyState(); }
     setStatus('busy', 'Saving in this browser only. Export a backup to keep it safe');
   }
   window.addEventListener('hashchange', render);
   render();
 }
+// A fresh start gets the starter data with every update already applied, so later loads don't re-apply them over your edits
+function withPatches(seed) { for (const p of seed.patches || []) applyPatch(seed, p); delete seed.patches; return normalizeState(seed); }
 // Bring in recipes/conversions added to the starter data since this plan was created (never overwrites)
 async function mergeNewSeed() {
   const seed = await fetchSeed();
@@ -872,11 +893,34 @@ function vPlan() {
           <td class="n">${esc(rec?.ovenTemp ?? '')}</td>
           <td class="n" style="white-space:nowrap" title="${rec ? `Prep ${fmtMinutes(rec.prepMinutes) || '?'} · Rest ${fmtMinutes(rec.restMinutes) || '?'} · Bake ${fmtMinutes(rec.bakeMinutes) || '?'}` : ''}">${rec && totalMinutes(rec) != null ? fmtMinutes(totalMinutes(rec)) + `<div class="muted small">${[rec.prepMinutes, rec.restMinutes, rec.bakeMinutes].map(v => v == null ? '–' : fmt(v, 0)).join(' · ')}</div>` : '<span class="muted small">—</span>'}</td>
           <td class="n">${r.bakeHours != null ? fmt(r.bakeHours, 1) + ' h' : '<span class="muted small">—</span>'}</td>
-          <td class="n"><input class="num" style="width:64px" data-plan="${r.i}" data-f="bakeDay" value="${esc(r.item.bakeDay ?? '')}"></td>
+          <td class="n"><input class="num" style="width:64px" data-plan="${r.i}" data-f="bakeDay" value="${esc(r.item.bakeDay ?? '')}">${(() => { const ss = (S.sessions || []).find(x => x.n != null && x.n === num(r.item.bakeDay)); return ss ? `<div class="muted small" style="white-space:nowrap">${esc(fmtDay(ss.date))}</div>` : ''; })()}</td>
           <td><button class="btn ghost sm" data-unplan="${r.i}" title="Remove from plan">✕</button></td></tr>`;
       }).join('')}</tbody></table></div>
       <p class="muted small" style="margin-top:10px">Batches = ⌈cookies per unit × ${fmt(units)} units ÷ cookies per batch⌉, rounded up the same way as your sheet. Oven time = bake minutes per batch × batches. Time / batch shows prep · rest · bake minutes.</p>`
       : `<div class="empty">No recipes in the plan yet. Pick one above.</div>`}
+  </div>${vSessions()}`;
+}
+function fmtDay(iso) { if (!iso) return ''; const d = new Date(iso + 'T12:00:00'); return isNaN(d) ? iso : d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }); }
+function isoToday() { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+function vSessions() {
+  const ss = S.sessions || [];
+  if (!ss.length) return '';
+  const t = isoToday();
+  const nextIdx = ss.findIndex(s => (s.end || s.date) >= t && s.tasks.some(x => !x.done));
+  const done = ss.reduce((a, s) => a + s.tasks.filter(x => x.done).length, 0), total = ss.reduce((a, s) => a + s.tasks.length, 0);
+  return `<div class="card">
+    <div class="row" style="margin-bottom:6px"><h2 class="grow" style="font-size:20px">Baking plan</h2><span class="muted small">${done} of ${total} tasks done</span></div>
+    <div>${ss.map((s, si) => {
+      const d = s.tasks.filter(x => x.done).length, all = s.tasks.length && d === s.tasks.length;
+      return `<div class="sess${si === nextIdx ? ' next' : ''}${all ? ' done' : ''}">
+        <div class="sess-head"><span class="sess-n">${s.n != null ? s.n : esc(s.label || '–')}</span>
+          <div class="grow"><b>${esc(fmtDay(s.date))}${s.end ? ' – ' + esc(fmtDay(s.end)) : ''}</b> <span class="muted">· ${esc(s.title)}</span>${si === nextIdx ? ' <span class="pill green">Up next</span>' : ''}</div>
+          <span class="muted small" style="white-space:nowrap">${esc(s.hours)}${s.tasks.length ? ` · ${d}/${s.tasks.length}` : ''}</span></div>
+        ${s.buy ? `<div class="small sess-buy">Buy: ${esc(s.buy)}</div>` : ''}
+        ${s.tasks.length ? `<ul class="tasks">${s.tasks.map((x, ti) => `<li><label><input type="checkbox" data-task="${si}:${ti}" ${x.done ? 'checked' : ''}> <span>${esc(x.text)}</span></label></li>`).join('')}</ul>` : ''}
+      </div>`;
+    }).join('')}</div>
+    <p class="muted small" style="margin-top:10px">Session numbers match the “When to bake?” column above. Checkmarks save with the rest of your plan.</p>
   </div>`;
 }
 function srcHtml(r) {
@@ -1303,9 +1347,9 @@ bake 350°F 10–12 min <- dough</pre>
   if (a === 'importPaste') importText($('#paste').value);
   if (a === 'template') offerDownload('recipe-template.csv', CSV_COLS.join(',') + '\nGinger Snaps,Flour,2.25,Cups,270,Dry Phase 1,Cookies,,123,36,30 minutes,350,12,\nGinger Snaps,Butter,12,Tablespoons,170.2,Wet Phase 1,,,,,,,,\n');
   if (a === 'reloadSeed') confirmBox('Reload from the original sheet?', 'This replaces everything here with the data imported from your Cookiepocalypse 2024 sheet. Export a backup first if you’ve made changes.', 'Reload', async () => {
-    const seed = await fetchSeed(); if (seed) { delete seed.patches; S = seed; commit(); toast('Reloaded'); } else toast('Couldn’t reach the starter data');
+    const seed = await fetchSeed(); if (seed) { S = withPatches(seed); commit(); toast('Reloaded'); } else toast('Couldn’t reach the starter data');
   });
-  if (a === 'newSeason') confirmBox('Start a new season?', 'Clears the recipe plan and shopping checkmarks. Recipes, recipients and conversions stay.', 'Clear plan', () => { S.plan = []; S.purchased = {}; commit(); });
+  if (a === 'newSeason') confirmBox('Start a new season?', 'Clears the recipe plan, shopping checkmarks and the baking plan. Recipes, recipients and conversions stay.', 'Clear plan', () => { S.plan = []; S.purchased = {}; S.sessions = []; commit(); });
 });
 document.addEventListener('change', e => {
   const t = e.target, d = t.dataset;
@@ -1336,6 +1380,7 @@ document.addEventListener('change', e => {
   if (d.sub != null) { S.substitutions[+d.sub][d.f] = d.num != null ? val : t.value.trim(); return commit(); }
   if (t.id === 'kosherG') { S.kosherSaltGPerTsp = t.value === '' ? null : num(+t.value); return commit(); }
   if (d.conv) { (d.conv === 'gram' ? S.gramConversions : S.bulkConversions)[+d.i][d.f] = d.num != null ? val : t.value.trim(); return commit(); }
+  if (d.task) { const [si, ti] = d.task.split(':').map(Number); const x = S.sessions?.[si]?.tasks?.[ti]; if (x) { x.done = t.checked; return commit(); } return; }
   if (d.purch) { if (t.checked) S.purchased[d.purch] = true; else delete S.purchased[d.purch]; return commit(); }
   if (t.id === 'planOnly') { ui.planOnly = t.checked; return render(); }
   if (t.id === 'hidePurch') { ui.hidePurchased = t.checked; return render(); }
