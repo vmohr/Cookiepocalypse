@@ -993,7 +993,7 @@ function vCheat() {
         ${rec.prepMinutes != null ? `<span class="pill">Prep ${fmtMinutes(rec.prepMinutes)}</span>` : ''}
         ${rec.restMinutes != null ? `<span class="pill">Rest ${fmtMinutes(rec.restMinutes)}</span>` : ''}
         ${rec.bakeMinutes != null ? `<span class="pill">Bake ${fmtMinutes(rec.bakeMinutes)}</span>` : ''}
-        ${r.bakeHours != null ? `<span class="pill">${fmt(r.bakeHours, 1)} h total</span>` : ''}
+        ${r.bakeHours != null ? `<span class="pill">${fmt(r.bakeHours, 1)} h oven for all batches</span>` : ''}
         ${rec.refrigerate ? `<span class="pill green">Chill: ${esc(rec.refrigerate)}</span>` : ''}
         ${r.cookies != null ? `<span class="pill">${fmt(r.cookies, 0)} cookies</span>` : ''}
       </div>
