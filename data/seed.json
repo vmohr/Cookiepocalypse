@@ -6590,6 +6590,171 @@
     }
    ],
    "pruneConversions": true
+  },
+  {
+   "id": "2026-11-root-beer-extract-name",
+   "renames": [
+    {
+     "field": "name",
+     "from": [
+      "Sarsaparilla / Root Beer Extract"
+     ],
+     "to": "Root Beer Extract"
+    }
+   ],
+   "ingredientEdits": [
+    {
+     "recipe": "Root Beer Float Millionaire's Bars",
+     "find": {
+      "name": "Dark Brown Sugar",
+      "phase": "sarsaparilla"
+     },
+     "replaceWith": [
+      {
+       "name": "Dark Brown Sugar",
+       "amount": 100,
+       "unit": "Grams",
+       "grams": 100,
+       "phase": "Root Beer Caramel"
+      }
+     ]
+    },
+    {
+     "recipe": "Root Beer Float Millionaire's Bars",
+     "find": {
+      "name": "Granulated Sugar",
+      "phase": "sarsaparilla"
+     },
+     "replaceWith": [
+      {
+       "name": "Granulated Sugar",
+       "amount": 300,
+       "unit": "Grams",
+       "grams": 300,
+       "phase": "Root Beer Caramel"
+      }
+     ]
+    },
+    {
+     "recipe": "Root Beer Float Millionaire's Bars",
+     "find": {
+      "name": "Butter",
+      "phase": "sarsaparilla"
+     },
+     "replaceWith": [
+      {
+       "name": "Butter",
+       "amount": 113,
+       "unit": "Grams",
+       "grams": 113,
+       "phase": "Root Beer Caramel"
+      }
+     ]
+    },
+    {
+     "recipe": "Root Beer Float Millionaire's Bars",
+     "find": {
+      "name": "Salt",
+      "phase": "sarsaparilla"
+     },
+     "replaceWith": [
+      {
+       "name": "Salt",
+       "amount": 2,
+       "unit": "Grams",
+       "grams": 2,
+       "phase": "Root Beer Caramel"
+      }
+     ]
+    },
+    {
+     "recipe": "Root Beer Float Millionaire's Bars",
+     "find": {
+      "name": "Glucose",
+      "phase": "sarsaparilla"
+     },
+     "replaceWith": [
+      {
+       "name": "Glucose",
+       "amount": 345,
+       "unit": "Grams",
+       "grams": 345,
+       "phase": "Root Beer Caramel"
+      }
+     ]
+    },
+    {
+     "recipe": "Root Beer Float Millionaire's Bars",
+     "find": {
+      "name": "Heavy Cream",
+      "phase": "sarsaparilla"
+     },
+     "replaceWith": [
+      {
+       "name": "Heavy Cream",
+       "amount": 479.798,
+       "unit": "Milliliters",
+       "grams": 475,
+       "phase": "Root Beer Caramel"
+      }
+     ]
+    },
+    {
+     "recipe": "Root Beer Float Millionaire's Bars",
+     "find": {
+      "name": "Vanilla Extract",
+      "phase": "sarsaparilla"
+     },
+     "replaceWith": [
+      {
+       "name": "Vanilla Extract",
+       "amount": 7.5053,
+       "unit": "Milliliters",
+       "grams": 7.13,
+       "phase": "Root Beer Caramel"
+      }
+     ]
+    },
+    {
+     "recipe": "Root Beer Float Millionaire's Bars",
+     "find": {
+      "name": "Root Beer Extract",
+      "phase": "sarsaparilla"
+     },
+     "replaceWith": [
+      {
+       "name": "Root Beer Extract",
+       "amount": 7.5053,
+       "unit": "Milliliters",
+       "grams": 7.13,
+       "phase": "Root Beer Caramel"
+      }
+     ]
+    },
+    {
+     "recipe": "Root Beer Float Millionaire's Bars",
+     "find": {
+      "name": "Ground Star Anise",
+      "phase": "sarsaparilla"
+     },
+     "replaceWith": [
+      {
+       "name": "Ground Star Anise",
+       "amount": 0.5,
+       "unit": "Grams",
+       "grams": 0.5,
+       "phase": "Root Beer Caramel"
+      }
+     ]
+    }
+   ],
+   "methodReplace": [
+    {
+     "from": "Sarsaparilla / Root Beer Extract",
+     "to": "Root Beer Extract"
+    }
+   ],
+   "pruneConversions": true
   }
  ]
 }
