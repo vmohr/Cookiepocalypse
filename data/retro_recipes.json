@@ -1,0 +1,655 @@
+[
+ {
+  "name": "Egg Cream Carbonated Milk & Dark Chocolate Drops",
+  "book": "The Tasty Flavors",
+  "bookUrl": "https://thetastyflavors.com/milk-cookies-recipe/",
+  "page": "N/A",
+  "cookiesPerBatch": 24,
+  "refrigerate": "",
+  "ovenTemp": "350",
+  "bakeMinutes": 11,
+  "notes": "Soft tender milk cookie base infused with dark chocolate syrup, malt, and cold club soda for an airy egg cream lift. Fold in chilled seltzer right before portioning. Bake 10-12 min. (From the Retro Soda Fountain Cookies Master Plan; base batch = 24 cookies.)",
+  "ingredients": [
+   {
+    "name": "Unsalted Butter (softened)",
+    "amount": 113,
+    "unit": "Grams",
+    "phase": "Butter & Sugar Emulsion",
+    "grams": 113
+   },
+   {
+    "name": "Granulated Sugar",
+    "amount": 120,
+    "unit": "Grams",
+    "phase": "Butter & Sugar Emulsion",
+    "grams": 120
+   },
+   {
+    "name": "Dark Brown Sugar",
+    "amount": 60,
+    "unit": "Grams",
+    "phase": "Butter & Sugar Emulsion",
+    "grams": 60
+   },
+   {
+    "name": "Whole Milk / Sweetened Condensed Milk",
+    "amount": 60,
+    "unit": "Milliliters",
+    "phase": "Liquid Dairy & Syrup Emulsion"
+   },
+   {
+    "name": "U-Bet / Dark Chocolate Syrup",
+    "amount": 60,
+    "unit": "Milliliters",
+    "phase": "Liquid Dairy & Syrup Emulsion"
+   },
+   {
+    "name": "Club Soda / Seltzer",
+    "amount": 45,
+    "unit": "Milliliters",
+    "phase": "Effervescent Leavening"
+   },
+   {
+    "name": "Vanilla Extract",
+    "amount": 5,
+    "unit": "Milliliters",
+    "phase": "Flavor & Aromatics"
+   },
+   {
+    "name": "Flour",
+    "amount": 280,
+    "unit": "Grams",
+    "phase": "Dry Blend & Structure",
+    "grams": 280
+   },
+   {
+    "name": "Malted Milk Powder",
+    "amount": 40,
+    "unit": "Grams",
+    "phase": "Dry Blend & Structure",
+    "grams": 40
+   },
+   {
+    "name": "Baking Powder",
+    "amount": 4,
+    "unit": "Grams",
+    "phase": "Dry Blend & Structure",
+    "grams": 4
+   },
+   {
+    "name": "Salt",
+    "amount": 3,
+    "unit": "Grams",
+    "phase": "Dry Blend & Structure",
+    "grams": 3
+   },
+   {
+    "name": "Dark Chocolate Chunks (60%)",
+    "amount": 150,
+    "unit": "Grams",
+    "phase": "Inclusions & Baking",
+    "grams": 150
+   }
+  ]
+ },
+ {
+  "name": "Black & White Malted Brownie Cookies",
+  "book": "Sally's Baking Addiction",
+  "bookUrl": "https://sallysbakingaddiction.com/brownie-cookies/",
+  "page": "N/A",
+  "cookiesPerBatch": 24,
+  "refrigerate": "20 minutes",
+  "ovenTemp": "350",
+  "bakeMinutes": null,
+  "notes": "Melted chocolate + whipped egg/sugar for a crackly top; chill both doughs 20 min and scoop half vanilla, half chocolate into marbled drops. (From the Retro Soda Fountain Cookies Master Plan; base batch = 24 cookies.)",
+  "ingredients": [
+   {
+    "name": "Chocolate, Bittersweet",
+    "amount": 113,
+    "unit": "Grams",
+    "phase": "Malted Dark Chocolate Dough",
+    "grams": 113
+   },
+   {
+    "name": "Butter",
+    "amount": 35,
+    "unit": "Grams",
+    "phase": "Malted Dark Chocolate Dough",
+    "grams": 35
+   },
+   {
+    "name": "Dark Brown Sugar",
+    "amount": 75,
+    "unit": "Grams",
+    "phase": "Malted Dark Chocolate Dough",
+    "grams": 75
+   },
+   {
+    "name": "Granulated Sugar",
+    "amount": 25,
+    "unit": "Grams",
+    "phase": "Malted Dark Chocolate Dough",
+    "grams": 25
+   },
+   {
+    "name": "Eggs",
+    "amount": 1,
+    "unit": "Whole",
+    "phase": "Malted Dark Chocolate Dough"
+   },
+   {
+    "name": "Vanilla Bean Paste",
+    "amount": 2.5,
+    "unit": "Milliliters",
+    "phase": "Malted Dark Chocolate Dough"
+   },
+   {
+    "name": "Flour",
+    "amount": 47,
+    "unit": "Grams",
+    "phase": "Malted Dark Chocolate Dough",
+    "grams": 47
+   },
+   {
+    "name": "Dutch-Process Cocoa Powder",
+    "amount": 10,
+    "unit": "Grams",
+    "phase": "Malted Dark Chocolate Dough",
+    "grams": 10
+   },
+   {
+    "name": "Malted Milk Powder",
+    "amount": 20,
+    "unit": "Grams",
+    "phase": "Malted Dark Chocolate Dough",
+    "grams": 20
+   },
+   {
+    "name": "Espresso Powder",
+    "amount": 0.5,
+    "unit": "Teaspoons",
+    "phase": "Malted Dark Chocolate Dough"
+   },
+   {
+    "name": "Baking Powder & Salt",
+    "amount": 1.5,
+    "unit": "Grams",
+    "phase": "Malted Dark Chocolate Dough",
+    "grams": 1.5
+   },
+   {
+    "name": "Chocolate, White",
+    "amount": 113,
+    "unit": "Grams",
+    "phase": "Malted Vanilla Dough",
+    "grams": 113
+   },
+   {
+    "name": "Butter",
+    "amount": 35,
+    "unit": "Grams",
+    "phase": "Malted Vanilla Dough",
+    "grams": 35
+   },
+   {
+    "name": "Dark Brown Sugar",
+    "amount": 75,
+    "unit": "Grams",
+    "phase": "Malted Vanilla Dough",
+    "grams": 75
+   },
+   {
+    "name": "Granulated Sugar",
+    "amount": 25,
+    "unit": "Grams",
+    "phase": "Malted Vanilla Dough",
+    "grams": 25
+   },
+   {
+    "name": "Eggs",
+    "amount": 1,
+    "unit": "Whole",
+    "phase": "Malted Vanilla Dough"
+   },
+   {
+    "name": "Vanilla Bean Paste",
+    "amount": 5,
+    "unit": "Milliliters",
+    "phase": "Malted Vanilla Dough"
+   },
+   {
+    "name": "Flour",
+    "amount": 60,
+    "unit": "Grams",
+    "phase": "Malted Vanilla Dough",
+    "grams": 60
+   },
+   {
+    "name": "Malted Milk Powder",
+    "amount": 30,
+    "unit": "Grams",
+    "phase": "Malted Vanilla Dough",
+    "grams": 30
+   },
+   {
+    "name": "Baking Powder & Salt",
+    "amount": 1.5,
+    "unit": "Grams",
+    "phase": "Malted Vanilla Dough",
+    "grams": 1.5
+   }
+  ]
+ },
+ {
+  "name": "Coca-Cola Molasses Crinkle Cookies",
+  "book": "The Baker Chick",
+  "bookUrl": "https://www.thebakerchick.com/easy-molasses-crinkle-cookies/",
+  "page": "N/A",
+  "cookiesPerBatch": 24,
+  "refrigerate": "",
+  "ovenTemp": "350",
+  "bakeMinutes": 9,
+  "notes": "Reduce 2 L Mexican Coke to 1.5 cups of syrup (4x) and use it in place of molasses. Roll 1.5-inch balls in sugar; bake 8-10 min. (From the Retro Soda Fountain Cookies Master Plan; base batch = 24 cookies.)",
+  "ingredients": [
+   {
+    "name": "Vegetable Oil",
+    "amount": 140,
+    "unit": "Milliliters",
+    "phase": "Crinkle Dough"
+   },
+   {
+    "name": "Granulated Sugar",
+    "amount": 100,
+    "unit": "Grams",
+    "phase": "Crinkle Dough",
+    "grams": 100
+   },
+   {
+    "name": "Dark Brown Sugar",
+    "amount": 100,
+    "unit": "Grams",
+    "phase": "Crinkle Dough",
+    "grams": 100
+   },
+   {
+    "name": "Reduced Coca-Cola Syrup",
+    "amount": 60,
+    "unit": "Milliliters",
+    "phase": "Cola Reduction"
+   },
+   {
+    "name": "Eggs",
+    "amount": 1,
+    "unit": "Whole",
+    "phase": "Crinkle Dough"
+   },
+   {
+    "name": "Ground Ginger",
+    "amount": 3,
+    "unit": "Grams",
+    "phase": "Spice & Leavening",
+    "grams": 3
+   },
+   {
+    "name": "Ground Cinnamon",
+    "amount": 3,
+    "unit": "Grams",
+    "phase": "Spice & Leavening",
+    "grams": 3
+   },
+   {
+    "name": "Ground Cloves",
+    "amount": 1.5,
+    "unit": "Grams",
+    "phase": "Spice & Leavening",
+    "grams": 1.5
+   },
+   {
+    "name": "Vanilla Extract",
+    "amount": 2.5,
+    "unit": "Milliliters",
+    "phase": "Crinkle Dough"
+   },
+   {
+    "name": "Baking Soda",
+    "amount": 10,
+    "unit": "Grams",
+    "phase": "Spice & Leavening",
+    "grams": 10
+   },
+   {
+    "name": "Flour",
+    "amount": 270,
+    "unit": "Grams",
+    "phase": "Crinkle Dough",
+    "grams": 270
+   },
+   {
+    "name": "Granulated Sugar (for rolling)",
+    "amount": 100,
+    "unit": "Grams",
+    "phase": "Coating",
+    "grams": 100
+   }
+  ]
+ },
+ {
+  "name": "Cherry Phosphate Shortbread Thumbprints",
+  "book": "Sally's Baking Addiction",
+  "bookUrl": "https://sallysbakingaddiction.com/lemon-thumbprint-cookies/",
+  "page": "N/A",
+  "cookiesPerBatch": 24,
+  "refrigerate": "3 hours",
+  "ovenTemp": "350",
+  "bakeMinutes": null,
+  "notes": "Thumbprint base with cherry extract & tart juice in place of lemon; chill dough 3 hours, roll in sugar, press wells, fill with wild cherry bark & acid phosphate jam (stir phosphate in off-heat). Cherry phosphate reference: https://www.artofdrink.com/soda/cherry-phosphate (From the Retro Soda Fountain Cookies Master Plan; base batch = 24 cookies.)",
+  "ingredients": [
+   {
+    "name": "Sour Cherry Preserves / Puree",
+    "amount": 200,
+    "unit": "Grams",
+    "phase": "Jam",
+    "grams": 200
+   },
+   {
+    "name": "Wild Cherry Bark Maceration",
+    "amount": 30,
+    "unit": "Milliliters",
+    "phase": "Jam"
+   },
+   {
+    "name": "Acid Phosphate Solution",
+    "amount": 15,
+    "unit": "Milliliters",
+    "phase": "Jam"
+   },
+   {
+    "name": "Granulated Sugar / Pectin",
+    "amount": 50,
+    "unit": "Grams",
+    "phase": "Jam",
+    "grams": 50
+   },
+   {
+    "name": "Unsalted Butter (softened)",
+    "amount": 165,
+    "unit": "Grams",
+    "phase": "Shortbread Dough",
+    "grams": 165
+   },
+   {
+    "name": "Granulated Sugar",
+    "amount": 120,
+    "unit": "Grams",
+    "phase": "Shortbread Dough",
+    "grams": 120
+   },
+   {
+    "name": "Cherry Extract",
+    "amount": 5,
+    "unit": "Milliliters",
+    "phase": "Shortbread Dough"
+   },
+   {
+    "name": "Sour Cherry Juice",
+    "amount": 15,
+    "unit": "Milliliters",
+    "phase": "Shortbread Dough"
+   },
+   {
+    "name": "Eggs",
+    "amount": 1,
+    "unit": "Whole",
+    "phase": "Shortbread Dough"
+   },
+   {
+    "name": "Vanilla Bean Paste",
+    "amount": 5,
+    "unit": "Milliliters",
+    "phase": "Shortbread Dough"
+   },
+   {
+    "name": "Flour",
+    "amount": 230,
+    "unit": "Grams",
+    "phase": "Shortbread Dough",
+    "grams": 230
+   },
+   {
+    "name": "Cornstarch",
+    "amount": 7,
+    "unit": "Grams",
+    "phase": "Shortbread Dough",
+    "grams": 7
+   },
+   {
+    "name": "Salt",
+    "amount": 2,
+    "unit": "Grams",
+    "phase": "Shortbread Dough",
+    "grams": 2
+   },
+   {
+    "name": "Granulated Sugar (for rolling)",
+    "amount": 80,
+    "unit": "Grams",
+    "phase": "Shortbread Dough",
+    "grams": 80
+   }
+  ]
+ },
+ {
+  "name": "Sarsaparilla Millionaire's Shortbread Bars",
+  "book": "Sugar Spun Run",
+  "bookUrl": "https://sugarspunrun.com/millionaires-shortbread/",
+  "page": "N/A",
+  "cookiesPerBatch": 24,
+  "refrigerate": "",
+  "ovenTemp": "350",
+  "bakeMinutes": 25,
+  "notes": "Bake pressed shortbread crust 25 min at 350\u00b0F. Cook caramel to 240\u00b0F (soft ball), then stir in vanilla and sarsaparilla extract off-heat (root beer caramel method: https://cleverpinkpirate.com/root-beer-caramel-recipe/). Top with thin white chocolate, dust with powdered sugar, cut into bars. (From the Retro Soda Fountain Cookies Master Plan; base batch = 24 cookies.)",
+  "ingredients": [
+   {
+    "name": "Unsalted Butter",
+    "amount": 226,
+    "unit": "Grams",
+    "phase": "Shortbread Crust",
+    "grams": 226
+   },
+   {
+    "name": "Granulated Sugar",
+    "amount": 70,
+    "unit": "Grams",
+    "phase": "Shortbread Crust",
+    "grams": 70
+   },
+   {
+    "name": "Dark Brown Sugar",
+    "amount": 70,
+    "unit": "Grams",
+    "phase": "Shortbread Crust",
+    "grams": 70
+   },
+   {
+    "name": "Egg Yolks",
+    "amount": 1,
+    "unit": "Whole",
+    "phase": "Shortbread Crust"
+   },
+   {
+    "name": "Vanilla Bean Paste",
+    "amount": 5,
+    "unit": "Milliliters",
+    "phase": "Shortbread Crust"
+   },
+   {
+    "name": "Flour",
+    "amount": 280,
+    "unit": "Grams",
+    "phase": "Shortbread Crust",
+    "grams": 280
+   },
+   {
+    "name": "Salt",
+    "amount": 3,
+    "unit": "Grams",
+    "phase": "Shortbread Crust",
+    "grams": 3
+   },
+   {
+    "name": "Brown Sugar",
+    "amount": 200,
+    "unit": "Grams",
+    "phase": "Sarsaparilla Caramel",
+    "grams": 200
+   },
+   {
+    "name": "Granulated Sugar",
+    "amount": 200,
+    "unit": "Grams",
+    "phase": "Sarsaparilla Caramel",
+    "grams": 200
+   },
+   {
+    "name": "Butter",
+    "amount": 226,
+    "unit": "Grams",
+    "phase": "Sarsaparilla Caramel",
+    "grams": 226
+   },
+   {
+    "name": "Sweetened Condensed Milk",
+    "amount": 396,
+    "unit": "Grams",
+    "phase": "Sarsaparilla Caramel",
+    "grams": 396
+   },
+   {
+    "name": "Corn Syrup",
+    "amount": 250,
+    "unit": "Milliliters",
+    "phase": "Sarsaparilla Caramel"
+   },
+   {
+    "name": "Heavy Cream",
+    "amount": 30,
+    "unit": "Milliliters",
+    "phase": "Sarsaparilla Caramel"
+   },
+   {
+    "name": "Vanilla Extract",
+    "amount": 7.5,
+    "unit": "Milliliters",
+    "phase": "Sarsaparilla Caramel"
+   },
+   {
+    "name": "Sarsaparilla / Root Beer Extract",
+    "amount": 7.5,
+    "unit": "Milliliters",
+    "phase": "Sarsaparilla Caramel"
+   },
+   {
+    "name": "Chocolate, White",
+    "amount": 150,
+    "unit": "Grams",
+    "phase": "Top Finish",
+    "grams": 150
+   },
+   {
+    "name": "Powdered Sugar",
+    "amount": 50,
+    "unit": "Grams",
+    "phase": "Top Finish",
+    "grams": 50
+   }
+  ]
+ },
+ {
+  "name": "Orange Creamsicle Drops",
+  "book": "Recipes by Aria",
+  "bookUrl": "https://recipesbyaria.com/creamsicle-cookies/",
+  "page": "N/A",
+  "cookiesPerBatch": 24,
+  "refrigerate": "",
+  "ovenTemp": "350",
+  "bakeMinutes": 11,
+  "notes": "Rub orange zest into the sugars; fold in white chocolate chips. Bake 10-12 min at 350\u00b0F until edges are light golden; drizzle with orange-vanilla glaze once cool. (From the Retro Soda Fountain Cookies Master Plan; base batch = 24 cookies.)",
+  "ingredients": [
+   {
+    "name": "Unsalted Butter",
+    "amount": 113,
+    "unit": "Grams",
+    "phase": "Creamsicle Dough",
+    "grams": 113
+   },
+   {
+    "name": "Granulated Sugar",
+    "amount": 100,
+    "unit": "Grams",
+    "phase": "Creamsicle Dough",
+    "grams": 100
+   },
+   {
+    "name": "Dark Brown Sugar",
+    "amount": 100,
+    "unit": "Grams",
+    "phase": "Creamsicle Dough",
+    "grams": 100
+   },
+   {
+    "name": "Eggs",
+    "amount": 2,
+    "unit": "Whole",
+    "phase": "Creamsicle Dough"
+   },
+   {
+    "name": "Vanilla Extract",
+    "amount": 10,
+    "unit": "Milliliters",
+    "phase": "Creamsicle Dough"
+   },
+   {
+    "name": "Orange Extract & Zest",
+    "amount": 15,
+    "unit": "Grams",
+    "phase": "Creamsicle Dough",
+    "grams": 15
+   },
+   {
+    "name": "Flour",
+    "amount": 280,
+    "unit": "Grams",
+    "phase": "Creamsicle Dough",
+    "grams": 280
+   },
+   {
+    "name": "Baking Soda",
+    "amount": 5,
+    "unit": "Grams",
+    "phase": "Creamsicle Dough",
+    "grams": 5
+   },
+   {
+    "name": "Salt",
+    "amount": 3,
+    "unit": "Grams",
+    "phase": "Creamsicle Dough",
+    "grams": 3
+   },
+   {
+    "name": "White Chocolate Chips",
+    "amount": 175,
+    "unit": "Grams",
+    "phase": "Inclusions",
+    "grams": 175
+   },
+   {
+    "name": "Orange-Vanilla Drizzle",
+    "amount": 100,
+    "unit": "Grams",
+    "phase": "Glaze",
+    "grams": 100
+   }
+  ]
+ }
+]

@@ -136,6 +136,7 @@ function normalizeState(s) {
   const arr = v => Array.isArray(v) ? v : [];
   return {
     version: 1,
+    seedVersion: num(s.seedVersion) || 1,
     title: String(s.title || 'Cookie Plan'),
     recipes: arr(s.recipes).map(normalizeRecipe),
     plan: arr(s.plan).filter(p => p && p.recipe).map(p => ({ recipe: String(p.recipe), cookiesPerUnit: num(p.cookiesPerUnit), bakeDay: p.bakeDay == null ? '' : p.bakeDay })),

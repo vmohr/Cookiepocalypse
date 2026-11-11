@@ -21,3 +21,8 @@ A single-page web app for planning a big holiday cookie bake, ported from the
 ## Saving progress
 In the hosted version, progress saves to your Claude account automatically. Use **Import / Export → Full backup**
 to save a `.json` snapshot, which you can commit to `backups/` to keep history here.
+
+## Holiday 2026 update
+- Christmas red & green restyle with a vector version of the Cookiepocalypse logo (`brand/`).
+- Added the six Retro Soda Fountain recipes (`data/retro_recipes.json`, built by `scripts/retro.py`).
+- `scripts/parse_std.py` imports any older Cookiepocalypse/Christmas Cookies sheet that uses the standard Recipes / Recipe Info / Gram Conversions / Bulk Conversions layout.
