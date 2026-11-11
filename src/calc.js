@@ -40,31 +40,105 @@ function planRows(state) {
     };
   });
 }
-function shoppingList(state) {
+function shoppingList(state, opts = {}) {
   // Shopping List: unique (Name, Unit) across selected recipes; Amount = SUM of scaled amounts;
   // Bulk Unit / Bulk Amount from Bulk Conversions (Amount / Conversion(A/B)).
+  // Extras: substitutions (buy one ingredient as others, split by weight) and combining rows that share a bulk unit.
+  const subsOn = opts.substitutions !== false, mergeOn = opts.merge !== false;
   const map = new Map();
+  const add = (name, unit, amount, grams, recipeLabel) => {
+    const k = key(name) + '|' + key(unit);
+    let e = map.get(k);
+    if (!e) { e = { key: k, name: String(name).trim(), unit: String(unit || '').trim(), amount: 0, grams: 0, gramsMissing: false, recipes: [] }; map.set(k, e); }
+    e.amount += amount;
+    if (grams == null) e.gramsMissing = true; else e.grams += grams;
+    if (!e.recipes.includes(recipeLabel)) e.recipes.push(recipeLabel);
+  };
   for (const row of planRows(state)) {
     if (!row.recipe || row.batches == null) continue;
     for (const ing of row.recipe.ingredients) {
       if (!String(ing.name || '').trim()) continue;
-      const k = key(ing.name) + '|' + key(ing.unit);
-      let e = map.get(k);
-      if (!e) { e = { key: k, name: ing.name.trim(), unit: (ing.unit || '').trim(), amount: 0, grams: 0, gramsMissing: false, recipes: [] }; map.set(k, e); }
-      e.amount += (num(ing.amount) || 0) * row.batches;
       const g = gramFor(state, ing);
-      if (g.grams == null) e.gramsMissing = true; else e.grams += g.grams * row.batches;
-      if (!e.recipes.includes(row.recipe.name)) e.recipes.push(row.recipe.name);
+      const amount = (num(ing.amount) || 0) * row.batches;
+      const subs = subsOn ? (state.substitutions || []).filter(x => key(x.ingredient) === key(ing.name) && num(x.share)) : [];
+      if (subs.length && g.grams != null) {
+        for (const x of subs) { const sg = g.grams * row.batches * num(x.share); add(x.buyAs, 'Grams', sg, sg, row.recipe.name + ' (as ' + ing.name.trim() + ')'); }
+        continue;
+      }
+      add(ing.name, ing.unit, amount, g.grams == null ? null : g.grams * row.batches, row.recipe.name);
     }
   }
-  const out = [...map.values()].filter(e => e.amount > 0);
+  let out = [...map.values()].filter(e => e.amount > 0);
   for (const e of out) {
     const b = state.bulkConversions.find(b => key(b.ingredient) === key(e.name) && key(b.unit) === key(e.unit));
     if (b && num(b.perBulk)) { e.bulkUnit = b.bulkUnit; e.bulkAmount = e.amount / num(b.perBulk); }
-    e.purchased = !!(state.purchased || {})[e.key];
+    e.parts = [{ amount: e.amount, unit: e.unit }];
   }
-  out.sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }) || a.unit.localeCompare(b.unit));
+  if (mergeOn) {
+    const merged = new Map(), rest = [];
+    for (const e of out) {
+      if (!e.bulkUnit) { rest.push(e); continue; }
+      const k = key(e.name) + '|bulk:' + key(e.bulkUnit);
+      const m = merged.get(k);
+      if (!m) { merged.set(k, { ...e, key: k, parts: [...e.parts], recipes: [...e.recipes] }); continue; }
+      m.parts.push(...e.parts); m.bulkAmount += e.bulkAmount; m.grams += e.grams; m.gramsMissing = m.gramsMissing || e.gramsMissing;
+      for (const r of e.recipes) if (!m.recipes.includes(r)) m.recipes.push(r);
+    }
+    for (const m of merged.values()) if (m.parts.length > 1) { m.amount = null; m.unit = ''; }
+    // single-row bulk entries keep their original name|unit key so existing checkmarks survive
+    for (const [k, m] of merged) if (m.parts.length === 1) m.key = key(m.name) + '|' + key(m.parts[0].unit);
+    out = [...rest, ...merged.values()];
+  }
+  for (const e of out) e.purchased = !!(state.purchased || {})[e.key];
+  out.sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }) || String(a.unit).localeCompare(String(b.unit)));
   return out;
+}
+
+// Salt: recipes assume table salt by volume; show the kosher-salt equivalent for the baker's salt.
+function kosherTsp(state, ing, mult = 1) {
+  const kg = num(state.kosherSaltGPerTsp);
+  if (!kg || key(ing.name) !== 'salt') return null;
+  const ui = unitInfo(ing.unit);
+  if (!ui || ui.kind !== 'vol') return null;
+  const g = gramFor(state, ing).grams;
+  return g == null ? null : g * mult / kg;
+}
+
+// Apply a data patch (conversions, renames, recipe ingredient edits, settings). Idempotent per id.
+function applyPatch(state, p) {
+  if (!p || (state.appliedPatches || []).includes(p.id)) return false;
+  const sameIng = (a, b) => key(a.ingredient) === key(b.ingredient) && key(a.unit) === key(b.unit);
+  for (const rn of p.renames || []) {
+    const from = new Set(rn.from.map(key));
+    const cf = rn.field === 'name' ? 'ingredient' : 'unit';
+    for (const r of state.recipes) for (const i of r.ingredients) if (from.has(key(i[rn.field]))) i[rn.field] = rn.to;
+    for (const c of [...state.gramConversions, ...state.bulkConversions]) if (from.has(key(c[cf]))) c[cf] = rn.to;
+  }
+  for (const ed of p.ingredientEdits || []) {
+    const r = state.recipes.find(x => key(x.name) === key(ed.recipe)); if (!r) continue;
+    const out = [];
+    for (const i of r.ingredients) {
+      if (key(i.name) === key(ed.find.name) && (!ed.find.unit || key(i.unit) === key(ed.find.unit))) {
+        for (const rw of ed.replaceWith) { const n = { ...rw }; if (!n.phase && i.phase) n.phase = i.phase; out.push(n); }
+      } else out.push(i);
+    }
+    r.ingredients = out;
+  }
+  const upsert = (arr, row, extraMatch) => {
+    const idx = []; arr.forEach((c, n) => { if (sameIng(c, row) && (!extraMatch || extraMatch(c))) idx.push(n); });
+    if (!idx.length) { arr.push({ ...row }); return; }
+    Object.assign(arr[idx[0]], row);
+    for (const n of idx.slice(1).reverse()) arr.splice(n, 1);
+  };
+  for (const g of p.gram || []) upsert(state.gramConversions, g);
+  for (const b of p.bulk || []) upsert(state.bulkConversions, b);
+  for (const x of p.substitutions || []) {
+    state.substitutions = state.substitutions || [];
+    if (!state.substitutions.some(y => key(y.ingredient) === key(x.ingredient) && key(y.buyAs) === key(x.buyAs))) state.substitutions.push({ ...x });
+  }
+  if (p.settings) Object.assign(state, p.settings);
+  state.appliedPatches = [...(state.appliedPatches || []), p.id];
+  return true;
 }
 
 // ---- Import / export helpers ----
@@ -143,11 +217,14 @@ function normalizeState(s) {
     gramConversions: arr(s.gramConversions).filter(c => c && c.ingredient).map(c => ({ ingredient: String(c.ingredient), unit: String(c.unit ?? ''), grams: num(c.grams) })),
     bulkConversions: arr(s.bulkConversions).filter(c => c && c.ingredient).map(c => ({ ingredient: String(c.ingredient), unit: String(c.unit ?? ''), bulkUnit: String(c.bulkUnit ?? ''), perBulk: num(c.perBulk) })),
     people: arr(s.people).filter(p => p && p.name != null).map(p => ({ name: String(p.name), boxSize: String(p.boxSize ?? ''), units: num(p.units) ?? 0 })),
+    substitutions: arr(s.substitutions).filter(x => x && x.ingredient).map(x => ({ ingredient: String(x.ingredient), buyAs: String(x.buyAs ?? ''), share: num(x.share) })),
+    kosherSaltGPerTsp: num(s.kosherSaltGPerTsp),
+    appliedPatches: arr(s.appliedPatches).map(String),
     ignoredChecks: (s.ignoredChecks && typeof s.ignoredChecks === 'object') ? { ...s.ignoredChecks } : {},
     purchased: (s.purchased && typeof s.purchased === 'object') ? Object.fromEntries(Object.entries(s.purchased).map(([k, v]) => [key(k.split('|')[0]) + '|' + key(k.split('|')[1]), !!v])) : {},
   };
 }
-if (typeof module !== 'undefined') module.exports = { totalUnits, planRows, shoppingList, gramFor, recipesToCSV, recipesFromCSV, normalizeState, normalizeRecipe, key };
+if (typeof module !== 'undefined') module.exports = { totalUnits, planRows, shoppingList, kosherTsp, applyPatch, gramFor, recipesToCSV, recipesFromCSV, normalizeState, normalizeRecipe, key };
 
 // ---- Conversion checks ----
 const UNIT = (() => {

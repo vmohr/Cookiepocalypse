@@ -1,9 +1,9 @@
-const C=require(require('path').join(__dirname,'../src/calc.js'));const fs=require('fs');
+const C=require(process.env.CALC||require('path').join(__dirname,'../src/calc.js'));const fs=require('fs');
 const s=C.normalizeState(JSON.parse(fs.readFileSync(process.argv[2])));
 const sheet=JSON.parse(fs.readFileSync(process.argv[3]));
 console.log('units',C.totalUnits(s));
 for(const r of C.planRows(s)) console.log(r.item.recipe,r.batches,r.bakeHours&&r.bakeHours.toFixed(1));
-const mine=new Map(C.shoppingList(s).map(e=>[C.key(e.name)+'|'+C.key(e.unit),e]));
+const mine=new Map(C.shoppingList(s,{substitutions:false,merge:false}).map(e=>[C.key(e.name)+'|'+C.key(e.unit),e]));
 let bad=0,n=0;
 for(const [nm,u,amt,bu,ba] of sheet){ if(amt==null) continue; n++; const m=mine.get(C.key(nm)+'|'+C.key(u));
  if(!m||Math.abs(m.amount-amt)>1e-6||(ba!=null&&ba!==''&&Math.abs((m.bulkAmount??0)-ba)>1e-6)){bad++;console.log('DIFF',nm,u,amt,ba,m&&m.amount,m&&m.bulkAmount);} }

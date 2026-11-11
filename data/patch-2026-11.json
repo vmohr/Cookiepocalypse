@@ -1,0 +1,606 @@
+{
+ "id": "2026-11-conversions",
+ "renames": [
+  {
+   "field": "unit",
+   "from": [
+    "Teaspoon"
+   ],
+   "to": "Teaspoons"
+  },
+  {
+   "field": "name",
+   "from": [
+    "Egg"
+   ],
+   "to": "Eggs"
+  },
+  {
+   "field": "name",
+   "from": [
+    "Fresh ginger"
+   ],
+   "to": "Fresh Ginger"
+  },
+  {
+   "field": "name",
+   "from": [
+    "Ground Clove"
+   ],
+   "to": "Ground Cloves"
+  },
+  {
+   "field": "name",
+   "from": [
+    "Unsalted Butter",
+    "Unsalted Butter (softened)"
+   ],
+   "to": "Butter"
+  },
+  {
+   "field": "name",
+   "from": [
+    "Granulated Sugar (for rolling)"
+   ],
+   "to": "Granulated Sugar"
+  }
+ ],
+ "ingredientEdits": [
+  {
+   "recipe": "Root Beer Float Millionaire's Bars",
+   "find": {
+    "name": "Brown Sugar",
+    "unit": "Grams"
+   },
+   "replaceWith": [
+    {
+     "name": "Light Brown Sugar",
+     "amount": 200,
+     "unit": "Grams",
+     "grams": 200
+    }
+   ]
+  },
+  {
+   "recipe": "Black & White Malted Brownie Cookies",
+   "find": {
+    "name": "Baking Powder & Salt"
+   },
+   "replaceWith": [
+    {
+     "name": "Baking Powder",
+     "amount": 1,
+     "unit": "Grams",
+     "grams": 1
+    },
+    {
+     "name": "Salt",
+     "amount": 0.5,
+     "unit": "Grams",
+     "grams": 0.5
+    }
+   ]
+  },
+  {
+   "recipe": "Cherry Phosphate Shortbread Thumbprints",
+   "find": {
+    "name": "Sour Cherry Preserves",
+    "unit": "Cups"
+   },
+   "replaceWith": [
+    {
+     "name": "Sour Cherry Preserves",
+     "amount": 0.5,
+     "unit": "Cups",
+     "grams": 170
+    }
+   ]
+  }
+ ],
+ "gram": [
+  {
+   "ingredient": "Baking Soda",
+   "unit": "Teaspoons",
+   "grams": 4.8
+  },
+  {
+   "ingredient": "Salt",
+   "unit": "Tablespoons",
+   "grams": 18
+  },
+  {
+   "ingredient": "Light Brown Sugar",
+   "unit": "Cups",
+   "grams": 200
+  },
+  {
+   "ingredient": "Dark Brown Sugar",
+   "unit": "Cups",
+   "grams": 200
+  },
+  {
+   "ingredient": "Brown Sugar",
+   "unit": "Cups",
+   "grams": 200
+  },
+  {
+   "ingredient": "Eggs",
+   "unit": "Whole",
+   "grams": 54
+  },
+  {
+   "ingredient": "Egg Whites",
+   "unit": "Whole",
+   "grams": 36
+  },
+  {
+   "ingredient": "Egg Yolks",
+   "unit": "Whole",
+   "grams": 18
+  },
+  {
+   "ingredient": "Almond Extract",
+   "unit": "Teaspoons",
+   "grams": 4.5
+  },
+  {
+   "ingredient": "Cherry Extract",
+   "unit": "Teaspoons",
+   "grams": 4.5
+  },
+  {
+   "ingredient": "Vanilla Extract",
+   "unit": "Milliliters",
+   "grams": 0.95
+  },
+  {
+   "ingredient": "Vanilla Bean Paste",
+   "unit": "Milliliters",
+   "grams": 1.2
+  },
+  {
+   "ingredient": "Sarsaparilla / Root Beer Extract",
+   "unit": "Milliliters",
+   "grams": 0.95
+  },
+  {
+   "ingredient": "Whole Milk",
+   "unit": "Milliliters",
+   "grams": 1.03
+  },
+  {
+   "ingredient": "Heavy Cream",
+   "unit": "Milliliters",
+   "grams": 0.91
+  },
+  {
+   "ingredient": "Lime Juice",
+   "unit": "Milliliters",
+   "grams": 1.0
+  },
+  {
+   "ingredient": "Vegetable Oil",
+   "unit": "Milliliters",
+   "grams": 0.92
+  },
+  {
+   "ingredient": "Corn Syrup",
+   "unit": "Milliliters",
+   "grams": 1.38
+  },
+  {
+   "ingredient": "Lime Zest",
+   "unit": "Whole",
+   "grams": 2
+  },
+  {
+   "ingredient": "Sour Cherry Preserves",
+   "unit": "Cups",
+   "grams": 340
+  },
+  {
+   "ingredient": "Freeze-Dried Cherry Powder",
+   "unit": "Tablespoons",
+   "grams": 4
+  },
+  {
+   "ingredient": "Espresso Powder",
+   "unit": "Teaspoons",
+   "grams": 2.3
+  },
+  {
+   "ingredient": "Honey",
+   "unit": "Tablespoons",
+   "grams": 21
+  }
+ ],
+ "bulk": [
+  {
+   "ingredient": "Flour",
+   "unit": "Grams",
+   "bulkUnit": "Pounds",
+   "perBulk": 453.592
+  },
+  {
+   "ingredient": "Granulated Sugar",
+   "unit": "Grams",
+   "bulkUnit": "Pounds",
+   "perBulk": 453.592
+  },
+  {
+   "ingredient": "Dark Brown Sugar",
+   "unit": "Grams",
+   "bulkUnit": "Pounds",
+   "perBulk": 453.592
+  },
+  {
+   "ingredient": "Light Brown Sugar",
+   "unit": "Grams",
+   "bulkUnit": "Pounds",
+   "perBulk": 453.592
+  },
+  {
+   "ingredient": "Powdered Sugar",
+   "unit": "Grams",
+   "bulkUnit": "Pounds",
+   "perBulk": 453.592
+  },
+  {
+   "ingredient": "Butter",
+   "unit": "Grams",
+   "bulkUnit": "Pounds",
+   "perBulk": 453.592
+  },
+  {
+   "ingredient": "Chocolate, Bittersweet",
+   "unit": "Grams",
+   "bulkUnit": "Ounces",
+   "perBulk": 28.3495
+  },
+  {
+   "ingredient": "Chocolate, White",
+   "unit": "Grams",
+   "bulkUnit": "Ounces",
+   "perBulk": 28.3495
+  },
+  {
+   "ingredient": "Dutch-Process Cocoa Powder",
+   "unit": "Grams",
+   "bulkUnit": "Ounces",
+   "perBulk": 28.3495
+  },
+  {
+   "ingredient": "Malted Milk Powder",
+   "unit": "Grams",
+   "bulkUnit": "Ounces",
+   "perBulk": 28.3495
+  },
+  {
+   "ingredient": "Nonfat Milk Powder",
+   "unit": "Grams",
+   "bulkUnit": "Ounces",
+   "perBulk": 28.3495
+  },
+  {
+   "ingredient": "Popping Candy (unflavored)",
+   "unit": "Grams",
+   "bulkUnit": "Ounces",
+   "perBulk": 28.3495
+  },
+  {
+   "ingredient": "Sour Cream",
+   "unit": "Grams",
+   "bulkUnit": "Ounces",
+   "perBulk": 28.3495
+  },
+  {
+   "ingredient": "Vegetable Shortening",
+   "unit": "Grams",
+   "bulkUnit": "Ounces",
+   "perBulk": 28.3495
+  },
+  {
+   "ingredient": "Sweetened Condensed Milk",
+   "unit": "Grams",
+   "bulkUnit": "Ounces",
+   "perBulk": 28.3495
+  },
+  {
+   "ingredient": "Salt",
+   "unit": "Grams",
+   "bulkUnit": "Ounces",
+   "perBulk": 28.3495
+  },
+  {
+   "ingredient": "Baking Powder",
+   "unit": "Grams",
+   "bulkUnit": "Ounces",
+   "perBulk": 28.3495
+  },
+  {
+   "ingredient": "Baking Soda",
+   "unit": "Grams",
+   "bulkUnit": "Ounces",
+   "perBulk": 28.3495
+  },
+  {
+   "ingredient": "Citric Acid",
+   "unit": "Grams",
+   "bulkUnit": "Ounces",
+   "perBulk": 28.3495
+  },
+  {
+   "ingredient": "Ground Ginger",
+   "unit": "Grams",
+   "bulkUnit": "Ounces",
+   "perBulk": 28.3495
+  },
+  {
+   "ingredient": "Ground Cinnamon",
+   "unit": "Grams",
+   "bulkUnit": "Ounces",
+   "perBulk": 28.3495
+  },
+  {
+   "ingredient": "Ground Cloves",
+   "unit": "Grams",
+   "bulkUnit": "Ounces",
+   "perBulk": 28.3495
+  },
+  {
+   "ingredient": "Ground Star Anise",
+   "unit": "Grams",
+   "bulkUnit": "Ounces",
+   "perBulk": 28.3495
+  },
+  {
+   "ingredient": "Flaky Sea Salt",
+   "unit": "Grams",
+   "bulkUnit": "Ounces",
+   "perBulk": 28.3495
+  },
+  {
+   "ingredient": "Flour",
+   "unit": "Cups",
+   "bulkUnit": "Pounds",
+   "perBulk": 3.7799
+  },
+  {
+   "ingredient": "Granulated Sugar",
+   "unit": "Cups",
+   "bulkUnit": "Pounds",
+   "perBulk": 2.268
+  },
+  {
+   "ingredient": "Powdered Sugar",
+   "unit": "Cups",
+   "bulkUnit": "Pounds",
+   "perBulk": 3.9964
+  },
+  {
+   "ingredient": "Light Brown Sugar",
+   "unit": "Cups",
+   "bulkUnit": "Pounds",
+   "perBulk": 2.268
+  },
+  {
+   "ingredient": "Dark Brown Sugar",
+   "unit": "Cups",
+   "bulkUnit": "Pounds",
+   "perBulk": 2.268
+  },
+  {
+   "ingredient": "Brown Sugar",
+   "unit": "Cups",
+   "bulkUnit": "Pounds",
+   "perBulk": 2.268
+  },
+  {
+   "ingredient": "Butter",
+   "unit": "Tablespoons",
+   "bulkUnit": "Pounds",
+   "perBulk": 32
+  },
+  {
+   "ingredient": "Salt",
+   "unit": "Teaspoons",
+   "bulkUnit": "Ounces",
+   "perBulk": 4.7249
+  },
+  {
+   "ingredient": "Baking Powder",
+   "unit": "Teaspoons",
+   "bulkUnit": "Ounces",
+   "perBulk": 7.0874
+  },
+  {
+   "ingredient": "Baking Soda",
+   "unit": "Teaspoons",
+   "bulkUnit": "Ounces",
+   "perBulk": 5.9061
+  },
+  {
+   "ingredient": "Honey",
+   "unit": "Tablespoons",
+   "bulkUnit": "Ounces",
+   "perBulk": 1.35
+  },
+  {
+   "ingredient": "Sour Cherry Preserves",
+   "unit": "Cups",
+   "bulkUnit": "Ounces",
+   "perBulk": 0.0834
+  },
+  {
+   "ingredient": "Freeze-Dried Cherry Powder",
+   "unit": "Tablespoons",
+   "bulkUnit": "Ounces",
+   "perBulk": 7.0874
+  },
+  {
+   "ingredient": "Espresso Powder",
+   "unit": "Teaspoons",
+   "bulkUnit": "Ounces",
+   "perBulk": 12.3259
+  },
+  {
+   "ingredient": "Eggs",
+   "unit": "Whole",
+   "bulkUnit": "Dozen",
+   "perBulk": 12
+  },
+  {
+   "ingredient": "Egg Yolks",
+   "unit": "Whole",
+   "bulkUnit": "Eggs",
+   "perBulk": 1
+  },
+  {
+   "ingredient": "Egg Whites",
+   "unit": "Whole",
+   "bulkUnit": "Eggs",
+   "perBulk": 1
+  },
+  {
+   "ingredient": "Whole Milk",
+   "unit": "Milliliters",
+   "bulkUnit": "Fluid Ounces",
+   "perBulk": 29.5735
+  },
+  {
+   "ingredient": "Heavy Cream",
+   "unit": "Milliliters",
+   "bulkUnit": "Fluid Ounces",
+   "perBulk": 29.5735
+  },
+  {
+   "ingredient": "Corn Syrup",
+   "unit": "Milliliters",
+   "bulkUnit": "Fluid Ounces",
+   "perBulk": 29.5735
+  },
+  {
+   "ingredient": "Vegetable Oil",
+   "unit": "Milliliters",
+   "bulkUnit": "Fluid Ounces",
+   "perBulk": 29.5735
+  },
+  {
+   "ingredient": "Vanilla Extract",
+   "unit": "Milliliters",
+   "bulkUnit": "Fluid Ounces",
+   "perBulk": 29.5735
+  },
+  {
+   "ingredient": "Vanilla Bean Paste",
+   "unit": "Milliliters",
+   "bulkUnit": "Fluid Ounces",
+   "perBulk": 29.5735
+  },
+  {
+   "ingredient": "Sarsaparilla / Root Beer Extract",
+   "unit": "Milliliters",
+   "bulkUnit": "Fluid Ounces",
+   "perBulk": 29.5735
+  },
+  {
+   "ingredient": "Vanilla Extract",
+   "unit": "Teaspoons",
+   "bulkUnit": "Fluid Ounces",
+   "perBulk": 6
+  },
+  {
+   "ingredient": "Almond Extract",
+   "unit": "Teaspoons",
+   "bulkUnit": "Fluid Ounces",
+   "perBulk": 6
+  },
+  {
+   "ingredient": "Cherry Extract",
+   "unit": "Teaspoons",
+   "bulkUnit": "Fluid Ounces",
+   "perBulk": 6
+  },
+  {
+   "ingredient": "Acid Phosphate Solution",
+   "unit": "Teaspoons",
+   "bulkUnit": "Fluid Ounces",
+   "perBulk": 6
+  },
+  {
+   "ingredient": "Wild Cherry Bark Maceration",
+   "unit": "Teaspoons",
+   "bulkUnit": "Fluid Ounces",
+   "perBulk": 6
+  },
+  {
+   "ingredient": "Reduced Coca-Cola Syrup",
+   "unit": "Milliliters",
+   "bulkUnit": "Liters of Coca-Cola",
+   "perBulk": 177.5
+  },
+  {
+   "ingredient": "Lime Zest",
+   "unit": "Whole",
+   "bulkUnit": "Limes",
+   "perBulk": 1
+  },
+  {
+   "ingredient": "Lime Juice",
+   "unit": "Milliliters",
+   "bulkUnit": "Limes",
+   "perBulk": 30
+  },
+  {
+   "ingredient": "Mini Marshmallows",
+   "unit": "Cups",
+   "bulkUnit": "Ounces",
+   "perBulk": 0.5452
+  },
+  {
+   "ingredient": "Pecans",
+   "unit": "Cups",
+   "bulkUnit": "Ounces",
+   "perBulk": 0.2487
+  },
+  {
+   "ingredient": "Dried Cherries",
+   "unit": "Cups",
+   "bulkUnit": "Ounces",
+   "perBulk": 0.1996
+  },
+  {
+   "ingredient": "Peanut Butter",
+   "unit": "Cups",
+   "bulkUnit": "Ounces",
+   "perBulk": 0.105
+  },
+  {
+   "ingredient": "Mini Chocolate Chips",
+   "unit": "Cups",
+   "bulkUnit": "Ounces",
+   "perBulk": 0.1497
+  },
+  {
+   "ingredient": "Cinnamon",
+   "unit": "Teaspoons",
+   "bulkUnit": "Ounces",
+   "perBulk": 10.6297
+  }
+ ],
+ "substitutions": [
+  {
+   "ingredient": "Light Brown Sugar",
+   "buyAs": "Dark Brown Sugar",
+   "share": 0.5
+  },
+  {
+   "ingredient": "Light Brown Sugar",
+   "buyAs": "Granulated Sugar",
+   "share": 0.5
+  }
+ ],
+ "settings": {
+  "kosherSaltGPerTsp": 4.8
+ }
+}
