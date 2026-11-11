@@ -6756,6 +6756,43 @@
      }
     ]
    }
+  },
+  {
+   "id": "2026-11-bake-days",
+   "settings": {
+    "plan": [
+     {
+      "recipe": "Black & White Malted Brownie Cookies",
+      "cookiesPerUnit": 6,
+      "bakeDay": 1
+     },
+     {
+      "recipe": "Coca-Cola Molasses Crinkle Cookies",
+      "cookiesPerUnit": 6,
+      "bakeDay": 2
+     },
+     {
+      "recipe": "Lime Rickey Drops",
+      "cookiesPerUnit": 6,
+      "bakeDay": 3
+     },
+     {
+      "recipe": "Cherry Phosphate Shortbread Thumbprints",
+      "cookiesPerUnit": 6,
+      "bakeDay": 4
+     },
+     {
+      "recipe": "Root Beer Float Millionaire's Bars",
+      "cookiesPerUnit": 6,
+      "bakeDay": 5
+     },
+     {
+      "recipe": "Egg Cream Pop Rock Wafer Sandwiches",
+      "cookiesPerUnit": 6,
+      "bakeDay": 6
+     }
+    ]
+   }
   }
  ]
 }
