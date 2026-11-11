@@ -1,0 +1,41 @@
+{
+ "id": "2026-11-methods",
+ "methods": [
+  {
+   "recipe": "Egg Cream Pop Rock Wafer Sandwiches",
+   "method": "prep: Heat oven to 325\u00b0F; line sheets with parchment\ncreamed = cream until fluffy, 2 min <- Butter + Granulated Sugar\nwet = beat in until smooth <- creamed + Whole Milk + Vanilla Extract\ndry = whisk <- Flour + Dutch-Process Cocoa Powder + Baking Soda + Salt @wafer\ndough = mix on low just until a dough forms <- wet + dry\nsheets = roll 1/16 in. between parchment; chill 30 min <- dough\nwafers = cut 2 in. rounds (48), re-roll scraps; bake 325\u00b0F ~14 min until dry and fully crisp; cool completely <- sheets\nbase = beat until light and fluffy, 3 min <- Vegetable Shortening + Powdered Sugar + Nonfat Milk Powder + Vanilla Bean Paste + Salt @creme\ncreme = fold in at the last minute <- base + Popping Candy (unflavored)\npipe ~13 g creme on 24 wafers, top with the rest, press gently; store airtight, 1\u20132 days before packing <- wafers + creme",
+   "notes": "Wafers crisp further as they cool; if any center flexes once cool, return to the oven 2\u20133 min. The creme is water-free on purpose so the popping candy keeps its pop \u2014 keep the filled sandwiches airtight and assemble close to packing.",
+   "overwrite": true
+  },
+  {
+   "recipe": "Black & White Malted Brownie Cookies",
+   "method": "prep: Heat oven to 350\u00b0F; line sheets with parchment\nchoc = melt together; cool slightly <- Chocolate, Bittersweet + Butter @dark\nribbonD = whip on high to a pale ribbon, 5 min <- Eggs @dark + Dark Brown Sugar @dark + Granulated Sugar @dark + Vanilla Bean Paste @dark\nbatterD = fold in <- ribbonD + choc\ndryD = whisk <- Flour @dark + Dutch-Process Cocoa Powder + Malted Milk Powder @dark + Espresso Powder + Baking Powder @dark + Salt @dark\ndarkDough = fold just until no streaks; chill 20 min <- batterD + dryD\nmelted = melt; cool slightly <- Butter @vanilla\nribbonV = whip on high to a pale ribbon, 5 min <- Eggs @vanilla + Dark Brown Sugar @vanilla + Granulated Sugar @vanilla + Vanilla Bean Paste @vanilla\nbatterV = fold in <- ribbonV + melted\ndryV = whisk <- Flour @vanilla + Malted Milk Powder @vanilla + Baking Powder @vanilla + Salt @vanilla\nvanillaDough = fold just until no streaks; chill 20 min <- batterV + dryV\nscoop ~1 Tbsp of each dough into one ball (24); bake 350\u00b0F 12\u201313 min until edges set; cool 5 min on sheet <- darkDough + vanillaDough",
+   "notes": "Centers look underdone at 12 min and set as they cool. Test one sheet first: the vanilla half has no cocoa butter, so it may spread a little more \u2014 chill longer if it does.",
+   "overwrite": true
+  },
+  {
+   "recipe": "Cherry Phosphate Shortbread Thumbprints",
+   "method": "prep: Day before: start the wild cherry syrup (see notes; make one batch for the whole plan)\nprep: Heat oven to 350\u00b0F; line sheets with parchment\nextract = macerate 24 h; strain; re-steep bark in warm water 1 h; strain; combine <- Wild Cherry Bark + Vegetable Glycerin + Water\njuiced = add; top up with water to volume <- extract + Tart Cherry Juice\nsyrup = dissolve without heat (use 2 Tbsp per batch) <- juiced + Granulated Sugar @syrup\njam = simmer back to a thick jam; cool completely <- Sour Cherry Preserves + syrup\nfilling = stir in off heat, to taste <- jam + Acid Phosphate Solution\ncreamed = cream until fluffy, 2 min <- Butter + Granulated Sugar @dough + Honey\nwet = beat in <- creamed + Egg Yolks + Cherry Extract + Almond Extract\ndry = whisk <- Flour + Freeze-Dried Cherry Powder + Baking Powder + Salt\ndough = mix on low just until combined <- wet + dry\nshaped = roll 1 in. balls (~19 g), press wells; chill on sheets while oven heats <- dough\nbaked = fill ~\u00bd tsp each; bake 350\u00b0F 12\u201313 min until edges just set; cool on sheet 5 min <- shaped + filling\ndust when cool <- baked + Powdered Sugar",
+   "notes": "WILD CHERRY SYRUP (Art of Drink, https://www.artofdrink.com/soda/cherry-phosphate) \u2014 full recipe makes 12 fl oz: 1 oz wild cherry bark, 1 fl oz glycerin, 4 fl oz water (first maceration), 4 fl oz warm water (second), 4 fl oz cherry juice, 10 oz sugar. One-third of the recipe covers 4 batches. ACID PHOSPHATE: the \u2154 tsp per batch keeps the drink's ratio (1 tsp per 1\u00bd oz syrup) for traditional acid phosphate; with MacSweetie's, add drops to the cooled jam to taste and record the count. Built on your Jam Thumbprint proportions (yolk only, no added liquid, no baking soda) so the wells hold.",
+   "overwrite": true
+  },
+  {
+   "recipe": "Coca-Cola Molasses Crinkle Cookies",
+   "method": "prep: Reduce Coca-Cola to molasses strength \u2014 141 g syrup per liter of Coke; cool (see notes)\nprep: Heat oven to 350\u00b0F; line sheets with parchment\nbase = whisk until smooth <- Vegetable Oil + Granulated Sugar @dough + Dark Brown Sugar\nwet = whisk in <- base + Reduced Coca-Cola Syrup + Eggs + Vanilla Extract\ndry = whisk <- Flour + Ground Ginger + Ground Cinnamon + Ground Cloves + Baking Soda\ndough = fold just until no flour streaks <- wet + dry\nballs = roll 1\u00bd in. balls (~30 g); roll generously in sugar <- dough + Granulated Sugar @coating\nbake 350\u00b0F 8\u201310 min until cracked with soft centers; cool 5 min on sheet <- balls",
+   "notes": "COLA SYRUP: Mexican Coke has ~110 g sugar per liter; reducing each liter to ~141 g (\u2248100 ml) matches molasses' ~22% water. Weigh the empty pot, simmer flat Coke in stainless or enameled (not aluminum/cast iron), and reduce until it weighs 141 g per liter started (2 L \u2192 ~282 g); it will bubble around 225\u00b0F near the end but trust the scale. Optional: a little lime zest or cola extract stirred into the cooled syrup for more cola aroma. If a test cookie tastes faintly soapy/metallic, cut baking soda to 8 g.",
+   "overwrite": true
+  },
+  {
+   "recipe": "Root Beer Float Millionaire's Bars",
+   "method": "prep: Heat oven to 350\u00b0F; line a 9\u00d713 pan with a parchment sling\ncreamed = cream until light, 3 min <- Butter @crust + Granulated Sugar @crust + Dark Brown Sugar @crust\nwet = beat in <- creamed + Egg Yolks + Vanilla Bean Paste @crust\ncrumbs = mix on low until crumbly <- wet + Flour + Salt @crust\ncrust = press evenly into pan; bake 350\u00b0F 25 min until edges are golden; cool <- crumbs\ncooked = cook over medium-low, stirring constantly, to 240\u00b0F (soft ball) <- Dark Brown Sugar @caramel + Granulated Sugar @caramel + Butter @caramel + Sweetened Condensed Milk + Corn Syrup + Heavy Cream\ncaramel = off heat, stir in <- cooked + Vanilla Extract + Sarsaparilla / Root Beer Extract + Ground Star Anise\nlayered = pour over crust; set until firm, ~2 h <- crust + caramel\nmelted = melt gently <- Chocolate, White + Vanilla Bean Paste @top\nspread ~2 mm thin over the caramel; sprinkle salt; set; cut 24 bars with a hot knife <- layered + melted + Flaky Sea Salt",
+   "notes": "Keep the white-chocolate layer thin so it reads as vanilla ice cream rather than candy. Caramel method after Clever Pink Pirate's root beer caramel (https://cleverpinkpirate.com/root-beer-caramel-recipe/). Bars are large (~75 g); cut 48 for cookie-box size.",
+   "overwrite": true
+  },
+  {
+   "recipe": "Lime Rickey Drops",
+   "method": "prep: Heat oven to 350\u00b0F; line sheets with parchment\nzested = rub together until fragrant <- Granulated Sugar + Lime Zest @dough\ncreamed = cream until fluffy, 2 min <- zested + Butter\nwet = beat in; it may look curdled <- creamed + Eggs + Sour Cream + Lime Juice @dough + Vanilla Extract\ndry = whisk <- Flour + Baking Powder + Baking Soda + Salt\ndough = mix on low just until combined; chill 30 min <- wet + dry\ncookies = scoop 2 Tbsp (~30 g); bake 350\u00b0F 9\u201311 min, just set and not browned; cool completely <- dough\nglaze = whisk smooth <- Powdered Sugar + Lime Juice @glaze + Citric Acid\ndip tops; finish with zest; set 30 min <- cookies + glaze + Lime Zest @glaze",
+   "notes": "Pull them while pale so they stay soft and cakey. The citric acid goes in the glaze (not sprinkled on top) so it doesn't weep in the mail. Optional: a tiny drop of green gel in the glaze.",
+   "overwrite": true
+  }
+ ]
+}

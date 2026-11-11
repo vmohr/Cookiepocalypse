@@ -96,6 +96,16 @@ textarea{width:100%;min-height:90px;resize:vertical}
 .kv label{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--muted);font-weight:500}
 .kv input{color:var(--ink);font-size:14px}
 .handle{cursor:pointer;color:var(--muted);user-select:none}
+table.cfe{border-collapse:collapse;width:100%;font-size:13px}
+table.cfe td{border:1px solid var(--line2);padding:6px 8px;vertical-align:middle;text-align:left}
+table.cfe td.ing{background:#fff;white-space:nowrap}
+table.cfe td.ing b{font-variant-numeric:tabular-nums}
+table.cfe td.op{background:#fbf6ee;min-width:110px;max-width:260px}
+table.cfe td.op.final{background:var(--green-soft);font-weight:600}
+table.cfe td.gap{background:#fff;border-left-color:transparent;border-right-color:transparent}
+table.cfe td.prep{background:var(--gold-soft);font-size:12px}
+table.cfe td.extra{font-style:italic;color:var(--muted)}
+textarea.method{font:12.5px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;min-height:220px;white-space:pre;overflow-x:auto}
 </style>
 </head>
 <body>
@@ -311,6 +321,7 @@ function applyPatch(state, p) {
   }
   for (const rs of p.removeSubstitutions || []) state.substitutions = (state.substitutions || []).filter(x => key(x.ingredient) !== key(rs));
   for (const nt of p.notes || []) { const r = state.recipes.find(x => key(x.name) === key(nt.recipe)); if (r) r.notes = nt.notes; }
+  for (const mt of p.methods || []) { const r = state.recipes.find(x => key(x.name) === key(mt.recipe)); if (r) { if (!r.method || mt.overwrite) r.method = mt.method; if (mt.notes != null) r.notes = mt.notes; } }
   for (const x of p.substitutions || []) {
     state.substitutions = state.substitutions || [];
     if (!state.substitutions.some(y => key(y.ingredient) === key(x.ingredient) && key(y.buyAs) === key(x.buyAs))) state.substitutions.push({ ...x });
@@ -320,13 +331,74 @@ function applyPatch(state, p) {
   return true;
 }
 
+// ---- Method (Cooking for Engineers table) ----
+// Text format, one step per line, in cooking order:
+//   prep: Heat oven to 350°F; line sheets
+//   label = action text <- input + input + ...
+// Inputs are earlier step labels or ingredient names (add "@word" to pick the ingredient whose phase contains that word).
+// The last step is the finished dish. Lines starting with # are comments.
+function parseMethod(recipe, text) {
+  const out = { prep: [], steps: [], root: null, warnings: [], rows: [], unused: [] };
+  const used = new Set();
+  const labels = new Map();
+  const findIng = (ref) => {
+    let [name, ph] = ref.split('@').map(x => x.trim());
+    const cands = recipe.ingredients.map((i, k) => ({ i, k })).filter(({ i, k }) => !used.has(k) && key(i.name) === key(name) && (!ph || key(i.phase || '').includes(key(ph))));
+    if (!cands.length) return null;
+    used.add(cands[0].k);
+    return { kind: 'ing', k: cands[0].k, ing: cands[0].i };
+  };
+  const lines = String(text || '').split(/\r?\n/);
+  lines.forEach((raw, ln) => {
+    const line = raw.trim();
+    if (!line || line.startsWith('#')) return;
+    if (/^prep\s*:/i.test(line)) { out.prep.push(line.replace(/^prep\s*:\s*/i, '')); return; }
+    const arrow = line.indexOf('<-');
+    if (arrow < 0) { out.warnings.push(`Line ${ln + 1}: needs "<-" followed by what this step uses.`); return; }
+    let head = line.slice(0, arrow).trim(), label = null;
+    const m = head.match(/^([A-Za-z][\w-]*)\s*=\s*(.+)$/);
+    if (m) { label = m[1]; head = m[2].trim(); }
+    const inputs = [];
+    for (const refRaw of line.slice(arrow + 2).split(/\s\+\s/)) {
+      const ref = refRaw.trim(); if (!ref) continue;
+      if (labels.has(key(ref))) {
+        const st = labels.get(key(ref));
+        if (st.consumed) out.warnings.push(`Line ${ln + 1}: "${ref}" is already used by another step.`);
+        st.consumed = true; inputs.push(st); continue;
+      }
+      const ing = findIng(ref);
+      if (ing) inputs.push(ing);
+      else { inputs.push({ kind: 'extra', text: ref }); out.warnings.push(`Line ${ln + 1}: "${ref}" isn't an ingredient (or is already used) — shown as a plain row.`); }
+    }
+    if (!inputs.length) { out.warnings.push(`Line ${ln + 1}: list what this step uses after "<-".`); return; }
+    const step = { kind: 'step', text: head, inputs, label, consumed: false };
+    out.steps.push(step);
+    if (label) labels.set(key(label), step);
+  });
+  if (!out.steps.length) return out;
+  out.root = out.steps[out.steps.length - 1];
+  for (const st of out.steps.slice(0, -1)) if (!st.consumed) out.warnings.push(`Step "${st.text}" isn't used by a later step${st.label ? '' : ' (give it a label, e.g. "dough = ...")'}.`);
+  // layout: rows = leaves in order, column = height
+  const walk = (n) => {
+    if (n.kind !== 'step') { n.h = 0; n.r0 = out.rows.length; out.rows.push(n); n.r1 = out.rows.length; return; }
+    n.r0 = out.rows.length; let h = 0;
+    for (const c of n.inputs) { walk(c); h = Math.max(h, c.h); }
+    n.h = h + 1; n.r1 = out.rows.length;
+  };
+  walk(out.root);
+  out.cols = out.root.h;
+  out.unused = recipe.ingredients.filter((_, k) => !used.has(k));
+  if (out.unused.length) out.warnings.push('Not used in the method: ' + out.unused.map(i => i.name + (i.phase ? ' (' + i.phase + ')' : '')).join(', '));
+  return out;
+}
+
 // ---- Import / export helpers ----
-const CSV_COLS = ['Recipe', 'Ingredient', 'Amount', 'Unit', 'Grams', 'Phase', 'Book', 'Book URL', 'Page', 'Cookies Per Batch', 'Refrigerate', 'Oven Temp', 'Bake Minutes Per Batch', 'Notes'];
+const CSV_COLS = ['Recipe', 'Ingredient', 'Amount', 'Unit', 'Grams', 'Phase', 'Book', 'Book URL', 'Page', 'Cookies Per Batch', 'Refrigerate', 'Oven Temp', 'Bake Minutes Per Batch', 'Notes', 'Method'];
 function csvEsc(v) { v = v == null ? '' : String(v); return /[",\n\r]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; }
 function recipesToCSV(recipes) {
   const lines = [CSV_COLS.join(',')];
   for (const r of recipes) {
-    const meta = [r.book, r.bookUrl, r.page, r.cookiesPerBatch, r.refrigerate, r.ovenTemp, r.bakeMinutes, r.notes];
+    const meta = [r.book, r.bookUrl, r.page, r.cookiesPerBatch, r.refrigerate, r.ovenTemp, r.bakeMinutes, r.notes, r.method];
     const ings = r.ingredients.length ? r.ingredients : [{}];
     ings.forEach((i, n) => lines.push([r.name, i.name, i.amount, i.unit, i.grams, i.phase, ...(n === 0 ? meta : meta.map(() => ''))].map(csvEsc).join(',')));
   }
@@ -352,15 +424,15 @@ function recipesFromCSV(text) {
   const hdr = rows[0].map(h => key(h).replace(/[^a-z]/g, ''));
   const idx = n => hdr.indexOf(n);
   const col = { recipe: idx('recipe'), name: idx('ingredient'), amount: idx('amount'), unit: idx('unit'), grams: idx('grams'), phase: idx('phase'),
-    book: idx('book'), bookUrl: idx('bookurl'), page: idx('page'), cookiesPerBatch: idx('cookiesperbatch'), refrigerate: idx('refrigerate'), ovenTemp: idx('oventemp'), bakeMinutes: idx('bakeminutesperbatch'), notes: idx('notes') };
+    book: idx('book'), bookUrl: idx('bookurl'), page: idx('page'), cookiesPerBatch: idx('cookiesperbatch'), refrigerate: idx('refrigerate'), ovenTemp: idx('oventemp'), bakeMinutes: idx('bakeminutesperbatch'), notes: idx('notes'), method: idx('method') };
   if (col.recipe < 0 || col.name < 0) throw new Error('The CSV needs at least "Recipe" and "Ingredient" columns. Export a recipe as CSV to see the expected layout.');
   const byName = new Map();
   for (const r of rows.slice(1)) {
     const get = k => col[k] >= 0 ? String(r[col[k]] ?? '').trim() : '';
     const rn = get('recipe'); if (!rn) continue;
     let rec = byName.get(key(rn));
-    if (!rec) { rec = { name: rn, book: '', bookUrl: '', page: '', cookiesPerBatch: null, refrigerate: '', ovenTemp: '', bakeMinutes: null, notes: '', ingredients: [] }; byName.set(key(rn), rec); }
-    for (const k of ['book', 'bookUrl', 'page', 'refrigerate', 'ovenTemp', 'notes']) if (get(k) && !rec[k]) rec[k] = get(k);
+    if (!rec) { rec = { name: rn, book: '', bookUrl: '', page: '', cookiesPerBatch: null, refrigerate: '', ovenTemp: '', bakeMinutes: null, notes: '', method: '', ingredients: [] }; byName.set(key(rn), rec); }
+    for (const k of ['book', 'bookUrl', 'page', 'refrigerate', 'ovenTemp', 'notes', 'method']) if (get(k) && !rec[k]) rec[k] = get(k);
     for (const k of ['cookiesPerBatch', 'bakeMinutes']) if (get(k) && rec[k] == null) rec[k] = num(get(k));
     if (get('name')) {
       const ing = { name: get('name'), amount: num(get('amount')) ?? 0, unit: get('unit') };
@@ -377,6 +449,7 @@ function normalizeRecipe(r) {
     name: String(r.name).trim(), book: String(r.book ?? ''), bookUrl: String(r.bookUrl ?? ''), page: String(r.page ?? ''),
     cookiesPerBatch: num(r.cookiesPerBatch), refrigerate: String(r.refrigerate ?? ''), ovenTemp: String(r.ovenTemp ?? ''), bakeMinutes: num(r.bakeMinutes),
     notes: String(r.notes ?? ''),
+    method: String(r.method ?? ''),
     ingredients: (Array.isArray(r.ingredients) ? r.ingredients : []).filter(i => i && String(i.name || '').trim()).map(i => {
       const o = { name: String(i.name).trim(), amount: num(i.amount) ?? 0, unit: String(i.unit ?? '').trim() };
       if (num(i.grams) != null) o.grams = num(i.grams);
@@ -403,7 +476,7 @@ function normalizeState(s) {
     purchased: (s.purchased && typeof s.purchased === 'object') ? Object.fromEntries(Object.entries(s.purchased).map(([k, v]) => [key(k.split('|')[0]) + '|' + key(k.split('|')[1]), !!v])) : {},
   };
 }
-if (typeof module !== 'undefined') module.exports = { totalUnits, planRows, shoppingList, kosherTsp, applyPatch, measureFor, syncIngredient, gramFor, recipesToCSV, recipesFromCSV, normalizeState, normalizeRecipe, key };
+if (typeof module !== 'undefined') module.exports = { totalUnits, planRows, shoppingList, kosherTsp, applyPatch, measureFor, syncIngredient, parseMethod, gramFor, recipesToCSV, recipesFromCSV, normalizeState, normalizeRecipe, key };
 
 // ---- Conversion checks ----
 const UNIT = (() => {
@@ -670,6 +743,42 @@ function datalists() {
   <datalist id="dl-phases">${allPhases().map(u => `<option value="${esc(u)}">`).join('')}</datalist>
   <datalist id="dl-recipes">${S.recipes.map(r => `<option value="${esc(r.name)}">`).join('')}</datalist>`;
 }
+// Cooking for Engineers table: ingredients as rows (order of first use), steps as columns, cells span what they combine.
+function renderCFE(r, batches, mode) {
+  const pm = parseMethod(r, r.method);
+  if (!pm.root || !pm.rows.length) return null;
+  const cols = pm.cols + 1, nRows = pm.rows.length;
+  const cells = Array.from({ length: nRows }, () => []);
+  const put = (row, col, html) => { cells[row].push({ col, html }); };
+  const ingCell = (n) => {
+    if (n.kind === 'extra') return `<td class="ing extra">${esc(n.text)}</td>`;
+    const i = n.ing, g = gramFor(S, i).grams;
+    const mult = mode === 'batch' ? 1 : (batches ?? 1);
+    const qty = g != null ? `<b>${fmt(g * mult, g * mult >= 10 ? 0 : 1)} g</b>` : `<b>${amt(measureFor(S, i, mult).amount)} ${esc(i.unit)}</b>`;
+    const meas = g != null && key(i.unit) !== 'grams' ? ` <span class="muted small">(${measureTxt(i, mult)})</span>` : '';
+    const per = mode === 'both' && batches && g != null ? ` <span class="muted small">· ${fmt(g, g >= 10 ? 0 : 1)} g/batch</span>` : '';
+    const salt = kosherTsp(S, i, mult) != null ? ` <span class="small" style="color:var(--green)">≈ ${amt(kosherTsp(S, i, mult))} tsp kosher</span>` : '';
+    return `<td class="ing">${qty} ${esc(i.name)}${meas}${per}${salt}</td>`;
+  };
+  const place = (n) => {
+    if (n.kind !== 'step') { put(n.r0, 0, ingCell(n)); return; }
+    for (const c of n.inputs) {
+      place(c);
+      for (let col = c.h + 1; col < n.h; col++) put(c.r0, col, `<td class="gap" rowspan="${c.r1 - c.r0}"></td>`);
+    }
+    put(n.r0, n.h, `<td class="op${n === pm.root ? ' final' : ''}" rowspan="${n.r1 - n.r0}">${esc(n.text)}</td>`);
+  };
+  place(pm.root);
+  const prep = pm.prep.map(t => `<tr><td class="prep" colspan="${cols}">${esc(t)}</td></tr>`).join('');
+  const body = cells.map(rc => '<tr>' + rc.sort((a, b) => a.col - b.col).map(c => c.html).join('') + '</tr>').join('');
+  return { html: `<div class="tablewrap"><table class="cfe">${prep}${body}</table></div>`, warnings: pm.warnings };
+}
+function methodPreview(r, batches) {
+  if (!String(r.method || '').trim()) return '<p class="muted small">Write the steps on the left; the Cooking for Engineers table appears here and on the Baking Cheat Sheet.</p>';
+  const out = renderCFE(r, batches, 'batch');
+  if (!out) return '<p class="warn">No steps yet — each step needs "<-" followed by what it uses.</p>';
+  return out.html + (out.warnings.length ? `<div class="warn" style="margin-top:8px">${out.warnings.map(esc).join('<br>')}</div>` : '<p class="small" style="color:var(--green);margin-top:6px">✓ Every ingredient is used once.</p>');
+}
 function measureTxt(i, mult) {
   if (key(i.unit) === 'grams') return '';
   const m = measureFor(S, i, mult);
@@ -822,7 +931,14 @@ function vRecipeEdit(r) {
       <div class="row" style="margin-top:10px"><button class="btn sm" data-act="addIng">+ Add ingredient</button><button class="btn sm" data-act="pasteIngs">Paste a list…</button>
       <span class="muted small">Weight is the source of truth. Edit the weight and the measure follows (via King Arthur's conversions); edit the measure and the weight is recalculated. Pick names from the suggestions so they match your conversions.</span></div>
     </div>
-    <div class="card"><label class="small muted" style="font-weight:500">Notes / method<textarea data-r="${ri}" data-f="notes" placeholder="Steps, tips, changes from the original…">${esc(r.notes)}</textarea></label></div>`;
+    <div class="card">
+      <div class="row" style="margin-bottom:6px"><h2 class="grow" style="font-size:18px">Method</h2><button class="btn ghost sm" data-act="methodHelp">How to write it</button></div>
+      <div class="split">
+        <textarea class="method" id="methodText" data-r="${ri}" data-f="method" spellcheck="false" placeholder="prep: Heat oven to 350°F; line sheets&#10;creamed = cream until fluffy, 2 min <- Butter + Granulated Sugar&#10;dry = whisk <- Flour + Baking Powder + Salt&#10;dough = mix on low just until combined <- creamed + dry&#10;bake 350°F 10–12 min <- dough">${esc(r.method)}</textarea>
+        <div id="methodPreview">${methodPreview(r, pr ? pr.batches : null)}</div>
+      </div>
+    </div>
+    <div class="card"><label class="small muted" style="font-weight:500">Notes<textarea data-r="${ri}" data-f="notes" placeholder="Tips, sources, make-ahead, changes from the original…">${esc(r.notes)}</textarea></label></div>`;
 }
 
 // ======================= CHEAT SHEET =======================
@@ -848,7 +964,7 @@ function vCheat() {
         ${rec.refrigerate ? `<span class="pill green">Chill: ${esc(rec.refrigerate)}</span>` : ''}
         ${r.cookies != null ? `<span class="pill">${fmt(r.cookies, 0)} cookies</span>` : ''}
       </div>
-      <div class="tablewrap"><table>
+      ${rec.method && renderCFE(rec, b, show) ? renderCFE(rec, b, show).html : `<div class="tablewrap"><table>
         <thead><tr><th>Ingredient</th>${show !== 'total' ? '<th class="n">Per batch (g)</th><th class="n">≈ measure</th>' : ''}${show !== 'batch' ? `<th class="n">Total ×${b ?? '?'} (g)</th><th class="n">≈ measure</th>` : ''}</tr></thead>
         <tbody>${phases.map(ph => (hasPhases ? `<tr class="phase-row"><td colspan="5">${esc(ph.p || 'Other')}</td></tr>` : '') + ph.items.map(i => {
           const g = gramFor(S, i);
@@ -856,7 +972,7 @@ function vCheat() {
           return `<tr><td>${esc(i.name)}</td>
             ${show !== 'total' ? `<td class="n"><b>${gcell(g.grams)}</b></td><td class="n muted">${measureTxt(i, 1)}${saltNote(i)}</td>` : ''}
             ${show !== 'batch' ? `<td class="n"><b>${g.grams != null && b != null ? gcell(g.grams * b) : ''}</b></td><td class="n muted">${b != null ? measureTxt(i, b) + saltNote(i, b) : ''}</td>` : ''}</tr>`;
-        }).join('')).join('')}</tbody></table></div>
+        }).join('')).join('')}</tbody></table></div>`}
       ${rec.notes ? `<p class="small" style="white-space:pre-wrap;margin-top:10px">${esc(rec.notes)}</p>` : ''}
     </div>`;
   }).join('')}`;
@@ -1114,6 +1230,16 @@ document.addEventListener('click', e => {
   if (a === 'backRecipes') { ui.recipe = null; render(); }
   if (a === 'addIng') { rec().ingredients.push({ name: '', amount: 0, unit: '' }); commit(); setTimeout(() => { const all = document.querySelectorAll('[data-ing][data-f=name]'); all[all.length - 1]?.focus(); }, 30); }
   if (a === 'pasteIngs') pasteIngredients();
+  if (a === 'methodHelp') modal(`<h3>Writing a method</h3>
+    <p class="small">One step per line, in cooking order. The table puts ingredients down the left in order of first use and each step in a column spanning what it combines (Cooking for Engineers style).</p>
+    <pre style="font-size:12px;background:#faf5ee;padding:10px;border-radius:8px;white-space:pre-wrap">prep: Heat oven to 350°F; line sheets
+creamed = cream until fluffy, 2 min <- Butter + Granulated Sugar
+wet = beat in <- creamed + Eggs + Vanilla Extract
+dry = whisk <- Flour + Baking Soda + Salt
+dough = mix on low just until combined <- wet + dry
+bake 350°F 10–12 min <- dough</pre>
+    <ul class="small"><li><b>label = action &lt;- inputs</b>; join inputs with " + ".</li><li>Inputs are ingredient names or earlier labels. If a name appears twice (e.g. Butter in crust and caramel), add <b>@word</b> from its phase: <code>Butter @caramel</code>.</li><li>The last line is the finished cookie. <b>prep:</b> lines appear above the table. Lines starting with # are comments.</li><li>Warnings below the preview flag ingredients you haven't used.</li></ul>
+    <div class="row" style="justify-content:flex-end"><button class="btn" data-x>Got it</button></div>`, (m, c) => m.querySelector('[data-x]').onclick = c);
   if (a === 'fillGrams') { let n = 0; rec().ingredients.forEach(i => { if (num(i.grams) == null) { const g = gramFor(S, i); if (g.grams != null) { i.grams = Math.round(g.grams * 10) / 10; n++; } } }); commit(); toast(n ? `Filled ${n} gram value${n > 1 ? 's' : ''}` : 'No matching conversions for the blanks'); }
   if (a === 'planAdd') { if (!S.plan.some(p => key(p.recipe) === key(d.name))) S.plan.push({ recipe: d.name, cookiesPerUnit: 6, bakeDay: '' }); commit(); toast('Added to plan with 6 cookies per unit'); }
   if (a === 'dupRecipe') { const r = rec(); let n = r.name + ' (copy)'; let k = 2; while (S.recipes.some(x => key(x.name) === key(n))) n = r.name + ' (copy ' + k++ + ')'; S.recipes.push(JSON.parse(JSON.stringify({ ...r, name: n }))); ui.recipe = n; commit(); }
@@ -1177,6 +1303,7 @@ document.addEventListener('change', e => {
   if (['cvAmt', 'cvUnit', 'cvName'].includes(t.id)) { ui.conv = { amount: $('#cvAmt').value, unit: $('#cvUnit').value, name: $('#cvName').value }; return render(); }
 });
 document.addEventListener('input', e => {
+  if (e.target.id === 'methodText') { const r = S.recipes[+e.target.dataset.r]; const tmp = { ...r, method: e.target.value }; const pr = planRows(S).find(p => p.recipe === r); $('#methodPreview').innerHTML = methodPreview(tmp, pr ? pr.batches : null); return; }
   if (e.target.id === 'rsearch') { ui.recipeSearch = e.target.value; const pos = e.target.selectionStart; render(); const el = $('#rsearch'); el.focus(); el.setSelectionRange(pos, pos); }
 });
 function pasteIngredients() {

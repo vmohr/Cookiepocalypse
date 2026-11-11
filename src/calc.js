@@ -202,6 +202,7 @@ function applyPatch(state, p) {
   }
   for (const rs of p.removeSubstitutions || []) state.substitutions = (state.substitutions || []).filter(x => key(x.ingredient) !== key(rs));
   for (const nt of p.notes || []) { const r = state.recipes.find(x => key(x.name) === key(nt.recipe)); if (r) r.notes = nt.notes; }
+  for (const mt of p.methods || []) { const r = state.recipes.find(x => key(x.name) === key(mt.recipe)); if (r) { if (!r.method || mt.overwrite) r.method = mt.method; if (mt.notes != null) r.notes = mt.notes; } }
   for (const x of p.substitutions || []) {
     state.substitutions = state.substitutions || [];
     if (!state.substitutions.some(y => key(y.ingredient) === key(x.ingredient) && key(y.buyAs) === key(x.buyAs))) state.substitutions.push({ ...x });
@@ -211,13 +212,74 @@ function applyPatch(state, p) {
   return true;
 }
 
+// ---- Method (Cooking for Engineers table) ----
+// Text format, one step per line, in cooking order:
+//   prep: Heat oven to 350°F; line sheets
+//   label = action text <- input + input + ...
+// Inputs are earlier step labels or ingredient names (add "@word" to pick the ingredient whose phase contains that word).
+// The last step is the finished dish. Lines starting with # are comments.
+function parseMethod(recipe, text) {
+  const out = { prep: [], steps: [], root: null, warnings: [], rows: [], unused: [] };
+  const used = new Set();
+  const labels = new Map();
+  const findIng = (ref) => {
+    let [name, ph] = ref.split('@').map(x => x.trim());
+    const cands = recipe.ingredients.map((i, k) => ({ i, k })).filter(({ i, k }) => !used.has(k) && key(i.name) === key(name) && (!ph || key(i.phase || '').includes(key(ph))));
+    if (!cands.length) return null;
+    used.add(cands[0].k);
+    return { kind: 'ing', k: cands[0].k, ing: cands[0].i };
+  };
+  const lines = String(text || '').split(/\r?\n/);
+  lines.forEach((raw, ln) => {
+    const line = raw.trim();
+    if (!line || line.startsWith('#')) return;
+    if (/^prep\s*:/i.test(line)) { out.prep.push(line.replace(/^prep\s*:\s*/i, '')); return; }
+    const arrow = line.indexOf('<-');
+    if (arrow < 0) { out.warnings.push(`Line ${ln + 1}: needs "<-" followed by what this step uses.`); return; }
+    let head = line.slice(0, arrow).trim(), label = null;
+    const m = head.match(/^([A-Za-z][\w-]*)\s*=\s*(.+)$/);
+    if (m) { label = m[1]; head = m[2].trim(); }
+    const inputs = [];
+    for (const refRaw of line.slice(arrow + 2).split(/\s\+\s/)) {
+      const ref = refRaw.trim(); if (!ref) continue;
+      if (labels.has(key(ref))) {
+        const st = labels.get(key(ref));
+        if (st.consumed) out.warnings.push(`Line ${ln + 1}: "${ref}" is already used by another step.`);
+        st.consumed = true; inputs.push(st); continue;
+      }
+      const ing = findIng(ref);
+      if (ing) inputs.push(ing);
+      else { inputs.push({ kind: 'extra', text: ref }); out.warnings.push(`Line ${ln + 1}: "${ref}" isn't an ingredient (or is already used) — shown as a plain row.`); }
+    }
+    if (!inputs.length) { out.warnings.push(`Line ${ln + 1}: list what this step uses after "<-".`); return; }
+    const step = { kind: 'step', text: head, inputs, label, consumed: false };
+    out.steps.push(step);
+    if (label) labels.set(key(label), step);
+  });
+  if (!out.steps.length) return out;
+  out.root = out.steps[out.steps.length - 1];
+  for (const st of out.steps.slice(0, -1)) if (!st.consumed) out.warnings.push(`Step "${st.text}" isn't used by a later step${st.label ? '' : ' (give it a label, e.g. "dough = ...")'}.`);
+  // layout: rows = leaves in order, column = height
+  const walk = (n) => {
+    if (n.kind !== 'step') { n.h = 0; n.r0 = out.rows.length; out.rows.push(n); n.r1 = out.rows.length; return; }
+    n.r0 = out.rows.length; let h = 0;
+    for (const c of n.inputs) { walk(c); h = Math.max(h, c.h); }
+    n.h = h + 1; n.r1 = out.rows.length;
+  };
+  walk(out.root);
+  out.cols = out.root.h;
+  out.unused = recipe.ingredients.filter((_, k) => !used.has(k));
+  if (out.unused.length) out.warnings.push('Not used in the method: ' + out.unused.map(i => i.name + (i.phase ? ' (' + i.phase + ')' : '')).join(', '));
+  return out;
+}
+
 // ---- Import / export helpers ----
-const CSV_COLS = ['Recipe', 'Ingredient', 'Amount', 'Unit', 'Grams', 'Phase', 'Book', 'Book URL', 'Page', 'Cookies Per Batch', 'Refrigerate', 'Oven Temp', 'Bake Minutes Per Batch', 'Notes'];
+const CSV_COLS = ['Recipe', 'Ingredient', 'Amount', 'Unit', 'Grams', 'Phase', 'Book', 'Book URL', 'Page', 'Cookies Per Batch', 'Refrigerate', 'Oven Temp', 'Bake Minutes Per Batch', 'Notes', 'Method'];
 function csvEsc(v) { v = v == null ? '' : String(v); return /[",\n\r]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; }
 function recipesToCSV(recipes) {
   const lines = [CSV_COLS.join(',')];
   for (const r of recipes) {
-    const meta = [r.book, r.bookUrl, r.page, r.cookiesPerBatch, r.refrigerate, r.ovenTemp, r.bakeMinutes, r.notes];
+    const meta = [r.book, r.bookUrl, r.page, r.cookiesPerBatch, r.refrigerate, r.ovenTemp, r.bakeMinutes, r.notes, r.method];
     const ings = r.ingredients.length ? r.ingredients : [{}];
     ings.forEach((i, n) => lines.push([r.name, i.name, i.amount, i.unit, i.grams, i.phase, ...(n === 0 ? meta : meta.map(() => ''))].map(csvEsc).join(',')));
   }
@@ -243,15 +305,15 @@ function recipesFromCSV(text) {
   const hdr = rows[0].map(h => key(h).replace(/[^a-z]/g, ''));
   const idx = n => hdr.indexOf(n);
   const col = { recipe: idx('recipe'), name: idx('ingredient'), amount: idx('amount'), unit: idx('unit'), grams: idx('grams'), phase: idx('phase'),
-    book: idx('book'), bookUrl: idx('bookurl'), page: idx('page'), cookiesPerBatch: idx('cookiesperbatch'), refrigerate: idx('refrigerate'), ovenTemp: idx('oventemp'), bakeMinutes: idx('bakeminutesperbatch'), notes: idx('notes') };
+    book: idx('book'), bookUrl: idx('bookurl'), page: idx('page'), cookiesPerBatch: idx('cookiesperbatch'), refrigerate: idx('refrigerate'), ovenTemp: idx('oventemp'), bakeMinutes: idx('bakeminutesperbatch'), notes: idx('notes'), method: idx('method') };
   if (col.recipe < 0 || col.name < 0) throw new Error('The CSV needs at least "Recipe" and "Ingredient" columns. Export a recipe as CSV to see the expected layout.');
   const byName = new Map();
   for (const r of rows.slice(1)) {
     const get = k => col[k] >= 0 ? String(r[col[k]] ?? '').trim() : '';
     const rn = get('recipe'); if (!rn) continue;
     let rec = byName.get(key(rn));
-    if (!rec) { rec = { name: rn, book: '', bookUrl: '', page: '', cookiesPerBatch: null, refrigerate: '', ovenTemp: '', bakeMinutes: null, notes: '', ingredients: [] }; byName.set(key(rn), rec); }
-    for (const k of ['book', 'bookUrl', 'page', 'refrigerate', 'ovenTemp', 'notes']) if (get(k) && !rec[k]) rec[k] = get(k);
+    if (!rec) { rec = { name: rn, book: '', bookUrl: '', page: '', cookiesPerBatch: null, refrigerate: '', ovenTemp: '', bakeMinutes: null, notes: '', method: '', ingredients: [] }; byName.set(key(rn), rec); }
+    for (const k of ['book', 'bookUrl', 'page', 'refrigerate', 'ovenTemp', 'notes', 'method']) if (get(k) && !rec[k]) rec[k] = get(k);
     for (const k of ['cookiesPerBatch', 'bakeMinutes']) if (get(k) && rec[k] == null) rec[k] = num(get(k));
     if (get('name')) {
       const ing = { name: get('name'), amount: num(get('amount')) ?? 0, unit: get('unit') };
@@ -268,6 +330,7 @@ function normalizeRecipe(r) {
     name: String(r.name).trim(), book: String(r.book ?? ''), bookUrl: String(r.bookUrl ?? ''), page: String(r.page ?? ''),
     cookiesPerBatch: num(r.cookiesPerBatch), refrigerate: String(r.refrigerate ?? ''), ovenTemp: String(r.ovenTemp ?? ''), bakeMinutes: num(r.bakeMinutes),
     notes: String(r.notes ?? ''),
+    method: String(r.method ?? ''),
     ingredients: (Array.isArray(r.ingredients) ? r.ingredients : []).filter(i => i && String(i.name || '').trim()).map(i => {
       const o = { name: String(i.name).trim(), amount: num(i.amount) ?? 0, unit: String(i.unit ?? '').trim() };
       if (num(i.grams) != null) o.grams = num(i.grams);
@@ -294,7 +357,7 @@ function normalizeState(s) {
     purchased: (s.purchased && typeof s.purchased === 'object') ? Object.fromEntries(Object.entries(s.purchased).map(([k, v]) => [key(k.split('|')[0]) + '|' + key(k.split('|')[1]), !!v])) : {},
   };
 }
-if (typeof module !== 'undefined') module.exports = { totalUnits, planRows, shoppingList, kosherTsp, applyPatch, measureFor, syncIngredient, gramFor, recipesToCSV, recipesFromCSV, normalizeState, normalizeRecipe, key };
+if (typeof module !== 'undefined') module.exports = { totalUnits, planRows, shoppingList, kosherTsp, applyPatch, measureFor, syncIngredient, parseMethod, gramFor, recipesToCSV, recipesFromCSV, normalizeState, normalizeRecipe, key };
 
 // ---- Conversion checks ----
 const UNIT = (() => {
