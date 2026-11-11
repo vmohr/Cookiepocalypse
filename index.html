@@ -327,6 +327,11 @@ function applyPatch(state, p) {
     const prev = new Map(state.plan.map(x => [key(x.recipe), x]));
     state.plan = p.setPlan.filter(n => state.recipes.some(r => key(r.name) === key(n))).map(n => prev.get(key(n)) || { recipe: n, cookiesPerUnit: 6, bakeDay: '' });
   }
+  if (p.removeRecipes) {
+    const inPlan = new Set(state.plan.map(x => key(x.recipe)));
+    const drop = new Set(p.removeRecipes.map(key));
+    state.recipes = state.recipes.filter(r => !drop.has(key(r.name)) || inPlan.has(key(r.name)));
+  }
   if (p.removeEmptyRecipes) {
     const inPlan = new Set(state.plan.map(x => key(x.recipe)));
     state.recipes = state.recipes.filter(r => r.ingredients.length || inPlan.has(key(r.name)));
