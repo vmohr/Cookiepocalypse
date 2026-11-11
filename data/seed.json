@@ -6755,6 +6755,45 @@
     }
    ],
    "pruneConversions": true
+  },
+  {
+   "id": "2026-11-cherry-juice-density",
+   "gram": [
+    {
+     "ingredient": "Tart Cherry Juice",
+     "unit": "Teaspoons",
+     "grams": 5.619
+    },
+    {
+     "ingredient": "Tart Cherry Juice",
+     "unit": "Milliliters",
+     "grams": 1.14
+    }
+   ],
+   "bulk": [
+    {
+     "ingredient": "Tart Cherry Juice",
+     "unit": "Grams",
+     "bulkUnit": "Fluid Ounces",
+     "perBulk": 33.7138
+    }
+   ],
+   "ingredientEdits": [
+    {
+     "recipe": "Cherry Phosphate Shortbread Thumbprints",
+     "find": {
+      "name": "Tart Cherry Juice"
+     },
+     "replaceWith": [
+      {
+       "name": "Tart Cherry Juice",
+       "amount": 2,
+       "unit": "Teaspoons",
+       "grams": 11.24
+      }
+     ]
+    }
+   ]
   }
  ]
 }
