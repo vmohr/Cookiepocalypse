@@ -1,0 +1,16 @@
+{"id":"2026-11-egg-cream-fat-ganache",
+ "ingredientEdits":[
+  {"recipe":"Egg Cream Pop Rock Wafer Sandwiches","find":{"name":"Vegetable Shortening","phase":"creme"},"replaceWith":[
+    {"name":"Chocolate, White","amount":240,"unit":"Grams","grams":240},
+    {"name":"Cocoa Butter","amount":55,"unit":"Grams","grams":55}]},
+  {"recipe":"Egg Cream Pop Rock Wafer Sandwiches","find":{"name":"Powdered Sugar","phase":"creme"},"replaceWith":[]},
+  {"recipe":"Egg Cream Pop Rock Wafer Sandwiches","find":{"name":"Vanilla Extract","phase":"creme"},"replaceWith":[]},
+  {"recipe":"Egg Cream Pop Rock Wafer Sandwiches","find":{"name":"Nonfat Milk Powder","phase":"creme"},"replaceWith":[
+    {"name":"Nonfat Milk Powder","amount":20,"unit":"Grams","grams":20}]}
+ ],
+ "bulk":[{"ingredient":"Cocoa Butter","unit":"Grams","bulkUnit":"Ounces","perBulk":28.3495}],
+ "methods":[{"recipe":"Egg Cream Pop Rock Wafer Sandwiches","overwrite":true,
+  "method":"prep: Heat oven to 325°F; line sheets with parchment\ncreamed = cream until fluffy, 2 min <- Butter + Granulated Sugar\nwet = beat in until smooth <- creamed + Whole Milk + Vanilla Extract\ndry = whisk <- Flour + Dutch-Process Cocoa Powder + Baking Soda + Salt @wafer\ndough = mix on low just until a dough forms <- wet + dry\nsheets = roll 1/16 in. between parchment; chill 30 min <- dough\nwafers = cut 2 in. rounds (48), re-roll scraps; bake 325°F ~14 min until dry and fully crisp; cool completely <- sheets\nmelted = melt gently (≤110°F); sift in milk powder, whisk smooth <- Chocolate, White + Cocoa Butter + Nonfat Milk Powder + Salt @creme\ncooled = cool, stirring now and then, to 75–78°F, thick and setting at the edges, ~20 min <- melted\nwhipped = whip until pale and fluffy, 3–5 min <- cooled\ncreme = fold in at the last minute <- whipped + Popping Candy (unflavored)\npipe ~16 g creme on 24 wafers, top with the rest, press gently; set 15 min; store airtight <- wafers + creme",
+  "notes":"Wafers crisp further as they cool; if any center flexes once cool, return to the oven 2–3 min. The creme is a water-free whipped white chocolate (cocoa butter instead of water), so the popping candy keeps its pop and the wafers stay crisp. No vanilla in the creme: even a little extract can seize melted white chocolate. If it won't whip, it's too warm: chill 5 min and try again; if it goes stiff, warm the bowl briefly. Freeze airtight; thaw in the sealed container so condensation forms on the box, not the cookies."}],
+ "times":[{"recipe":"Egg Cream Pop Rock Wafer Sandwiches","prepMinutes":75,"restMinutes":70,"overwrite":true}],
+ "pruneConversions":true}
