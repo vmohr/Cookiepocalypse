@@ -360,6 +360,14 @@ function applyPatch(state, p) {
     if (!state.substitutions.some(y => key(y.ingredient) === key(x.ingredient) && key(y.buyAs) === key(x.buyAs))) state.substitutions.push({ ...x });
   }
   if (p.settings) Object.assign(state, p.settings);
+  // Replace a baking-plan session's task list, keeping the checkmark on any task whose text is unchanged
+  for (const se of p.sessionTasks || []) {
+    const ss = (state.sessions || []).find(x => (se.n != null && x.n === se.n) || (se.label && x.label === se.label)); if (!ss) continue;
+    const was = new Map((ss.tasks || []).map(t => typeof t === 'string' ? [t, false] : [t.text, !!t.done]));
+    ss.tasks = se.tasks.map(t => ({ text: t, done: was.get(t) || false }));
+    if (se.title) ss.title = se.title;
+    if (se.hours) ss.hours = se.hours;
+  }
   state.appliedPatches = [...(state.appliedPatches || []), p.id];
   return true;
 }
