@@ -241,7 +241,7 @@ function applyPatch(state, p) {
   for (const se of p.sessionTasks || []) {
     const ss = (state.sessions || []).find(x => (se.n != null && x.n === se.n) || (se.label && x.label === se.label)); if (!ss) continue;
     const was = new Map((ss.tasks || []).map(t => typeof t === 'string' ? [t, false] : [t.text, !!t.done]));
-    ss.tasks = se.tasks.map(t => ({ text: t, done: was.get(t) || false }));
+    if (se.tasks) ss.tasks = se.tasks.map(t => ({ text: t, done: was.get(t) || false }));
     if (se.title) ss.title = se.title;
     if (se.hours) ss.hours = se.hours;
   }

@@ -7292,6 +7292,43 @@
      ]
     }
    ]
+  },
+  {
+   "id": "2026-11-session-hours-after-prep",
+   "sessionTasks": [
+    {
+     "n": 1,
+     "hours": "3.5 h"
+    },
+    {
+     "n": 2,
+     "hours": "3.5 h"
+    },
+    {
+     "n": 3,
+     "hours": "4 h"
+    },
+    {
+     "n": 4,
+     "hours": "3.5–4 h"
+    },
+    {
+     "n": 5,
+     "hours": "7.5 h, half waiting"
+    },
+    {
+     "n": 6,
+     "hours": "5 h"
+    },
+    {
+     "n": 7,
+     "hours": "2 h"
+    },
+    {
+     "n": 9,
+     "hours": "4 h"
+    }
+   ]
   }
  ],
  "sessions": [
