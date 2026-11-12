@@ -360,6 +360,15 @@ function applyPatch(state, p) {
     if (!state.substitutions.some(y => key(y.ingredient) === key(x.ingredient) && key(y.buyAs) === key(x.buyAs))) state.substitutions.push({ ...x });
   }
   if (p.settings) Object.assign(state, p.settings);
+  // Add a baking-plan session (skipped if one with the same label already exists), placed after the session named in `after`
+  for (const si of p.sessionInsert || []) {
+    state.sessions = state.sessions || [];
+    if (state.sessions.some(x => si.session.label && x.label === si.session.label)) continue;
+    const at = state.sessions.findIndex(x => (si.after?.n != null && x.n === si.after.n) || (si.after?.label && x.label === si.after.label));
+    const sess = JSON.parse(JSON.stringify(si.session));
+    sess.tasks = (sess.tasks || []).map(t => typeof t === 'string' ? { text: t, done: false } : t);
+    state.sessions.splice(at < 0 ? state.sessions.length : at + 1, 0, sess);
+  }
   // Replace a baking-plan session's task list, keeping the checkmark on any task whose text is unchanged
   for (const se of p.sessionTasks || []) {
     const ss = (state.sessions || []).find(x => (se.n != null && x.n === se.n) || (se.label && x.label === se.label)); if (!ss) continue;
