@@ -7518,6 +7518,27 @@
      ]
     }
    ]
+  },
+  {
+   "id": "2026-11-bw-marbled-slice",
+   "methods": [
+    {
+     "recipe": "Black & White Malted Brownie Cookies",
+     "overwrite": true,
+     "method": "prep: Heat oven to 350°F; line sheets with parchment\nchoc = melt together; cool slightly <- Chocolate, Bittersweet + Butter @dark\nribbonD = whip on high to a pale ribbon, 5 min <- Eggs @dark + Dark Brown Sugar @dark + Granulated Sugar @dark + Vanilla Extract @dark\nbatterD = fold in <- ribbonD + choc\ndryD = whisk <- Flour @dark + Dutch-Process Cocoa Powder + Malted Milk Powder @dark + Espresso Powder + Baking Powder @dark + Salt @dark\ndarkDough = fold just until no streaks; chill 20 min <- batterD + dryD\nmelted = melt; cool slightly <- Butter @vanilla\nribbonV = whip on high to a pale ribbon, 5 min <- Eggs @vanilla + Dark Brown Sugar @vanilla + Granulated Sugar @vanilla + Vanilla Extract @vanilla\nbatterV = fold in <- ribbonV + melted\ndryV = whisk <- Flour @vanilla + Malted Milk Powder @vanilla + Baking Powder @vanilla + Salt @vanilla\nvanillaDough = fold just until no streaks; chill 20 min <- batterV + dryV\nmarble = roll chocolate dough out ~¼ in thick; scoop an equal amount of vanilla dough on top; roll into a large log <- darkDough + vanillaDough\nsnake = roll into a long snake 1–1½ in diameter, in batches if needed, flouring as needed <- marble\ntwisted = fold in half; twist the two strands together along their whole length; fold in half again into a chunky log <- snake\nlog = roll to ~2½ in diameter <- twisted\nslice ~½ in discs; bake 350°F 12–13 min until edges set; cool 5 min on sheet <- log",
+     "notes": "Marbled slice-and-bake (worked out on the Nov 14 test batch): the twist gives streaky chocolate ribbons through the vanilla, like syrup down a malt glass. Both doughs roll best cold; dust with flour as needed. Centers look underdone at 12 min and set as they cool. Check the yield: weigh a disc. The batch was costed at 24 cookies (~36 g each); a 2½ in log sliced ½ in gives ~45 g discs, about 19 per batch."
+    }
+   ],
+   "sessionTasks": [
+    {
+     "n": 7,
+     "tasks": [
+      "Black & White ×3: one double and one single of each dough; chill 20 min",
+      "Marble: roll chocolate ~¼ in, top with an equal amount of vanilla, roll up; roll to a 1–1½ in snake, fold, twist, fold; roll to a 2½ in log",
+      "Slice ~½ in discs; bake in rounds of 2 sheets, ~13 min; cool and freeze"
+     ]
+    }
+   ]
   }
  ],
  "sessions": [
