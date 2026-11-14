@@ -412,7 +412,41 @@ function normalizeState(s) {
     purchased: (s.purchased && typeof s.purchased === 'object') ? Object.fromEntries(Object.entries(s.purchased).map(([k, v]) => [key(k.split('|')[0]) + '|' + key(k.split('|')[1]), !!v])) : {},
   };
 }
-if (typeof module !== 'undefined') module.exports = { totalMinutes, fmtMinutes, totalUnits, planRows, shoppingList, kosherTsp, applyPatch, measureFor, syncIngredient, parseMethod, gramFor, recipesToCSV, recipesFromCSV, normalizeState, normalizeRecipe, key };
+// Dry ingredients that get weighed into a dry mix ahead of time. Sugar counts as wet (it goes in with the butter);
+// finishing salts, chocolate, candy, zest, extracts and syrup botanicals stay out.
+const DRY_RE = /\b(flour|cocoa|malted milk powder|milk powder|espresso powder|baking powder|baking soda|salt|ginger|cinnamon|cloves?|nutmeg|allspice|star anise|cardamom|cherry powder|cornstarch|corn starch|cream of tartar)\b/i;
+const NOT_DRY_RE = /\b(sugar|flaky|chocolate|candy|extract|zest|juice|bark|syrup|butter)\b/i;
+function isDryIngredient(name) { const n = String(name || ''); return DRY_RE.test(n) && !NOT_DRY_RE.test(n); }
+// A recipe's dry mixes: dry ingredients that go into the same method step, or sit in the same recipe section, share a container.
+// Returns [{ name, items }] in recipe order; more than one entry means separate mixes (e.g. Black & White's two doughs).
+function dryMixes(recipe) {
+  const ings = recipe.ingredients || [];
+  const idx = ings.map((i, k) => k).filter(k => isDryIngredient(ings[k].name));
+  if (!idx.length) return [];
+  const parent = new Map(idx.map(k => [k, k]));
+  const find = k => { while (parent.get(k) !== k) k = parent.get(k); return k; };
+  const join = (a, b) => { const ra = find(a), rb = find(b); if (ra !== rb) parent.set(rb, ra); };
+  const byKey = (m, kk, k) => { if (m.has(kk)) join(m.get(kk), k); else m.set(kk, k); };
+  const phaseOf = new Map(); idx.forEach(k => byKey(phaseOf, key(ings[k].phase || ''), k));
+  if (recipe.method) {
+    let m = null; try { m = parseMethod(recipe, recipe.method); } catch (e) {}
+    const stepOf = new Map();
+    (m?.steps || []).forEach((st, si) => (st.inputs || []).forEach(inp => {
+      if (inp.kind !== 'ing') return;
+      const k = ings.indexOf(inp.ing) >= 0 ? ings.indexOf(inp.ing) : inp.k;
+      if (parent.has(k)) byKey(stepOf, si, k);
+    }));
+  }
+  const groups = new Map();
+  idx.forEach(k => { const r = find(k); if (!groups.has(r)) groups.set(r, []); groups.get(r).push(ings[k]); });
+  return [...groups.values()].map(items => {
+    const w = new Map(); items.forEach(i => w.set(i.phase || '', (w.get(i.phase || '') || 0) + (num(i.grams) || 0)));
+    const name = [...w.entries()].sort((a, b) => b[1] - a[1])[0][0];
+    return { name, items };
+  });
+}
+
+if (typeof module !== 'undefined') module.exports = { isDryIngredient, dryMixes, totalMinutes, fmtMinutes, totalUnits, planRows, shoppingList, kosherTsp, applyPatch, measureFor, syncIngredient, parseMethod, gramFor, recipesToCSV, recipesFromCSV, normalizeState, normalizeRecipe, key };
 
 // ---- Conversion checks ----
 const UNIT = (() => {

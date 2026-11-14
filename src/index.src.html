@@ -99,6 +99,8 @@ textarea{width:100%;min-height:90px;resize:vertical}
 .modal{background:var(--paper);border-radius:12px;max-width:560px;width:100%;padding:20px;box-shadow:0 20px 60px rgba(0,0,0,.25);max-height:90vh;overflow:auto}
 .modal h3{font-size:19px;margin-bottom:8px}
 .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:9px 16px;border-radius:8px;z-index:60;font-size:13px;box-shadow:var(--shadow)}
+.mix-total td{border-top:2px solid var(--line2);font-weight:600}
+.phase-row.mix-head td{background:#fbf3e3;color:#7a5512;font-weight:700}
 .seg{display:inline-flex;border:1px solid var(--line2);border-radius:8px;overflow:hidden}
 .seg button{border:none;background:#fff;padding:6px 10px;cursor:pointer}
 .seg button.on{background:var(--ink);color:#fff}
@@ -135,7 +137,7 @@ textarea.method{font:12.5px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;min-
 <script>
 // ======================= state & persistence =======================
 let S = null;                 // app state
-let ui = { recipe: null, recipeSearch: '', planOnly: false, hidePurchased: false, cheat: 'both', conv: { name: '', amount: 1, unit: 'Cups' }, showLow: false };
+let ui = { recipe: null, recipeSearch: '', planOnly: false, hidePurchased: false, cheat: 'both', dryOnly: false, conv: { name: '', amount: 1, unit: 'Cups' }, showLow: false };
 let store = { mode: 'none', db: null, uid: null, writing: false, pending: false, timer: null };
 const LS_KEY = 'cookiepocalypse.v1';
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -530,17 +532,25 @@ function vCheat() {
   if (!rows.length) return `<div class="empty">Add recipes to the <a href="#plan">plan</a> to build the cheat sheet.</div>`;
   const show = ui.cheat;
   return `<div class="row" style="margin-bottom:14px"><span class="muted">Ordered by “When to bake?”</span><span class="grow"></span>
+    <label class="small" style="display:inline-flex;gap:6px;align-items:center;cursor:pointer"><input type="checkbox" data-dry ${ui.dryOnly ? 'checked' : ''}> Dry ingredients only</label>
     <div class="seg">${[['both', 'Per batch + total'], ['batch', 'Per batch'], ['total', 'Total']].map(([k, l]) => `<button data-cheat="${k}" class="${show === k ? 'on' : ''}">${l}</button>`).join('')}</div>
     <button class="btn" data-act="exportCheat">Export CSV</button></div>
+  ${ui.dryOnly ? `<p class="muted small" style="margin:-6px 0 14px">Dry mixes for batching ahead. Sugar stays with the wet ingredients. <b>Mix total</b> is what each container should weigh.</p>` : ''}
   ${rows.map(r => {
-    const rec = r.recipe, b = r.batches;
-    const phases = []; let last = null;
-    rec.ingredients.forEach(i => { const p = i.phase || ''; if (p !== last) { phases.push({ p, items: [] }); last = p; } phases[phases.length - 1].items.push(i); });
-    const hasPhases = rec.ingredients.some(i => i.phase);
+    const rec = r.recipe, b = r.batches, dry = ui.dryOnly;
+    const mixes = dry ? dryMixes(rec) : null;
+    if (dry && !mixes.length) return '';
+    let phases = [], hasPhases = true;
+    if (dry) phases = mixes.map((m, mi) => ({ p: mixes.length > 1 ? `Mix ${mi + 1} of ${mixes.length}: ${m.name || 'Dry mix'} (its own container)` : `${m.name || 'Dry mix'}`, items: m.items, mix: true }));
+    else {
+      let last = null;
+      rec.ingredients.forEach(i => { const p = i.phase || ''; if (p !== last) { phases.push({ p, items: [] }); last = p; } phases[phases.length - 1].items.push(i); });
+      hasPhases = rec.ingredients.some(i => i.phase);
+    }
     return `<div class="card">
       <div class="sheet-head"><h2>${esc(rec.name)}</h2><span class="muted">${srcHtml(rec)}</span><span class="grow"></span>${r.item.bakeDay !== '' && r.item.bakeDay != null ? `<span class="pill gold">Bake: ${esc(r.item.bakeDay)}</span>` : ''}</div>
       <div class="facts">
-        <span class="pill red">${b ?? '?'} batches</span>
+        <span class="pill red">${b ?? '?'} batches</span>${dry ? `${mixes.length > 1 ? `<span class="pill gold">${mixes.length} separate dry mixes</span>` : ''}<span class="pill">${b != null ? b * mixes.length : '?'} containers${mixes.length > 1 ? ` (${b ?? '?'} of each mix)` : ''}</span>` : `
         ${rec.ovenTemp ? `<span class="pill">${esc(rec.ovenTemp)}°F</span>` : ''}
         ${totalMinutes(rec) != null ? `<span class="pill gold">Total ${fmtMinutes(totalMinutes(rec))} / batch</span>` : ''}
         ${rec.prepMinutes != null ? `<span class="pill">Prep ${fmtMinutes(rec.prepMinutes)}</span>` : ''}
@@ -548,18 +558,18 @@ function vCheat() {
         ${rec.bakeMinutes != null ? `<span class="pill">Bake ${fmtMinutes(rec.bakeMinutes)}</span>` : ''}
         ${r.bakeHours != null ? `<span class="pill">${fmt(r.bakeHours, 1)} h oven for all batches</span>` : ''}
         ${rec.refrigerate ? `<span class="pill green">Chill: ${esc(rec.refrigerate)}</span>` : ''}
-        ${r.cookies != null ? `<span class="pill">${fmt(r.cookies, 0)} cookies</span>` : ''}
+        ${r.cookies != null ? `<span class="pill">${fmt(r.cookies, 0)} cookies</span>` : ''}`}
       </div>
-      ${rec.method && renderCFE(rec, b, show) ? renderCFE(rec, b, show).html : `<div class="tablewrap"><table>
+      ${!dry && rec.method && renderCFE(rec, b, show) ? renderCFE(rec, b, show).html : `<div class="tablewrap"><table>
         <thead><tr><th>Ingredient</th>${show !== 'total' ? '<th class="n">Per batch (g)</th><th class="n">≈ measure</th>' : ''}${show !== 'batch' ? `<th class="n">Total ×${b ?? '?'} (g)</th><th class="n">≈ measure</th>` : ''}</tr></thead>
-        <tbody>${phases.map(ph => (hasPhases ? `<tr class="phase-row"><td colspan="5">${esc(ph.p || 'Other')}</td></tr>` : '') + ph.items.map(i => {
+        <tbody>${phases.map(ph => (hasPhases ? `<tr class="phase-row${ph.mix && phases.length > 1 ? ' mix-head' : ''}"><td colspan="5">${esc(ph.p || 'Other')}</td></tr>` : '') + ph.items.map(i => {
           const g = gramFor(S, i);
           const gcell = v => v == null ? '' : `<span class="${g.derived ? 'derived' : ''}">${fmt(v, v >= 10 ? 0 : 1)}</span>`;
           return `<tr><td>${esc(i.name)}</td>
             ${show !== 'total' ? `<td class="n"><b>${gcell(g.grams)}</b></td><td class="n muted">${measureTxt(i, 1)}${saltNote(i)}</td>` : ''}
             ${show !== 'batch' ? `<td class="n"><b>${g.grams != null && b != null ? gcell(g.grams * b) : ''}</b></td><td class="n muted">${b != null ? measureTxt(i, b) + saltNote(i, b) : ''}</td>` : ''}</tr>`;
-        }).join('')).join('')}</tbody></table></div>`}
-      ${rec.notes ? `<p class="small" style="white-space:pre-wrap;margin-top:10px">${esc(rec.notes)}</p>` : ''}
+        }).join('') + (dry ? (() => { const t = ph.items.reduce((a, i) => a + (gramFor(S, i).grams || 0), 0); return `<tr class="mix-total"><td>Mix total</td>${show !== 'total' ? `<td class="n"><b>${fmt(t, t >= 10 ? 0 : 1)}</b></td><td></td>` : ''}${show !== 'batch' ? `<td class="n"><b>${b != null ? fmt(t * b, 0) : ''}</b></td><td></td>` : ''}</tr>`; })() : '')).join('')}</tbody></table></div>`}
+      ${!dry && rec.notes ? `<p class="small" style="white-space:pre-wrap;margin-top:10px">${esc(rec.notes)}</p>` : ''}
     </div>`;
   }).join('')}`;
 }
@@ -839,8 +849,8 @@ bake 350°F 10–12 min <- dough</pre>
   if (a === 'clearPurch') { S.purchased = {}; commit(); }
   if (a === 'exportCheat') {
     const rows = ['Recipe,Phase,Ingredient,Per Batch,Unit,Grams Per Batch,Batches,Total,Total Grams'];
-    planRows(S).filter(r => r.recipe).forEach(r => r.recipe.ingredients.forEach(i => { const g = gramFor(S, i).grams; rows.push([r.recipe.name, i.phase || '', i.name, i.amount, i.unit, g != null ? +g.toFixed(1) : '', r.batches ?? '', r.batches != null ? +((i.amount || 0) * r.batches).toFixed(3) : '', g != null && r.batches != null ? +(g * r.batches).toFixed(1) : ''].map(csvEsc).join(',')); }));
-    offerDownload(`baking-cheat-sheet-${today()}.csv`, rows.join('\n'));
+    planRows(S).filter(r => r.recipe).forEach(r => (ui.dryOnly ? dryMixes(r.recipe).flatMap((m, mi, all) => m.items.map(i => ({ ...i, phase: all.length > 1 ? `Mix ${mi + 1} of ${all.length}: ${m.name}` : m.name }))) : r.recipe.ingredients).forEach(i => { const g = gramFor(S, i).grams; rows.push([r.recipe.name, i.phase || '', i.name, i.amount, i.unit, g != null ? +g.toFixed(1) : '', r.batches ?? '', r.batches != null ? +((i.amount || 0) * r.batches).toFixed(3) : '', g != null && r.batches != null ? +(g * r.batches).toFixed(1) : ''].map(csvEsc).join(',')); }));
+    offerDownload(`baking-cheat-sheet${ui.dryOnly ? '-dry' : ''}-${today()}.csv`, rows.join('\n'));
   }
   if (a === 'addP') { S.people.push({ name: '', boxSize: '', units: 1 }); commit(); }
   if (a === 'addConv') { if (d.k === 'gram') S.gramConversions.unshift({ ingredient: '', unit: 'Cups', grams: null }); else S.bulkConversions.unshift({ ingredient: '', unit: 'Cups', bulkUnit: '', perBulk: null }); commit(); }
@@ -883,6 +893,7 @@ document.addEventListener('change', e => {
   if (d.sub != null) { S.substitutions[+d.sub][d.f] = d.num != null ? val : t.value.trim(); return commit(); }
   if (t.id === 'kosherG') { S.kosherSaltGPerTsp = t.value === '' ? null : num(+t.value); return commit(); }
   if (d.conv) { (d.conv === 'gram' ? S.gramConversions : S.bulkConversions)[+d.i][d.f] = d.num != null ? val : t.value.trim(); return commit(); }
+  if (t.matches('[data-dry]')) { ui.dryOnly = t.checked; return render(); }
   if (d.task) { const [si, ti] = d.task.split(':').map(Number); const x = S.sessions?.[si]?.tasks?.[ti]; if (x) { x.done = t.checked; return commit(); } return; }
   if (d.purch) { if (t.checked) S.purchased[d.purch] = true; else delete S.purchased[d.purch]; return commit(); }
   if (t.id === 'planOnly') { ui.planOnly = t.checked; return render(); }
