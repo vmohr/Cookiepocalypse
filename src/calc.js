@@ -228,6 +228,15 @@ function applyPatch(state, p) {
     if (!state.substitutions.some(y => key(y.ingredient) === key(x.ingredient) && key(y.buyAs) === key(x.buyAs))) state.substitutions.push({ ...x });
   }
   if (p.settings) Object.assign(state, p.settings);
+  // Rebuild the whole baking plan as per-recipe steps. A new task starts ticked if any old task it replaces (matched by text prefix in `from`) was ticked.
+  if (p.sessionRebuild) {
+    const old = (state.sessions || []).flatMap(s => (s.tasks || []).map(t => typeof t === 'string' ? { text: t, done: false } : t));
+    state.sessions = p.sessionRebuild.map(se => {
+      const { tasks = [], ...rest } = se;
+      return { n: null, label: '', date: '', end: '', hours: '', title: '', buy: '', ...JSON.parse(JSON.stringify(rest)),
+        tasks: tasks.map(t => ({ text: t.text, recipe: t.recipe || '', done: (t.from || []).some(f => old.some(o => o.done && String(o.text).startsWith(f))) })) };
+    });
+  }
   // Add a baking-plan session (skipped if one with the same label already exists), placed after the session named in `after`
   for (const si of p.sessionInsert || []) {
     state.sessions = state.sessions || [];
@@ -405,7 +414,7 @@ function normalizeState(s) {
     sessions: arr(s.sessions).filter(x => x && (x.title || x.date)).map(x => ({
       n: num(x.n), label: String(x.label ?? ''), date: String(x.date ?? ''), end: String(x.end ?? ''), hours: String(x.hours ?? ''),
       title: String(x.title ?? ''), buy: String(x.buy ?? ''),
-      tasks: arr(x.tasks).map(t => typeof t === 'string' ? { text: t, done: false } : { text: String(t?.text ?? ''), done: !!t?.done }).filter(t => t.text),
+      tasks: arr(x.tasks).map(t => typeof t === 'string' ? { text: t, done: false, recipe: '' } : { text: String(t?.text ?? ''), done: !!t?.done, recipe: String(t?.recipe ?? '') }).filter(t => t.text),
     })),
     appliedPatches: arr(s.appliedPatches).map(String),
     ignoredChecks: (s.ignoredChecks && typeof s.ignoredChecks === 'object') ? { ...s.ignoredChecks } : {},
