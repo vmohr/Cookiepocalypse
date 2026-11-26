@@ -432,7 +432,7 @@ function normalizeState(s) {
 }
 // Dry ingredients that get weighed into a dry mix ahead of time. Sugar counts as wet (it goes in with the butter);
 // finishing salts, chocolate, candy, zest, extracts and syrup botanicals stay out.
-const DRY_RE = /\b(flour|cocoa|malted milk powder|milk powder|espresso powder|baking powder|baking soda|salt|ginger|cinnamon|cloves?|nutmeg|allspice|star anise|cardamom|cherry powder|cornstarch|corn starch|cream of tartar)\b/i;
+const DRY_RE = /\b(flour|cocoa|malted milk powder|milk powder|espresso powder|baking powder|baking soda|salt|ginger|cinnamon|cloves?|nutmeg|allspice|star anise|cardamom|coriander|mace|cherry powder|cornstarch|corn starch|cream of tartar)\b/i;
 const NOT_DRY_RE = /\b(sugar|flaky|chocolate|candy|extract|zest|juice|bark|syrup|butter)\b/i;
 function isDryIngredient(name) { const n = String(name || ''); return DRY_RE.test(n) && !NOT_DRY_RE.test(n); }
 // A recipe's dry mixes: dry ingredients that go into the same method step, or sit in the same recipe section, share a container.

@@ -8259,6 +8259,182 @@
      "method": "## Wild cherry syrup (start the day before)\nprep: Day before: start the wild cherry syrup (make one batch for the whole plan; see notes)\nextract = macerate 24 h; strain; re-steep the bark in the warm water 1 h; strain; combine liquids <- Wild Cherry Bark + Vegetable Glycerin + Water + Warm Water\njuiced = add; top up with water to 30 ml per batch <- extract + Tart Cherry Juice\nsyrup = dissolve sugar cold; measure out 2 Tbsp per batch <- juiced + Granulated Sugar @syrup\n## Cherry phosphate jam\npreserves = cook in a wide stainless pan, crushing some fruit, to 220°F (a drop on a frozen plate wrinkles), ~30 min <- Sour Cherries + Granulated Sugar @preserves + Lemon Juice\njam = stir in the syrup; simmer back to a thick jam; cool completely <- preserves + syrup\nfilling = stir in off heat, a few drops at a time, tasting; note the count <- jam + Acid Phosphate Solution\n## Cookies\nprep: Heat oven to 350°F; line sheets with parchment\ncreamed = cream until fluffy, 2 min <- Butter + Granulated Sugar @dough + Honey\nwet = beat in <- creamed + Egg Yolks + Cherry Extract + Almond Extract\ndry = whisk <- Flour + Freeze-Dried Cherry Powder + Baking Powder + Salt\ndough = mix on low just until combined <- wet + dry\nshaped = roll 1 in. balls (~19 g), press wells; chill on sheets while oven heats <- dough\nbaked = fill ~½ tsp each; bake 350°F 12–13 min until edges just set; cool on sheet 5 min <- shaped + filling\ndust when cool <- baked + Powdered Sugar"
     }
    ]
+  },
+  {
+   "id": "2026-11-crinkles-butter-cola",
+   "gram": [
+    {
+     "ingredient": "Orange Zest",
+     "unit": "Whole",
+     "grams": 6
+    }
+   ],
+   "bulk": [
+    {
+     "ingredient": "Orange Zest",
+     "unit": "Whole",
+     "bulkUnit": "Oranges",
+     "perBulk": 1
+    }
+   ],
+   "replaceRecipes": [
+    {
+     "name": "Coca-Cola Molasses Crinkle Cookies",
+     "book": "Sally's Baking Addiction (Seriously Soft Molasses Cookies), reworked for cola",
+     "bookUrl": "https://sallysbakingaddiction.com/soft-molasses-cookies/",
+     "page": "",
+     "cookiesPerBatch": 24,
+     "refrigerate": "1 hour",
+     "ovenTemp": 350,
+     "bakeMinutes": 11,
+     "prepMinutes": 35,
+     "restMinutes": 60,
+     "ingredients": [
+      {
+       "phase": "Cola Reduction",
+       "name": "Reduced Coca-Cola Syrup",
+       "amount": 90,
+       "unit": "Grams",
+       "grams": 90
+      },
+      {
+       "phase": "Dough",
+       "name": "Butter",
+       "amount": 170,
+       "unit": "Grams",
+       "grams": 170
+      },
+      {
+       "phase": "Dough",
+       "name": "Dark Brown Sugar",
+       "amount": 50,
+       "unit": "Grams",
+       "grams": 50
+      },
+      {
+       "phase": "Dough",
+       "name": "Granulated Sugar",
+       "amount": 100,
+       "unit": "Grams",
+       "grams": 100
+      },
+      {
+       "phase": "Dough",
+       "name": "Lime Zest",
+       "amount": 1,
+       "unit": "Whole",
+       "grams": 2
+      },
+      {
+       "phase": "Dough",
+       "name": "Orange Zest",
+       "amount": 0.5,
+       "unit": "Whole",
+       "grams": 3
+      },
+      {
+       "phase": "Dough",
+       "name": "Eggs",
+       "amount": 1,
+       "unit": "Whole",
+       "grams": 50
+      },
+      {
+       "phase": "Dough",
+       "name": "Vanilla Extract",
+       "amount": 1.5,
+       "unit": "Teaspoons",
+       "grams": 7
+      },
+      {
+       "phase": "Dough",
+       "name": "Acid Phosphate Solution",
+       "amount": 1,
+       "unit": "Teaspoons",
+       "grams": 5.4
+      },
+      {
+       "phase": "Dry",
+       "name": "Flour",
+       "amount": 300,
+       "unit": "Grams",
+       "grams": 300
+      },
+      {
+       "phase": "Dry",
+       "name": "Baking Soda",
+       "amount": 5,
+       "unit": "Grams",
+       "grams": 5
+      },
+      {
+       "phase": "Dry",
+       "name": "Baking Powder",
+       "amount": 4,
+       "unit": "Grams",
+       "grams": 4
+      },
+      {
+       "phase": "Dry",
+       "name": "Salt",
+       "amount": 2,
+       "unit": "Grams",
+       "grams": 2
+      },
+      {
+       "phase": "Dry",
+       "name": "Ground Cinnamon",
+       "amount": 3,
+       "unit": "Grams",
+       "grams": 3
+      },
+      {
+       "phase": "Dry",
+       "name": "Ground Ginger",
+       "amount": 2,
+       "unit": "Grams",
+       "grams": 2
+      },
+      {
+       "phase": "Dry",
+       "name": "Ground Nutmeg",
+       "amount": 0.5,
+       "unit": "Grams",
+       "grams": 0.5
+      },
+      {
+       "phase": "Dry",
+       "name": "Ground Coriander",
+       "amount": 0.5,
+       "unit": "Grams",
+       "grams": 0.5
+      },
+      {
+       "phase": "Dry",
+       "name": "Ground Cloves",
+       "amount": 0.3,
+       "unit": "Grams",
+       "grams": 0.3
+      },
+      {
+       "phase": "Coating",
+       "name": "Granulated Sugar",
+       "amount": 100,
+       "unit": "Grams",
+       "grams": 100
+      },
+      {
+       "phase": "Coating",
+       "name": "Lime Zest",
+       "amount": 1,
+       "unit": "Whole",
+       "grams": 2
+      }
+     ],
+     "method": "prep: Reduce Coca-Cola to molasses strength: 141 g syrup per liter of Coke; cool (see notes)\nprep: Heat oven to 350°F; line sheets with parchment\ncreamed = cream until light and fluffy, 3 min <- Butter + Dark Brown Sugar + Granulated Sugar @dough + Lime Zest @dough + Orange Zest\nwet = beat in, scraping the bowl <- creamed + Eggs + Reduced Coca-Cola Syrup + Vanilla Extract + Acid Phosphate Solution\ndry = whisk <- Flour + Baking Soda + Baking Powder + Salt + Ground Cinnamon + Ground Ginger + Ground Nutmeg + Ground Coriander + Ground Cloves\ndough = mix on low just until combined; chill 1 h <- wet + dry\nlimeSugar = rub together <- Granulated Sugar @coating + Lime Zest @coating\nballs = roll 32 g balls; coat generously in the lime sugar <- dough + limeSugar\nbake 350°F 10–11 min, until puffed and cracked with soft centers; cool 5 min on sheet <- balls",
+     "notes": "COLA SYRUP: Mexican Coke has ~110 g sugar per liter; reducing each liter to ~141 g (≈100 ml) matches molasses' ~22% water. Weigh the empty pot, simmer flat Coke in stainless or enameled (not aluminum/cast iron), and reduce until it weighs 141 g per liter started (2 L → ~282 g); it will bubble around 225°F near the end but trust the scale.\nCOLA FLAVOR: lime and orange zest, cinnamon, nutmeg, coriander and extra vanilla are classic cola flavorings; cloves and ginger are kept low so it doesn't read as gingerbread. ⅛ tsp orange or lime extract can replace the orange zest; a drop of cola flavoring pushes it further.\nACID PHOSPHATE: stands in for molasses' tang. Start at 1 tsp per batch, taste the dough, go up to 2 tsp. Some of it reacts with the baking soda for a little extra lift.\nCRINKLES: the sugar coating plus the puff-and-settle in the oven make the cracks. If a sheet comes out smooth, rap the pan on the counter and bake 1 min more. If the dough chilled longer than 2 h, let it sit 30 min before rolling.\nTEXTURE: butter creamed well, ~20 g more flour than Sally's, baking powder alongside the soda, and a 1 h chill make it puffier and softer than a flat chewy molasses cookie."
+    }
+   ]
   }
  ],
  "sessions": [
