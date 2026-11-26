@@ -120,6 +120,9 @@ textarea{width:100%;min-height:90px;resize:vertical}
 .modal{background:var(--paper);border-radius:12px;max-width:560px;width:100%;padding:20px;box-shadow:0 20px 60px rgba(0,0,0,.25);max-height:90vh;overflow:auto}
 .modal h3{font-size:19px;margin-bottom:8px}
 .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:9px 16px;border-radius:8px;z-index:60;font-size:13px;box-shadow:var(--shadow)}
+.cfe td.sec-h{background:var(--paper,#fff);font-weight:600;font-size:12px;letter-spacing:.02em;color:var(--muted);text-transform:none;border-bottom:1px solid var(--line2)}
+.cfe td.ing.ref{font-style:italic;color:var(--green)}
+.tablewrap+.tablewrap{margin-top:12px}
 .mix-total td{border-top:2px solid var(--line2);font-weight:600}
 .phase-row.mix-head td{background:#fbf3e3;color:#7a5512;font-weight:700}
 .seg{display:inline-flex;border:1px solid var(--line2);border-radius:8px;overflow:hidden}
@@ -326,11 +329,9 @@ function datalists() {
 function renderCFE(r, batches, mode) {
   const pm = parseMethod(r, r.method);
   if (!pm.root || !pm.rows.length) return null;
-  const cols = pm.cols + 1, nRows = pm.rows.length;
-  const cells = Array.from({ length: nRows }, () => []);
-  const put = (row, col, html) => { cells[row].push({ col, html }); };
   const ingCell = (n) => {
     if (n.kind === 'extra') return `<td class="ing extra">${esc(n.text)}</td>`;
+    if (n.kind === 'step') return `<td class="ing ref">${esc(n.label || n.text)} <span class="muted small">(from the table above)</span></td>`;
     const i = n.ing, g = gramFor(S, i).grams;
     const mult = mode === 'batch' ? 1 : (batches ?? 1);
     const qty = g != null ? `<b>${fmt(g * mult, g * mult >= 10 ? 0 : 1)} g</b>` : `<b>${amt(measureFor(S, i, mult).amount)} ${esc(i.unit)}</b>`;
@@ -339,18 +340,43 @@ function renderCFE(r, batches, mode) {
     const salt = kosherTsp(S, i, mult) != null ? ` <span class="small" style="color:var(--green)">≈ ${amt(kosherTsp(S, i, mult))} tsp kosher</span>` : '';
     return `<td class="ing">${qty} ${esc(i.name)}${meas}${per}${salt}</td>`;
   };
-  const place = (n) => {
-    if (n.kind !== 'step') { put(n.r0, 0, ingCell(n)); return; }
-    for (const c of n.inputs) {
-      place(c);
-      for (let col = c.h + 1; col < n.h; col++) put(c.r0, col, `<td class="gap" rowspan="${c.r1 - c.r0}"></td>`);
-    }
-    put(n.r0, n.h, `<td class="op${n === pm.root ? ' final' : ''}" rowspan="${n.r1 - n.r0}">${esc(n.text)}</td>`);
+  // One table per method section ("## Name"); a step from another section is a row in this one
+  const table = (root, sec, title, preps) => {
+    const rows = [], L = new Map();
+    const leaf = n => n.kind !== 'step' || n.section !== sec;
+    const walk = n => {
+      if (leaf(n) && n !== root) { L.set(n, { h: 0, r0: rows.length }); rows.push(n); L.get(n).r1 = rows.length; return; }
+      const o = { r0: rows.length, h: 0 }; L.set(n, o);
+      for (const c of n.inputs) { walk(c); o.h = Math.max(o.h, L.get(c).h); }
+      o.h += 1; o.r1 = rows.length;
+    };
+    walk(root);
+    const cols = L.get(root).h + 1, cells = rows.map(() => []);
+    const place = n => {
+      const o = L.get(n);
+      if (leaf(n) && n !== root) { cells[o.r0].push({ col: 0, html: ingCell(n) }); return; }
+      for (const c of n.inputs) {
+        place(c); const co = L.get(c);
+        for (let col = co.h + 1; col < o.h; col++) cells[co.r0].push({ col, html: `<td class="gap" rowspan="${co.r1 - co.r0}"></td>` });
+      }
+      cells[o.r0].push({ col: o.h, html: `<td class="op${n === pm.root || n === root && title ? ' final' : ''}" rowspan="${o.r1 - o.r0}">${esc(n.text)}</td>` });
+    };
+    place(root);
+    const head = title ? `<tr><td class="sec-h" colspan="${cols}">${esc(title)}</td></tr>` : '';
+    const prep = preps.map(t => `<tr><td class="prep" colspan="${cols}">${esc(t)}</td></tr>`).join('');
+    const body = cells.map(rc => '<tr>' + rc.sort((a, b) => a.col - b.col).map(c => c.html).join('') + '</tr>').join('');
+    return `<div class="tablewrap"><table class="cfe">${head}${prep}${body}</table></div>`;
   };
-  place(pm.root);
-  const prep = pm.prep.map(t => `<tr><td class="prep" colspan="${cols}">${esc(t)}</td></tr>`).join('');
-  const body = cells.map(rc => '<tr>' + rc.sort((a, b) => a.col - b.col).map(c => c.html).join('') + '</tr>').join('');
-  return { html: `<div class="tablewrap"><table class="cfe">${prep}${body}</table></div>`, warnings: pm.warnings };
+  const secs = [...new Set(pm.steps.map(st => st.section))];
+  if (secs.length === 1 && !secs[0]) return { html: table(pm.root, '', '', pm.prep), warnings: pm.warnings };
+  const consumer = new Map();
+  pm.steps.forEach(st => st.inputs.forEach(c => { if (c.kind === 'step') consumer.set(c, st); }));
+  const html = secs.map((sec, si) => {
+    const roots = pm.steps.filter(st => st.section === sec && (!consumer.has(st) || consumer.get(st).section !== sec));
+    const preps = pm.prep.filter((_, k) => pm.prepSections[k] === sec || (si === 0 && !secs.includes(pm.prepSections[k])));
+    return roots.map((rt, ri) => table(rt, sec, sec || 'Method', ri === 0 ? preps : [])).join('');
+  }).join('');
+  return { html, warnings: pm.warnings };
 }
 function methodPreview(r, batches) {
   if (!String(r.method || '').trim()) return '<p class="muted small">Write the steps on the left; the Cooking for Engineers table appears here and on the Baking Cheat Sheet.</p>';

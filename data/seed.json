@@ -8071,6 +8071,184 @@
      "notes": "TIMING: start the syrup the day before (24 h maceration). Preserves keep a few days in the fridge; stir in the syrup and acid phosphate once fully cool, the day you fill.\nPRESERVES: frozen pitted sour cherries, thawed with their juice (or drained jarred Morellos); use a wide stainless pan, the fruit is acidic. The jam should sit in a well without running over in the oven; if loose, simmer longer before adding the phosphate.\nWILD CHERRY SYRUP (Art of Drink, https://www.artofdrink.com/soda/cherry-phosphate): full recipe makes 12 fl oz from 1 oz bark, 1 fl oz glycerin, 4 fl oz water, 4 fl oz warm water (second steep), 4 fl oz cherry juice, 10 oz sugar. Per batch here is 1/12 (30 ml, all of it goes in). For 5 batches make ½ the recipe (~180 ml); the extra ~30 ml makes a couple of cherry phosphates (syrup + soda water + acid phosphate).\nACID PHOSPHATE: traditional ratio is ⅔ tsp per batch (1 tsp per 1½ oz syrup); MacSweetie's strength varies, so add drops to taste (bright, slightly mineral tartness) and record the count.\nDOUGH: built on your Jam Thumbprint proportions (yolk only, no added liquid, no baking soda) so the wells hold."
     }
    ]
+  },
+  {
+   "id": "2026-11-thumbprint-method-sections",
+   "methods": [
+    {
+     "recipe": "Cherry Phosphate Shortbread Thumbprints",
+     "overwrite": true,
+     "method": "## Filling (start the syrup the day before)\nprep: Day before: start the wild cherry syrup (make one batch for the whole plan; see notes)\nextract = macerate 24 h; strain; re-steep the bark in the warm water 1 h; strain; combine liquids <- Wild Cherry Bark + Vegetable Glycerin + Water + Warm Water\njuiced = add; top up with water to 30 ml per batch <- extract + Tart Cherry Juice\nsyrup = dissolve sugar cold; measure out 2 Tbsp per batch <- juiced + Granulated Sugar @syrup\npreserves = cook in a wide stainless pan, crushing some fruit, to 220°F (a drop on a frozen plate wrinkles), ~30 min <- Sour Cherries + Granulated Sugar @preserves + Lemon Juice\njam = stir syrup into preserves; simmer back to a thick jam; cool completely <- syrup + preserves\nfilling = stir in off heat, a few drops at a time, tasting; note the count <- jam + Acid Phosphate Solution\n## Cookies\nprep: Heat oven to 350°F; line sheets with parchment\ncreamed = cream until fluffy, 2 min <- Butter + Granulated Sugar @dough + Honey\nwet = beat in <- creamed + Egg Yolks + Cherry Extract + Almond Extract\ndry = whisk <- Flour + Freeze-Dried Cherry Powder + Baking Powder + Salt\ndough = mix on low just until combined <- wet + dry\nshaped = roll 1 in. balls (~19 g), press wells; chill on sheets while oven heats <- dough\nbaked = fill ~½ tsp each; bake 350°F 12–13 min until edges just set; cool on sheet 5 min <- shaped + filling\ndust when cool <- baked + Powdered Sugar"
+    }
+   ]
+  },
+  {
+   "id": "2026-11-thumbprint-replace-stale-copy",
+   "replaceRecipes": [
+    {
+     "name": "Cherry Phosphate Shortbread Thumbprints",
+     "book": "My Jam Thumbprint Cookies (wild cherry syrup from Art of Drink)",
+     "bookUrl": "",
+     "page": "N/A",
+     "cookiesPerBatch": 36,
+     "refrigerate": "Chill shaped cookies while oven preheats",
+     "ovenTemp": "350",
+     "bakeMinutes": 13,
+     "prepMinutes": 65,
+     "restMinutes": 20,
+     "notes": "TIMING: start the syrup the day before (24 h maceration). Preserves keep a few days in the fridge; stir in the syrup and acid phosphate once fully cool, the day you fill.\nPRESERVES: frozen pitted sour cherries, thawed with their juice (or drained jarred Morellos); use a wide stainless pan, the fruit is acidic. The jam should sit in a well without running over in the oven; if loose, simmer longer before adding the phosphate.\nWILD CHERRY SYRUP (Art of Drink, https://www.artofdrink.com/soda/cherry-phosphate): full recipe makes 12 fl oz from 1 oz bark, 1 fl oz glycerin, 4 fl oz water, 4 fl oz warm water (second steep), 4 fl oz cherry juice, 10 oz sugar. Per batch here is 1/12 (30 ml, all of it goes in). For 5 batches make ½ the recipe (~180 ml); the extra ~30 ml makes a couple of cherry phosphates (syrup + soda water + acid phosphate).\nACID PHOSPHATE: traditional ratio is ⅔ tsp per batch (1 tsp per 1½ oz syrup); MacSweetie's strength varies, so add drops to taste (bright, slightly mineral tartness) and record the count.\nDOUGH: built on your Jam Thumbprint proportions (yolk only, no added liquid, no baking soda) so the wells hold.",
+     "method": "## Filling (start the syrup the day before)\nprep: Day before: start the wild cherry syrup (make one batch for the whole plan; see notes)\nextract = macerate 24 h; strain; re-steep the bark in the warm water 1 h; strain; combine liquids <- Wild Cherry Bark + Vegetable Glycerin + Water + Warm Water\njuiced = add; top up with water to 30 ml per batch <- extract + Tart Cherry Juice\nsyrup = dissolve sugar cold; measure out 2 Tbsp per batch <- juiced + Granulated Sugar @syrup\npreserves = cook in a wide stainless pan, crushing some fruit, to 220°F (a drop on a frozen plate wrinkles), ~30 min <- Sour Cherries + Granulated Sugar @preserves + Lemon Juice\njam = stir syrup into preserves; simmer back to a thick jam; cool completely <- syrup + preserves\nfilling = stir in off heat, a few drops at a time, tasting; note the count <- jam + Acid Phosphate Solution\n## Cookies\nprep: Heat oven to 350°F; line sheets with parchment\ncreamed = cream until fluffy, 2 min <- Butter + Granulated Sugar @dough + Honey\nwet = beat in <- creamed + Egg Yolks + Cherry Extract + Almond Extract\ndry = whisk <- Flour + Freeze-Dried Cherry Powder + Baking Powder + Salt\ndough = mix on low just until combined <- wet + dry\nshaped = roll 1 in. balls (~19 g), press wells; chill on sheets while oven heats <- dough\nbaked = fill ~½ tsp each; bake 350°F 12–13 min until edges just set; cool on sheet 5 min <- shaped + filling\ndust when cool <- baked + Powdered Sugar",
+     "ingredients": [
+      {
+       "name": "Butter",
+       "amount": 12.0496,
+       "unit": "Tablespoons",
+       "grams": 170.2,
+       "phase": "Dough"
+      },
+      {
+       "name": "Granulated Sugar",
+       "amount": 0.7576,
+       "unit": "Cups",
+       "grams": 150,
+       "phase": "Dough"
+      },
+      {
+       "name": "Honey",
+       "amount": 2,
+       "unit": "Tablespoons",
+       "grams": 42,
+       "phase": "Dough"
+      },
+      {
+       "name": "Egg Yolks",
+       "amount": 1,
+       "unit": "Whole",
+       "grams": 14,
+       "phase": "Dough"
+      },
+      {
+       "name": "Cherry Extract",
+       "amount": 0.7511,
+       "unit": "Teaspoons",
+       "grams": 3.38,
+       "phase": "Dough"
+      },
+      {
+       "name": "Almond Extract",
+       "amount": 0.2511,
+       "unit": "Teaspoons",
+       "grams": 1.13,
+       "phase": "Dough"
+      },
+      {
+       "name": "Flour",
+       "amount": 2.25,
+       "unit": "Cups",
+       "grams": 270,
+       "phase": "Dough"
+      },
+      {
+       "name": "Freeze-Dried Cherry Powder",
+       "amount": 2,
+       "unit": "Tablespoons",
+       "grams": 8,
+       "phase": "Dough"
+      },
+      {
+       "name": "Baking Powder",
+       "amount": 1,
+       "unit": "Teaspoons",
+       "grams": 4,
+       "phase": "Dough"
+      },
+      {
+       "name": "Salt",
+       "amount": 0.5,
+       "unit": "Teaspoons",
+       "grams": 3,
+       "phase": "Dough"
+      },
+      {
+       "name": "Sour Cherries",
+       "amount": 160,
+       "unit": "Grams",
+       "grams": 160,
+       "phase": "Homemade Preserves"
+      },
+      {
+       "name": "Granulated Sugar",
+       "amount": 80,
+       "unit": "Grams",
+       "grams": 80,
+       "phase": "Homemade Preserves"
+      },
+      {
+       "name": "Lemon Juice",
+       "amount": 1.0007,
+       "unit": "Teaspoons",
+       "grams": 4.67,
+       "phase": "Homemade Preserves"
+      },
+      {
+       "name": "Acid Phosphate Solution",
+       "amount": 0.6667,
+       "unit": "Teaspoons",
+       "grams": 3.6,
+       "phase": "Cherry Phosphate Filling"
+      },
+      {
+       "name": "Wild Cherry Bark",
+       "amount": 2.36,
+       "unit": "Grams",
+       "grams": 2.36,
+       "phase": "Wild Cherry Syrup (make all at once)"
+      },
+      {
+       "name": "Vegetable Glycerin",
+       "amount": 0.5,
+       "unit": "Teaspoons",
+       "grams": 3.15,
+       "phase": "Wild Cherry Syrup (make all at once)"
+      },
+      {
+       "name": "Water",
+       "amount": 10,
+       "unit": "Grams",
+       "grams": 10,
+       "phase": "Wild Cherry Syrup (make all at once)"
+      },
+      {
+       "name": "Warm Water",
+       "amount": 10,
+       "unit": "Grams",
+       "grams": 10,
+       "phase": "Wild Cherry Syrup (make all at once)"
+      },
+      {
+       "name": "Tart Cherry Juice",
+       "amount": 2.0004,
+       "unit": "Teaspoons",
+       "grams": 11.24,
+       "phase": "Wild Cherry Syrup (make all at once)"
+      },
+      {
+       "name": "Granulated Sugar",
+       "amount": 23.6,
+       "unit": "Grams",
+       "grams": 23.6,
+       "phase": "Wild Cherry Syrup (make all at once)"
+      },
+      {
+       "name": "Powdered Sugar",
+       "amount": 0.2513,
+       "unit": "Cups",
+       "grams": 28.4,
+       "phase": "Finish"
+      }
+     ]
+    }
+   ]
   }
  ],
  "sessions": [

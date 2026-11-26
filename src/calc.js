@@ -227,6 +227,12 @@ function applyPatch(state, p) {
     state.substitutions = state.substitutions || [];
     if (!state.substitutions.some(y => key(y.ingredient) === key(x.ingredient) && key(y.buyAs) === key(x.buyAs))) state.substitutions.push({ ...x });
   }
+  // Replace whole recipes (or add them), for saved plans holding an out-of-date copy
+  for (const nr of p.replaceRecipes || []) {
+    const k = state.recipes.findIndex(x => key(x.name) === key(nr.name));
+    const rec = normalizeRecipe(JSON.parse(JSON.stringify(nr)));
+    if (k >= 0) state.recipes[k] = rec; else state.recipes.push(rec);
+  }
   if (p.settings) Object.assign(state, p.settings);
   // Rebuild the whole baking plan as per-recipe steps. A new task starts ticked if any old task it replaces (matched by text prefix in `from`) was ticked.
   if (p.sessionRebuild) {
@@ -276,7 +282,8 @@ function fmtMinutes(m) {
 // Inputs are earlier step labels or ingredient names (add "@word" to pick the ingredient whose phase contains that word).
 // The last step is the finished dish. Lines starting with # are comments.
 function parseMethod(recipe, text) {
-  const out = { prep: [], steps: [], root: null, warnings: [], rows: [], unused: [] };
+  const out = { prep: [], prepSections: [], steps: [], root: null, warnings: [], rows: [], unused: [] };
+  let section = '';
   const used = new Set();
   const labels = new Map();
   const findIng = (ref) => {
@@ -289,8 +296,10 @@ function parseMethod(recipe, text) {
   const lines = String(text || '').split(/\r?\n/);
   lines.forEach((raw, ln) => {
     const line = raw.trim();
-    if (!line || line.startsWith('#')) return;
-    if (/^prep\s*:/i.test(line)) { out.prep.push(line.replace(/^prep\s*:\s*/i, '')); return; }
+    if (!line) return;
+    // "## Name" starts a section (drawn as its own table); other "#" lines are comments
+    if (line.startsWith('#')) { const sm = line.match(/^##\s*(.+)$/); if (sm) section = sm[1].trim(); return; }
+    if (/^prep\s*:/i.test(line)) { out.prep.push(line.replace(/^prep\s*:\s*/i, '')); out.prepSections.push(section); return; }
     const arrow = line.indexOf('<-');
     if (arrow < 0) { out.warnings.push(`Line ${ln + 1}: needs "<-" followed by what this step uses.`); return; }
     let head = line.slice(0, arrow).trim(), label = null;
@@ -309,7 +318,7 @@ function parseMethod(recipe, text) {
       else { inputs.push({ kind: 'extra', text: ref }); out.warnings.push(`Line ${ln + 1}: "${ref}" isn't an ingredient (or is already used) — shown as a plain row.`); }
     }
     if (!inputs.length) { out.warnings.push(`Line ${ln + 1}: list what this step uses after "<-".`); return; }
-    const step = { kind: 'step', text: head, inputs, label, consumed: false };
+    const step = { kind: 'step', text: head, inputs, label, consumed: false, section };
     out.steps.push(step);
     if (label) labels.set(key(label), step);
   });
