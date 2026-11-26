@@ -120,6 +120,12 @@ textarea{width:100%;min-height:90px;resize:vertical}
 .modal{background:var(--paper);border-radius:12px;max-width:560px;width:100%;padding:20px;box-shadow:0 20px 60px rgba(0,0,0,.25);max-height:90vh;overflow:auto}
 .modal h3{font-size:19px;margin-bottom:8px}
 .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:9px 16px;border-radius:8px;z-index:60;font-size:13px;box-shadow:var(--shadow)}
+details.cfe-sec{margin-top:10px}
+details.cfe-sec>summary{cursor:pointer;font-weight:600;font-size:13px;color:var(--ink);padding:4px 2px;list-style:none;display:flex;align-items:center;gap:6px}
+details.cfe-sec>summary::-webkit-details-marker{display:none}
+details.cfe-sec>summary::before{content:'▾';color:var(--muted);font-size:12px;width:12px;transition:transform .15s}
+details.cfe-sec:not([open])>summary::before{transform:rotate(-90deg)}
+details.cfe-sec:not([open])>summary{color:var(--muted)}
 .cfe td.sec-h{background:var(--paper,#fff);font-weight:600;font-size:12px;letter-spacing:.02em;color:var(--muted);text-transform:none;border-bottom:1px solid var(--line2)}
 .cfe td.ing.ref{font-style:italic;color:var(--green)}
 .tablewrap+.tablewrap{margin-top:12px}
@@ -341,7 +347,7 @@ function renderCFE(r, batches, mode) {
     return `<td class="ing">${qty} ${esc(i.name)}${meas}${per}${salt}</td>`;
   };
   // One table per method section ("## Name"); a step from another section is a row in this one
-  const table = (root, sec, title, preps) => {
+  const table = (root, sec, title, preps, foldKey) => {
     const rows = [], L = new Map();
     const leaf = n => n.kind !== 'step' || n.section !== sec;
     const walk = n => {
@@ -362,10 +368,11 @@ function renderCFE(r, batches, mode) {
       cells[o.r0].push({ col: o.h, html: `<td class="op${n === pm.root || n === root && title ? ' final' : ''}" rowspan="${o.r1 - o.r0}">${esc(n.text)}</td>` });
     };
     place(root);
-    const head = title ? `<tr><td class="sec-h" colspan="${cols}">${esc(title)}</td></tr>` : '';
     const prep = preps.map(t => `<tr><td class="prep" colspan="${cols}">${esc(t)}</td></tr>`).join('');
     const body = cells.map(rc => '<tr>' + rc.sort((a, b) => a.col - b.col).map(c => c.html).join('') + '</tr>').join('');
-    return `<div class="tablewrap"><table class="cfe">${head}${prep}${body}</table></div>`;
+    const tbl = `<div class="tablewrap"><table class="cfe">${prep}${body}</table></div>`;
+    if (!title) return tbl;
+    return `<details class="cfe-sec" data-fold="${esc(foldKey)}" ${foldedSections().has(foldKey) ? '' : 'open'}><summary>${esc(title)}</summary>${tbl}</details>`;
   };
   const secs = [...new Set(pm.steps.map(st => st.section))];
   if (secs.length === 1 && !secs[0]) return { html: table(pm.root, '', '', pm.prep), warnings: pm.warnings };
@@ -374,10 +381,17 @@ function renderCFE(r, batches, mode) {
   const html = secs.map((sec, si) => {
     const roots = pm.steps.filter(st => st.section === sec && (!consumer.has(st) || consumer.get(st).section !== sec));
     const preps = pm.prep.filter((_, k) => pm.prepSections[k] === sec || (si === 0 && !secs.includes(pm.prepSections[k])));
-    return roots.map((rt, ri) => table(rt, sec, sec || 'Method', ri === 0 ? preps : [])).join('');
+    return roots.map((rt, ri) => table(rt, sec, sec || 'Method', ri === 0 ? preps : [], r.name + '|' + (sec || 'Method') + (ri ? '|' + ri : ''))).join('');
   }).join('');
   return { html, warnings: pm.warnings };
 }
+// Folded method sections on the cheat sheet, remembered in this browser
+function foldedSections() { if (!ui.folded) { try { ui.folded = new Set(JSON.parse(localStorage.getItem('cookiepocalypse.folded') || '[]')); } catch (e) { ui.folded = new Set(); } } return ui.folded; }
+document.addEventListener('toggle', e => {
+  const d = e.target; if (!d.matches || !d.matches('details.cfe-sec[data-fold]')) return;
+  const f = foldedSections(); d.open ? f.delete(d.dataset.fold) : f.add(d.dataset.fold);
+  try { localStorage.setItem('cookiepocalypse.folded', JSON.stringify([...f])); } catch (err) {}
+}, true);
 function methodPreview(r, batches) {
   if (!String(r.method || '').trim()) return '<p class="muted small">Write the steps on the left; the Cooking for Engineers table appears here and on the Baking Cheat Sheet.</p>';
   const out = renderCFE(r, batches, 'batch');
