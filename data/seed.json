@@ -8019,6 +8019,40 @@
      ]
     }
    ]
+  },
+  {
+   "id": "2026-11-thumbprint-filling-detail",
+   "ingredientEdits": [
+    {
+     "recipe": "Cherry Phosphate Shortbread Thumbprints",
+     "find": {
+      "name": "Water",
+      "phase": "syrup"
+     },
+     "replaceWith": [
+      {
+       "name": "Water",
+       "amount": 10,
+       "unit": "Grams",
+       "grams": 10
+      },
+      {
+       "name": "Warm Water",
+       "amount": 10,
+       "unit": "Grams",
+       "grams": 10
+      }
+     ]
+    }
+   ],
+   "methods": [
+    {
+     "recipe": "Cherry Phosphate Shortbread Thumbprints",
+     "overwrite": true,
+     "method": "prep: Day before: start the wild cherry syrup (see notes; make one batch for the whole plan)\nprep: Heat oven to 350°F; line sheets with parchment\nextract = macerate 24 h; strain; re-steep the bark in the warm water 1 h; strain; combine liquids <- Wild Cherry Bark + Vegetable Glycerin + Water + Warm Water\njuiced = add; top up with water to 30 ml per batch <- extract + Tart Cherry Juice\nsyrup = dissolve sugar cold; measure out 2 Tbsp per batch <- juiced + Granulated Sugar @syrup\npreserves = cook in a wide stainless pan, crushing some fruit, to 220°F (a drop on a frozen plate wrinkles), ~30 min <- Sour Cherries + Granulated Sugar @preserves + Lemon Juice\njam = stir syrup into preserves; simmer back to a thick jam; cool completely <- preserves + syrup\nfilling = stir in off heat, a few drops at a time, tasting; note the count <- jam + Acid Phosphate Solution\ncreamed = cream until fluffy, 2 min <- Butter + Granulated Sugar @dough + Honey\nwet = beat in <- creamed + Egg Yolks + Cherry Extract + Almond Extract\ndry = whisk <- Flour + Freeze-Dried Cherry Powder + Baking Powder + Salt\ndough = mix on low just until combined <- wet + dry\nshaped = roll 1 in. balls (~19 g), press wells; chill on sheets while oven heats <- dough\nbaked = fill ~½ tsp each; bake 350°F 12–13 min until edges just set; cool on sheet 5 min <- shaped + filling\ndust when cool <- baked + Powdered Sugar",
+     "notes": "TIMING: start the syrup the day before (24 h maceration). Preserves keep a few days in the fridge; stir in the syrup and acid phosphate once fully cool, the day you fill. PRESERVES: frozen pitted sour cherries, thawed with their juice (or drained jarred Morellos); use a wide stainless pan, the fruit is acidic. The jam should sit in a well without running over in the oven; if loose, simmer longer before adding the phosphate. WILD CHERRY SYRUP (Art of Drink, https://www.artofdrink.com/soda/cherry-phosphate): full recipe makes 12 fl oz from 1 oz bark, 1 fl oz glycerin, 4 fl oz water, 4 fl oz warm water (second steep), 4 fl oz cherry juice, 10 oz sugar. Per batch here is 1/12 (30 ml, all of it goes in). For 5 batches make ½ the recipe (~180 ml); the extra ~30 ml makes a couple of cherry phosphates (syrup + soda water + acid phosphate). ACID PHOSPHATE: traditional ratio is ⅔ tsp per batch (1 tsp per 1½ oz syrup); MacSweetie's strength varies, so add drops to taste (bright, slightly mineral tartness) and record the count. AS OFFICE JAM: per 100 g cherries, 50 g sugar, 3 g lemon juice, ~1¼ Tbsp syrup, phosphate to taste. The syrup and phosphate take it off the tested canning recipe: for shelf-stable jars, can plain sour cherry jam (¼ in headspace, 10 min boiling-water bath, 5 min if jars pre-sterilized) and stir the syrup and phosphate into an opened jar. DOUGH: built on your Jam Thumbprint proportions (yolk only, no added liquid, no baking soda) so the wells hold."
+    }
+   ]
   }
  ],
  "sessions": [
