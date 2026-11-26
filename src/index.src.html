@@ -709,7 +709,7 @@ function vShopping() {
       <thead><tr><th style="width:34px">✓</th><th>Ingredient</th><th class="n">Recipes need</th><th class="n">Buy</th><th>Bulk unit</th><th class="n">≈ Grams</th><th>Used in</th></tr></thead>
       <tbody>${shown.map(e => `<tr class="${e.purchased ? 'done' : ''}">
         <td><input type="checkbox" data-purch="${esc(e.key)}" ${e.purchased ? 'checked' : ''}></td>
-        <td class="nm"><b>${esc(e.name)}</b></td>
+        <td class="nm"><b>${esc(e.name)}</b>${e.note ? '<div class="muted small">' + esc(e.note) + '</div>' : ''}</td>
         <td class="n">${e.parts.map(p => amt(p.amount) + ' ' + esc(p.unit)).join('<br>')}</td>
         <td class="n">${e.bulkAmount != null ? '<b>' + amt(e.bulkAmount) + '</b>' : '<span class="muted small">—</span>'}</td><td>${esc(e.bulkUnit ?? '')}</td>
         <td class="n">${e.grams ? fmt(e.grams, 0) + (e.gramsMissing ? '<span class="muted" title="Some recipes have no gram value for this">+</span>' : '') : ''}</td>

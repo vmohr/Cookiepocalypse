@@ -94,6 +94,21 @@ function shoppingList(state, opts = {}) {
     for (const [k, m] of merged) if (m.parts.length === 1) m.key = key(m.name) + '|' + key(m.parts[0].unit);
     out = [...rest, ...merged.values()];
   }
+  if (mergeOn) {
+    // Zest and juice come off the same fruit: one row, fruit count = the larger of the two needs.
+    for (const fruit of ['Lime', 'Lemon', 'Orange']) {
+      const bu = key(fruit + 's');
+      const rows = out.filter(e => key(e.bulkUnit) === bu && (key(e.name) === key(fruit + ' Zest') || key(e.name) === key(fruit + ' Juice')));
+      if (rows.length < 2) continue;
+      const tag = e => key(e.name).endsWith('zest') ? 'zest' : 'juice';
+      const parts = rows.flatMap(e => e.parts.map(p => ({ amount: p.amount, unit: p.unit + ' (' + tag(e) + ')' })));
+      const recipes = [...new Set(rows.flatMap(e => e.recipes))];
+      const m = { key: key(fruit + 's') + '|shared', name: fruit + 's', unit: '', amount: null, grams: 0, gramsMissing: true,
+        recipes, parts, bulkUnit: fruit + 's', bulkAmount: Math.max(...rows.map(e => e.bulkAmount)),
+        note: 'Juice the zested fruit; count is the larger of zest vs. juice.' };
+      out = out.filter(e => !rows.includes(e)).concat(m);
+    }
+  }
   for (const e of out) e.purchased = !!(state.purchased || {})[e.key];
   out.sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }) || String(a.unit).localeCompare(String(b.unit)));
   return out;
