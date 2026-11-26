@@ -120,6 +120,10 @@ textarea{width:100%;min-height:90px;resize:vertical}
 .modal{background:var(--paper);border-radius:12px;max-width:560px;width:100%;padding:20px;box-shadow:0 20px 60px rgba(0,0,0,.25);max-height:90vh;overflow:auto}
 .modal h3{font-size:19px;margin-bottom:8px}
 .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:9px 16px;border-radius:8px;z-index:60;font-size:13px;box-shadow:var(--shadow)}
+.fold-btn{border:0;background:none;cursor:pointer;color:var(--muted);font-size:14px;padding:0 6px 0 0;transition:transform .15s;line-height:1}
+.cheat-card.folded .fold-btn{transform:rotate(-90deg)}
+.cheat-card.folded>:not(.sheet-head):not(.facts){display:none}
+.cheat-card.folded{padding-bottom:12px}
 details.cfe-sec{margin-top:10px}
 details.cfe-sec>summary{cursor:pointer;font-weight:600;font-size:13px;color:var(--ink);padding:4px 2px;list-style:none;display:flex;align-items:center;gap:6px}
 details.cfe-sec>summary::-webkit-details-marker{display:none}
@@ -387,6 +391,13 @@ function renderCFE(r, batches, mode) {
 }
 // Folded method sections on the cheat sheet, remembered in this browser
 function foldedSections() { if (!ui.folded) { try { ui.folded = new Set(JSON.parse(localStorage.getItem('cookiepocalypse.folded') || '[]')); } catch (e) { ui.folded = new Set(); } } return ui.folded; }
+function saveFolds() { try { localStorage.setItem('cookiepocalypse.folded', JSON.stringify([...foldedSections()])); } catch (err) {} }
+document.addEventListener('click', e => {
+  const t = e.target.closest('[data-fold-recipe]'); if (!t) return;
+  const k = t.dataset.foldRecipe, f = foldedSections(), card = t.closest('.cheat-card');
+  f.has(k) ? f.delete(k) : f.add(k); saveFolds();
+  if (card) { card.classList.toggle('folded', f.has(k)); const b = card.querySelector('.fold-btn'); b.setAttribute('aria-expanded', String(!f.has(k))); b.title = (f.has(k) ? 'Show' : 'Fold away') + ' this recipe'; }
+});
 document.addEventListener('toggle', e => {
   const d = e.target; if (!d.matches || !d.matches('details.cfe-sec[data-fold]')) return;
   const f = foldedSections(); d.open ? f.delete(d.dataset.fold) : f.add(d.dataset.fold);
@@ -638,6 +649,7 @@ function vCheat() {
   return `<div class="row" style="margin-bottom:14px"><span class="muted">Ordered by “When to bake?”</span><span class="grow"></span>
     <label class="small" style="display:inline-flex;gap:6px;align-items:center;cursor:pointer"><input type="checkbox" data-dry ${ui.dryOnly ? 'checked' : ''}> Dry ingredients only</label>
     <div class="seg">${[['both', 'Per batch + total'], ['batch', 'Per batch'], ['total', 'Total']].map(([k, l]) => `<button data-cheat="${k}" class="${show === k ? 'on' : ''}">${l}</button>`).join('')}</div>
+    <button class="btn ghost sm" data-act="foldAll">Fold all</button><button class="btn ghost sm" data-act="unfoldAll">Unfold all</button>
     <button class="btn" data-act="exportCheat">Export CSV</button></div>
   ${ui.dryOnly ? `<p class="muted small" style="margin:-6px 0 14px">Dry mixes for batching ahead. Sugar stays with the wet ingredients. <b>Mix total</b> is what each container should weigh.</p>` : ''}
   ${rows.map(r => {
@@ -651,8 +663,9 @@ function vCheat() {
       rec.ingredients.forEach(i => { const p = i.phase || ''; if (p !== last) { phases.push({ p, items: [] }); last = p; } phases[phases.length - 1].items.push(i); });
       hasPhases = rec.ingredients.some(i => i.phase);
     }
-    return `<div class="card">
-      <div class="sheet-head"><h2>${esc(rec.name)}</h2><span class="muted">${srcHtml(rec)}</span><span class="grow"></span>${r.item.bakeDay !== '' && r.item.bakeDay != null ? `<span class="pill gold">Bake: ${esc(r.item.bakeDay)}</span>` : ''}</div>
+    const fk = 'recipe|' + rec.name, folded = foldedSections().has(fk);
+    return `<div class="card cheat-card${folded ? ' folded' : ''}">
+      <div class="sheet-head"><button class="fold-btn" data-fold-recipe="${esc(fk)}" aria-expanded="${!folded}" title="${folded ? 'Show' : 'Fold away'} this recipe">▾</button><h2 data-fold-recipe="${esc(fk)}" style="cursor:pointer">${esc(rec.name)}</h2><span class="muted">${srcHtml(rec)}</span><span class="grow"></span>${r.item.bakeDay !== '' && r.item.bakeDay != null ? `<span class="pill gold">Bake: ${esc(r.item.bakeDay)}</span>` : ''}</div>
       <div class="facts">
         <span class="pill red">${b ?? '?'} batches</span>${dry ? `${mixes.length > 1 ? `<span class="pill gold">${mixes.length} separate dry mixes</span>` : ''}<span class="pill">${b != null ? b * mixes.length : '?'} containers${mixes.length > 1 ? ` (${b ?? '?'} of each mix)` : ''}</span>` : `
         ${rec.ovenTemp ? `<span class="pill">${esc(rec.ovenTemp)}°F</span>` : ''}
@@ -922,6 +935,7 @@ document.addEventListener('click', e => {
   if (d.ignore) { S.ignoredChecks[d.ignore] = true; return commit(); }
   if (d.fix) { const is = conversionChecks(S).issues.find(i => i.id === d.fix); if (!is) return; return applyFix(d.choice != null ? is.choices[+d.choice].fix : is.fix); }
   const a = d.act;
+  if (a === 'foldAll' || a === 'unfoldAll') { const f = foldedSections(); planRows(S).forEach(r => a === 'foldAll' ? f.add('recipe|' + r.item.recipe) : f.delete('recipe|' + r.item.recipe)); saveFolds(); return render(); }
   if (a === 'planEdit') { ui.editPlan = !ui.editPlan; return render(); }
   if (a === 'sessAdd') { const nums = S.sessions.map(x => x.n).filter(x => x != null); S.sessions.push({ n: nums.length ? Math.max(...nums) + 1 : 1, label: '', date: '', end: '', hours: '', title: 'New session', buy: '', tasks: [] }); return commit(); }
   if (a === 'sessDel') { const si = +d.si, ss = S.sessions[si]; const go = () => { S.sessions.splice(si, 1); commit(); };
