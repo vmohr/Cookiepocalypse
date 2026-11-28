@@ -8435,6 +8435,33 @@
      "notes": "COLA SYRUP: Mexican Coke has ~110 g sugar per liter; reducing each liter to ~141 g (≈100 ml) matches molasses' ~22% water. Weigh the empty pot, simmer flat Coke in stainless or enameled (not aluminum/cast iron), and reduce until it weighs 141 g per liter started (2 L → ~282 g); it will bubble around 225°F near the end but trust the scale.\nCOLA FLAVOR: lime and orange zest, cinnamon, nutmeg, coriander and extra vanilla are classic cola flavorings; cloves and ginger are kept low so it doesn't read as gingerbread. ⅛ tsp orange or lime extract can replace the orange zest; a drop of cola flavoring pushes it further.\nACID PHOSPHATE: stands in for molasses' tang. Start at 1 tsp per batch, taste the dough, go up to 2 tsp. Some of it reacts with the baking soda for a little extra lift.\nCRINKLES: the sugar coating plus the puff-and-settle in the oven make the cracks. If a sheet comes out smooth, rap the pan on the counter and bake 1 min more. If the dough chilled longer than 2 h, let it sit 30 min before rolling.\nTEXTURE: butter creamed well, ~20 g more flour than Sally's, baking powder alongside the soda, and a 1 h chill make it puffier and softer than a flat chewy molasses cookie."
     }
    ]
+  },
+  {
+   "id": "2026-11-lime-rickey-bp",
+   "ingredientEdits": [
+    {
+     "recipe": "Lime Rickey Drops",
+     "find": {
+      "name": "Baking Powder"
+     },
+     "replaceWith": [
+      {
+       "name": "Baking Powder",
+       "amount": 3,
+       "unit": "Grams",
+       "grams": 3,
+       "phase": "Dough"
+      }
+     ]
+    }
+   ],
+   "recipeFields": [
+    {
+     "recipe": "Lime Rickey Drops",
+     "book": "Custom: dough after Sally's Soft Cakey Sugar Cookies + Sugar Spun Run Sour Cream Cookies, with lime",
+     "bookUrl": "https://sugarspunrun.com/sour-cream-cookies"
+    }
+   ]
   }
  ],
  "sessions": [

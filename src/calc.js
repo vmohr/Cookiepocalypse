@@ -219,6 +219,10 @@ function applyPatch(state, p) {
   for (const nt of p.notes || []) { const r = state.recipes.find(x => key(x.name) === key(nt.recipe)); if (r) r.notes = nt.notes; }
   for (const t of p.times || []) { const r = state.recipes.find(x => key(x.name) === key(t.recipe)); if (r) for (const f of ['prepMinutes', 'restMinutes', 'bakeMinutes']) if (t[f] != null && (r[f] == null || t.overwrite)) r[f] = t[f]; }
   for (const mr of p.methodReplace || []) for (const r of state.recipes) if (r.method) r.method = r.method.split(mr.from).join(mr.to);
+  for (const rf of p.recipeFields || []) {
+    const r = state.recipes.find(x => key(x.name) === key(rf.recipe));
+    if (r) for (const f of ['book', 'bookUrl', 'page', 'refrigerate', 'ovenTemp']) if (rf[f] != null) r[f] = rf[f];
+  }
   for (const mt of p.methods || []) { const r = state.recipes.find(x => key(x.name) === key(mt.recipe)); if (r) { if (!r.method || mt.overwrite) r.method = mt.method; if (mt.notes != null) r.notes = mt.notes; } }
   if (p.setPlan) {
     const prev = new Map(state.plan.map(x => [key(x.recipe), x]));
